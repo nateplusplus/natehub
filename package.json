@@ -4,14 +4,20 @@
   "description": "My crazy website",
   "main": "index.js",
   "watch": {
-    "build-css": {
+    "build": {
       "patterns": [
-        "scss"
+        "scss",
+        "js"
       ],
-      "extensions": "scss",
+      "extensions": "scss,js",
       "legacyWatch": true,
       "runOnChangeOnly": false
     }
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   },
   "scripts": {
     "test": "mocha",
@@ -19,9 +25,12 @@
     "prefix-css": "postcss --use autoprefixer -b 'last 5 versions' dist/css/style.css -o dist/css/style.prefix.css",
     "compress-css": "node-sass dist/css/style.prefix.css dist/css/style.min.css --output-style compressed --sourceMap=true",
     "build-css": "npm-run-all compile-sass prefix-css compress-css",
-    "build-js": "uglifyjs js/script.js --output dist/js/script.min.js",
+    "transpile": "babel ./js --out-dir ./dist/js",
+    "bundle": "browserify dist/js/script.js --outfile dist/js/script.browserify.js",
+    "minify": "uglifyjs dist/js/script.browserify.js --output dist/js/script.min.js",
+    "build-js": "npm-run-all transpile bundle minify",
     "build": "npm-run-all build-js build-css",
-    "watch": "npm-watch build-css",
+    "watch": "npm-watch build",
     "serve": "http-server ./"
   },
   "repository": {
@@ -44,7 +53,11 @@
     "phaser": "^3.52.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "autoprefixer": "^10.2.1",
+    "browserify": "^17.0.0",
     "chai": "^4.2.0",
     "compile-sass": "^1.1.1",
     "http-server": "^0.12.3",
