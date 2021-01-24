@@ -6,12 +6,12 @@
   "watch": {
     "build": {
       "patterns": [
-        "scss",
-        "js"
+        "js",
+        "scss"
       ],
-      "extensions": "scss,js",
+      "extensions": "js,scss",
       "legacyWatch": true,
-      "runOnChangeOnly": false
+      "runOnChangeOnly": true
     }
   },
   "babel": {
@@ -30,7 +30,7 @@
     "minify": "uglifyjs dist/js/script.browserify.js --output dist/js/script.min.js",
     "build-js": "npm-run-all transpile bundle minify",
     "build": "npm-run-all build-js build-css",
-    "watch": "npm-watch build",
+    "watch": "npm-watch build-js",
     "serve": "http-server ./"
   },
   "repository": {

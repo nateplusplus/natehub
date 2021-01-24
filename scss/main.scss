@@ -1,5 +1,26 @@
+@mixin transition {
+    transition: all 1s ease-in-out;
+}
+
 html, body {
     width: 100%;
     height: 100%;
     margin: 0;
+}
+
+body {
+    background-image: url('../../assets/blue-gradient.svg');
+    background-attachment: fixed;
+    position: relative;
+}
+
+#map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.object {
+    position: absolute;
+    @include transition;
 }
