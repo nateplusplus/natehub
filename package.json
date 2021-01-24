@@ -4,14 +4,13 @@
   "description": "My crazy website",
   "main": "index.js",
   "watch": {
-    "build": {
+    "build-js": {
       "patterns": [
-        "js",
-        "scss"
+        "js"
       ],
-      "extensions": "js,scss",
+      "extensions": "js",
       "legacyWatch": true,
-      "runOnChangeOnly": true
+      "runOnChangeOnly": false
     }
   },
   "babel": {
@@ -25,8 +24,8 @@
     "prefix-css": "postcss --use autoprefixer -b 'last 5 versions' dist/css/style.css -o dist/css/style.prefix.css",
     "compress-css": "node-sass dist/css/style.prefix.css dist/css/style.min.css --output-style compressed --sourceMap=true",
     "build-css": "npm-run-all compile-sass prefix-css compress-css",
-    "transpile": "babel ./js --out-dir ./dist/js",
     "bundle": "browserify dist/js/script.js --outfile dist/js/script.browserify.js",
+    "transpile": "babel ./js --out-dir ./dist/js",
     "minify": "uglifyjs dist/js/script.browserify.js --output dist/js/script.min.js",
     "build-js": "npm-run-all transpile bundle minify",
     "build": "npm-run-all build-js build-css",
@@ -50,7 +49,7 @@
   },
   "homepage": "https://github.com/nateplusplus/natehub#readme",
   "dependencies": {
-    "phaser": "^3.52.0"
+    "babylonjs": "^4.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
