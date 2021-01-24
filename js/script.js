@@ -43,12 +43,20 @@ class NateHub extends Phaser.Scene
         Phaser.GameObjects.Rectangle
         const centerX = this.game.scale.width / 2;
         const centerY = this.game.scale.height / 2;
+        const column  = this.game.scale.width / 12;
+        const row     = this.game.scale.height / 12;
 
         this.background = this.add.image( centerX, centerY, 'background');
         this.background.setDisplaySize(this.game.scale.width, this.game.scale.height);
 
-        this.homebase = this.add.star(centerX, centerY, 5, 48, 96, 0x6666ff);
+        this.cameras.main.setBounds(0, 0, this.game.scale.width, this.game.scale.height, true);
 
+        this.base1 = this.add.star(this.game.scale.width - (column * 2), row * 2, 5, 16, 30, 0x6666ff);
+        this.base2 = this.add.star(this.game.scale.width - (column * 2), this.game.scale.height - (row * 2), 5, 16, 30, 0x6666ff);
+        this.base3 = this.add.star(column * 2, this.game.scale.height - (row * 2), 5, 16, 30, 0x6666ff);
+        this.base4 = this.add.star(column * 2, row * 2, 5, 16, 30, 0x6666ff);
+
+        this.homebase = this.add.star(centerX, centerY, 5, 16, 30, 0x6666ff);
         this.train = this.add.rectangle(centerX, centerY + 120, 200, 50, 0x000000, 0.5);
 
         this.path = new Phaser.Curves.Path( 50, 100 ).splineTo([ 164, 46, 274, 142, 412, 57, 522, 141, 664, 64 ]);
@@ -58,22 +66,28 @@ class NateHub extends Phaser.Scene
         this.path.draw( this.graphics, 128 );
 
         this.follower = this.add.follower( this.path, 0, 0, 'star' );
-        this.follower.startFollow({
+
+        this.cameras.main.startFollow( this.follower, true, .09, .09 );
+        this.cameras.main.setZoom(1);
+
+        this.follower.setPath(this.path, {
             positionOnPath: true,
             duration: 3000,
             yoyo: true,
             repeat: -1,
             rotateToPath: true,
-            verticalAdjust: true
+            ease: 'Sine.easeInOut'
         });
 
-        this.input.keyboard.on('keydown-RIGHT', function( evt ) {
-            console.log('right');
+        this.follower.pauseFollow();
+
+        this.input.keyboard.on('keydown-SPACE', function( evt ) {
+            if ( this.follower.isFollowing() ) {
+                this.follower.pauseFollow();
+            } else {
+                this.follower.resumeFollow();
+            }
         }.bind(this));
-
-        this.input.keyboard.on('keydown-LEFT', function( evt ) {
-            console.log('left');
-        });
     }
 
 }
@@ -81,18 +95,14 @@ class NateHub extends Phaser.Scene
 const config = {
     type: Phaser.AUTO,
     physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 300 },
-            debug: true
-        }
+        default: 'arcade'
     },
     scale: {
         mode: Phaser.Scale.FIT,
         parent: 'nh-canvas',
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: window.innerWidth,
-        height: window.innerHeight
+        width: window.innerWidth * 2,
+        height: window.innerHeight * 2
     },
     scene: [ NateHub ]
 };
