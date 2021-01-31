@@ -1,5 +1,40 @@
 import * as BABYLON from 'babylonjs';
 
+class Train
+{
+    constructor( scene ) {
+        this.state = 'stop';
+        this.scene = scene;
+        this.mesh  = BABYLON.Mesh.CreateBox( "Train", 1.5, this.scene );
+    }
+
+    toggleState() {
+        this.state = this.state === 'stop' ? 'run' : 'stop';
+    }
+
+    setPosition( vector ) {
+        this.mesh.position =  vector;
+    }
+
+    advancePosition( points, normals, i ) {
+        if ( this.state === 'run' ) {
+            this.setPosition( new BABYLON.Vector3( points[i].x, 0, points[i].z ) );
+            this.handleRotation( normals[i], normals[i+1] )
+
+            i = i === points.length-2 ? 0 : i + 1;
+        }
+        return i;
+    }
+
+    handleRotation( normal, nextNormal ) {
+        let theta = Math.acos( BABYLON.Vector3.Dot( normal, nextNormal ) );
+        let dir = BABYLON.Vector3.Cross( normal, nextNormal ).y;
+        dir = dir/Math.abs( dir );
+
+        this.mesh.rotate( BABYLON.Axis.Y, dir * theta, BABYLON.Space.WORLD );
+    }
+}
+
 class NateHub
 {
     constructor() {
@@ -38,8 +73,8 @@ class NateHub
 
         this.home = BABYLON.Mesh.CreateSphere( "Home", 32, 4, this.scene );
 
-        this.train = BABYLON.Mesh.CreateBox( "Train", 1.5, this.scene );
-        this.train.position =  new BABYLON.Vector3( 0, 0, -8 );
+        this.train = new Train( this.scene );
+        this.train.setPosition( new BABYLON.Vector3( 0, 0, -8 ) );
 
         this.base1 = BABYLON.Mesh.CreateSphere( "Code", 32, 4, this.scene );
         this.base1.position = new BABYLON.Vector3( 200, 0, 200 );
@@ -56,6 +91,20 @@ class NateHub
         this.createPaths();
         this.createCamera();
         this.animateTrain();
+
+        this.scene.onKeyboardObservable.add( ( kbInfo ) => {
+
+            switch ( kbInfo.type ) {
+                // case BABYLON.KeyboardEventTypes.KEYDOWN:
+                //     console.log("KEY DOWN: ", kbInfo.event.key);
+                //     break;
+                case BABYLON.KeyboardEventTypes.KEYUP:
+                    if ( kbInfo.event.key === ' ' ) {
+                        this.train.toggleState();
+                    }
+                    break;
+            }
+        });
     }
 
     createPaths() {
@@ -75,9 +124,12 @@ class NateHub
                 new BABYLON.Vector3( -200, 0, 50 ),
                 new BABYLON.Vector3( -150, 0, 0 ),
             ],
-            800,
+            300,
             true
         );
+        this.topCurve.startIndex = this.topCurve.getPoints().findIndex( ( point ) => {
+            return point.x === 0 && point.y === 0 && point.z === -8;
+        } );
 
         this.topPath = BABYLON.Mesh.CreateLines( 'path', this.topCurve.getPoints(), this.scene, true );
         this.topPath.color = new BABYLON.Color3( 0, 0, 0 );
@@ -96,7 +148,7 @@ class NateHub
                 new BABYLON.Vector3( -200, 0, -50 ),
                 new BABYLON.Vector3( -110, 0, -6 ),
             ],
-            800,
+            300,
             false
         );
 
@@ -109,19 +161,9 @@ class NateHub
         const topPath3d = new BABYLON.Path3D( points );
         const normals = topPath3d.getNormals();
 
-        var i = 0;
+        var index = this.topCurve.startIndex;
         this.scene.registerAfterRender( () => {
-            this.train.position = new BABYLON.Vector3( points[i].x, 0, points[i].z );
-
-            let theta = Math.acos( BABYLON.Vector3.Dot( normals[i], normals[i+1] ) );
-            let dir = BABYLON.Vector3.Cross( normals[i], normals[i+1] ).y;
-            dir = dir/Math.abs( dir );
-            this.train.rotate( BABYLON.Axis.Y, dir * theta, BABYLON.Space.WORLD );
-
-            i++; // continuous loop
-            if ( i === points.length ) {
-                i = 0;
-            }
+            index = this.train.advancePosition( points, normals, index );
         } );
     }
 
@@ -137,7 +179,7 @@ class NateHub
             'followCam',
             new BABYLON.Vector3( 0, 0, 0 ),
             this.scene,
-            this.train
+            this.train.mesh
         );
         this.camera.heightOffset = 50;
         this.camera.radius = 50;
