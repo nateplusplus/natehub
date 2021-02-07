@@ -1,8 +1,41 @@
 import * as BABYLON from 'babylonjs';
 
+class Track
+{
+    constructor( curve, scene, startIndex ) {
+
+        this.curve      = curve;
+        this.path       = BABYLON.Mesh.CreateLines( 'path', this.curve.getPoints(), scene, true );
+        this.points     = this.curve.getPoints();
+        this.topPath3d  = new BABYLON.Path3D( this.points );
+        this.normals    = this.topPath3d.getNormals();
+        this.startIndex = startIndex;
+        this.intersections = [];
+        this.changes = [];
+
+        this.path.color = new BABYLON.Color3( 0, 0, 0 );
+    }
+
+    setChanges( intersections ) {
+        intersections.forEach( ( intersection ) => {
+            const index = this.points.findIndex( ( point ) => {
+                const start = intersection.points[0];
+                let xRange = ( point.x > start.x - 3 && point.x < start.x + 3 );
+                let zRange = ( point.z > start.z - 3 && point.z < start.z + 3 );
+                return xRange && zRange;
+            } );
+            if ( index > -1 ) {
+                this.changes.push( index );
+            }
+        } );
+    }
+}
+
 class Train
 {
     constructor( scene ) {
+        this.currentTrackIndex;
+        this.tracks = [];
         this.state = 'stop';
         this.scene = scene;
         this.mesh  = BABYLON.Mesh.CreateBox( "Train", 1.5, this.scene );
@@ -16,10 +49,16 @@ class Train
         this.mesh.position =  vector;
     }
 
-    advancePosition( points, normals, i ) {
+    advancePosition( track, normals, i, callback ) {
         if ( this.state === 'run' ) {
+            const points = track.getPoints();
+
             this.setPosition( new BABYLON.Vector3( points[i].x, 0, points[i].z ) );
-            this.handleRotation( normals[i], normals[i+1] )
+            this.handleRotation( normals[i], normals[i+1] );
+
+            if ( track.changes.find( i ) ) {
+                callback( track );
+            }
 
             i = i === points.length-2 ? 0 : i + 1;
         }
@@ -109,7 +148,7 @@ class NateHub
 
     createPaths() {
 
-        this.topCurve = BABYLON.Curve3.CreateCatmullRomSpline(
+        let topCurve = BABYLON.Curve3.CreateCatmullRomSpline(
             [
                 new BABYLON.Vector3( 0, 0, -8 ),
                 new BABYLON.Vector3( 150, 0, 0 ),
@@ -127,12 +166,12 @@ class NateHub
             300,
             true
         );
-        this.topCurve.startIndex = this.topCurve.getPoints().findIndex( ( point ) => {
+
+        const startIndex = topCurve.getPoints().findIndex( ( point ) => {
             return point.x === 0 && point.y === 0 && point.z === -8;
         } );
 
-        this.topPath = BABYLON.Mesh.CreateLines( 'path', this.topCurve.getPoints(), this.scene, true );
-        this.topPath.color = new BABYLON.Color3( 0, 0, 0 );
+        let topTrack = new Track( topCurve, this.scene, startIndex );
 
         let bottomCurve = BABYLON.Curve3.CreateCatmullRomSpline(
             [
@@ -152,19 +191,25 @@ class NateHub
             false
         );
 
-        this.bottomPath = BABYLON.Mesh.CreateLines( 'path', bottomCurve.getPoints(), this.scene, true );
-        this.bottomPath.color = new BABYLON.Color3( 0, 0, 0 );
+        let bottomTrack = new Track( bottomCurve, this.scene, 0 );
+
+        topTrack.setChanges( [ bottomTrack ] );
+
+        console.dir( topTrack.changes );
+
+        this.currentTrackIndex = 0;
     }
 
     animateTrain() {
-        const points  = this.topCurve.getPoints();
-        const topPath3d = new BABYLON.Path3D( points );
-        const normals = topPath3d.getNormals();
-
-        var index = this.topCurve.startIndex;
+        var index = this.tracks[ this.currentTrackIndex ].startIndex;
         this.scene.registerAfterRender( () => {
-            index = this.train.advancePosition( points, normals, index );
+            index = this.train.advancePosition( this.tracks[ this.currentTrack ], normals, index, this.changeTrack );
         } );
+    }
+
+    changeTrack() {
+        // TODO: Make this dynamic
+        this.currentTrackIndex = 1;
     }
 
     createCamera() {
