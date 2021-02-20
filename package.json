@@ -19,15 +19,15 @@
     ]
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --watch --recursive",
     "compile-sass": "node-sass scss/main.scss dist/css/style.css",
     "prefix-css": "postcss --use autoprefixer -b 'last 5 versions' dist/css/style.css -o dist/css/style.prefix.css",
     "compress-css": "node-sass dist/css/style.prefix.css dist/css/style.min.css --output-style compressed --sourceMap=true",
     "build-css": "npm-run-all compile-sass prefix-css compress-css",
-    "bundle": "browserify dist/js/script.js --outfile dist/js/script.browserify.js",
     "transpile": "babel ./js --out-dir ./dist/js",
+    "bundle": "browserify dist/js/script.js --outfile dist/js/script.browserify.js",
     "minify": "uglifyjs dist/js/script.browserify.js --output dist/js/script.min.js",
-    "build-js": "npm-run-all transpile bundle minify",
+    "build-js": "npm-run-all transpile bundle",
     "build": "npm-run-all build-js build-css",
     "watch": "npm-watch build-js",
     "serve": "http-server ./"
@@ -60,6 +60,7 @@
     "chai": "^4.2.0",
     "compile-sass": "^1.1.1",
     "http-server": "^0.12.3",
+    "jsdom": "^16.4.0",
     "mocha": "^8.2.1",
     "npm-run-all": "^4.1.5",
     "npm-watch": "^0.7.0",

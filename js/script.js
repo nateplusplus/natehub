@@ -1,90 +1,15 @@
-import * as BABYLON from 'babylonjs';
-
-class Track
-{
-    constructor( curve, scene, startIndex ) {
-
-        this.curve      = curve;
-        this.path       = BABYLON.Mesh.CreateLines( 'path', this.curve.getPoints(), scene, true );
-        this.points     = this.curve.getPoints();
-        this.topPath3d  = new BABYLON.Path3D( this.points );
-        this.normals    = this.topPath3d.getNormals();
-        this.startIndex = startIndex;
-        this.intersections = [];
-        this.changes = [];
-
-        this.path.color = new BABYLON.Color3( 0, 0, 0 );
-    }
-
-    setChanges( intersections ) {
-        intersections.forEach( ( intersection ) => {
-            const index = this.points.findIndex( ( point ) => {
-                const start = intersection.points[0];
-                let xRange = ( point.x > start.x - 3 && point.x < start.x + 3 );
-                let zRange = ( point.z > start.z - 3 && point.z < start.z + 3 );
-                return xRange && zRange;
-            } );
-            if ( index > -1 ) {
-                this.changes.push( index );
-            }
-        } );
-    }
-}
-
-class Train
-{
-    constructor( scene ) {
-        this.currentTrackIndex;
-        this.tracks = [];
-        this.state = 'stop';
-        this.scene = scene;
-        this.mesh  = BABYLON.Mesh.CreateBox( "Train", 1.5, this.scene );
-    }
-
-    toggleState() {
-        this.state = this.state === 'stop' ? 'run' : 'stop';
-    }
-
-    setPosition( vector ) {
-        this.mesh.position =  vector;
-    }
-
-    advancePosition( track, normals, i, callback ) {
-        if ( this.state === 'run' ) {
-            const points = track.getPoints();
-
-            this.setPosition( new BABYLON.Vector3( points[i].x, 0, points[i].z ) );
-            this.handleRotation( normals[i], normals[i+1] );
-
-            if ( track.changes.find( i ) ) {
-                callback( track );
-            }
-
-            i = i === points.length-2 ? 0 : i + 1;
-        }
-        return i;
-    }
-
-    handleRotation( normal, nextNormal ) {
-        let theta = Math.acos( BABYLON.Vector3.Dot( normal, nextNormal ) );
-        let dir = BABYLON.Vector3.Cross( normal, nextNormal ).y;
-        dir = dir/Math.abs( dir );
-
-        this.mesh.rotate( BABYLON.Axis.Y, dir * theta, BABYLON.Space.WORLD );
-    }
-}
+const BABYLON   = require( 'babylonjs' );
+const { Track } = require( './track.js' );
+const { Train } = require( './train.js' );
 
 class NateHub
 {
     constructor() {
-        this.canvas;
         this.engine;
-
-        this.topPath;
-        this.bottomPath;
+        this.scene;
 
         this.train;
-        
+
         this.home;
         this.base1;
         this.base2;
@@ -98,8 +23,8 @@ class NateHub
 
     init() {
         window.addEventListener('DOMContentLoaded', (event) => {
-            this.canvas = document.getElementById( 'nhCanvas' );
-            this.engine = new BABYLON.Engine( this.canvas, true );
+            const canvas = document.getElementById( 'nhCanvas' );
+            this.engine  = new BABYLON.Engine( canvas, true );
 
             this.createScene();
             this.run();
@@ -132,7 +57,6 @@ class NateHub
         this.animateTrain();
 
         this.scene.onKeyboardObservable.add( ( kbInfo ) => {
-
             switch ( kbInfo.type ) {
                 // case BABYLON.KeyboardEventTypes.KEYDOWN:
                 //     console.log("KEY DOWN: ", kbInfo.event.key);
@@ -147,8 +71,7 @@ class NateHub
     }
 
     createPaths() {
-
-        let topCurve = BABYLON.Curve3.CreateCatmullRomSpline(
+        const topCurve = BABYLON.Curve3.CreateCatmullRomSpline(
             [
                 new BABYLON.Vector3( 0, 0, -8 ),
                 new BABYLON.Vector3( 150, 0, 0 ),
@@ -173,7 +96,7 @@ class NateHub
 
         let topTrack = new Track( topCurve, this.scene, startIndex );
 
-        let bottomCurve = BABYLON.Curve3.CreateCatmullRomSpline(
+        const bottomCurve = BABYLON.Curve3.CreateCatmullRomSpline(
             [
                 new BABYLON.Vector3( 110, 0, -6 ),
                 new BABYLON.Vector3( 200, 0, -50 ),
@@ -191,19 +114,23 @@ class NateHub
             false
         );
 
-        let bottomTrack = new Track( bottomCurve, this.scene, 0 );
+        const bottomTrack = new Track( bottomCurve, this.scene, 0 );
 
-        topTrack.setChanges( [ bottomTrack ] );
+        topTrack.intersections = Track.getIntersections( [ bottomTrack ], topTrack.points );
 
-        console.dir( topTrack.changes );
+        this.tracks = [
+            topTrack,
+            bottomTrack
+        ];
 
         this.currentTrackIndex = 0;
     }
 
     animateTrain() {
-        var index = this.tracks[ this.currentTrackIndex ].startIndex;
+        var track = this.tracks[ this.currentTrackIndex ];
+        var index = track.startIndex;
         this.scene.registerAfterRender( () => {
-            index = this.train.advancePosition( this.tracks[ this.currentTrack ], normals, index, this.changeTrack );
+            index = this.train.advancePosition( track, index, this.changeTrack.bind( this ) );
         } );
     }
 
@@ -229,7 +156,7 @@ class NateHub
         this.camera.heightOffset = 50;
         this.camera.radius = 50;
         this.camera.rotationOffset = 180;
-        this.camera.attachControl( this.canvas, true );
+        this.camera.attachControl( this.engine._renderingCanvas, true );
     }
 
     run() {
