@@ -2,35 +2,12 @@
   "name": "natehub",
   "version": "0.0.1",
   "description": "My crazy website",
-  "main": "index.js",
-  "watch": {
-    "build-js": {
-      "patterns": [
-        "js"
-      ],
-      "extensions": "js",
-      "legacyWatch": true,
-      "runOnChangeOnly": false
-    }
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
+  "private": true,
   "scripts": {
+    "build": "webpack",
+    "start": "webpack serve --open",
     "test": "mocha --watch --recursive",
-    "compile-sass": "node-sass scss/main.scss dist/css/style.css",
-    "prefix-css": "postcss --use autoprefixer -b 'last 5 versions' dist/css/style.css -o dist/css/style.prefix.css",
-    "compress-css": "node-sass dist/css/style.prefix.css dist/css/style.min.css --output-style compressed --sourceMap=true",
-    "build-css": "npm-run-all compile-sass prefix-css compress-css",
-    "transpile": "babel ./js --out-dir ./dist/js",
-    "bundle": "browserify dist/js/script.js --outfile dist/js/script.browserify.js",
-    "minify": "uglifyjs dist/js/script.browserify.js --output dist/js/script.min.js",
-    "build-js": "npm-run-all transpile bundle",
-    "build": "npm-run-all build-js build-css",
-    "watch": "npm-watch build-js",
-    "serve": "http-server ./"
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -52,21 +29,17 @@
     "babylonjs": "^4.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "autoprefixer": "^10.2.1",
     "browserify": "^17.0.0",
     "chai": "^4.2.0",
-    "compile-sass": "^1.1.1",
-    "http-server": "^0.12.3",
+    "css-loader": "^5.1.2",
+    "html-webpack-plugin": "^5.3.1",
     "jsdom": "^16.4.0",
     "mocha": "^8.2.1",
-    "npm-run-all": "^4.1.5",
-    "npm-watch": "^0.7.0",
-    "postcss": "^8.2.4",
-    "postcss-cli": "^8.3.1",
-    "sass": "^1.32.4",
-    "uglify-js": "^3.12.4"
+    "sass": "^1.32.8",
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.25.0",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
