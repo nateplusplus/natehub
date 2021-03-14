@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env"
+    ]
+  ],
+  "plugins": [
+    [
+      "babel-plugin-transform-import-ignore",
+      {
+        "patterns": [ "./style.scss", "babylonjs" ]
+      }
+    ]
+  ]
+}

@@ -9,10 +9,16 @@ class NateHub extends HTMLElement
         this.canvas.setAttribute( 'tabindex', '1' );
         this.appendChild( this.canvas );
 
-        this.engine  = new BABYLON.Engine( this.canvas, true );
+        if (document.activeElement.tagName === 'BODY') {
+            this.canvas.focus();
+        }
 
-        this.createScene();
-        this.run();
+        // navigator is required for babylon and doesn't exist in node
+        if ( typeof navigator !== 'undefined' ) {
+            this.engine  = new BABYLON.Engine( this.canvas, true );
+            this.createScene();
+            this.run();
+        }
     }
 
     createScene() {
@@ -81,10 +87,6 @@ class NateHub extends HTMLElement
     }
 
     run() {
-        if (document.activeElement.tagName === 'BODY') {
-            this.canvas.focus();
-        }
-
         this.engine.runRenderLoop( () => {
             this.scene.render();
         } );
@@ -93,5 +95,9 @@ class NateHub extends HTMLElement
 }
 
 customElements.define( 'nate-hub', NateHub );
-
 document.body.innerHTML = '<nate-hub></nate-hub>';
+
+// For mocha tests via nodejs
+if ( module?.exports ) {
+    module.exports.NateHub = NateHub;
+}
