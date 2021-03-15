@@ -5,6 +5,7 @@ import PlayerInput from './playerInput';
 import './style.scss';
 
 import profilePhoto from './nate-blair_web-developer.jpg';
+import iconGithub from './icon-github.png';
 import iconBehance from './icon-behance.png';
 import iconInstagram from './icon-instagram.png';
 import iconLinkedin from './icon-linkedin.png';
@@ -73,22 +74,28 @@ class NateHub extends HTMLElement
 				url  : 'https://www.linkedin.com/in/nateplusplus/'
 			},
 			{
+				name  : 'github',
+				label : "GitHub:      @nateplusplus",
+				image : iconGithub,
+				url  : 'https://www.github.com/nateplusplus/'
+			},
+			{
 				name: 'behance',
 				label: "Behance:   behance.net/nateplusplus",
 				image: iconBehance,
-				url  : 'https://www.linkedin.com/in/nateplusplus/'
+				url  : 'https://www.behance.net/nateplusplus/'
 			},
 			{
 				name: 'instagram',
 				label: "Instagram: @nateplusplus",
 				image: iconInstagram,
-				url  : 'https://www.linkedin.com/in/nateplusplus/'
+				url  : 'https://www.instagram.com/nateplusplus/'
 			},
 			{
 				name: 'twitter',
 				label: "Twitter:      @nateplusplus",
 				image: iconTwitter,
-				url  : 'https://www.linkedin.com/in/nateplusplus/'
+				url  : 'https://www.twitter.com/nateplusplus/'
 			}
 		];
 
@@ -132,12 +139,9 @@ class NateHub extends HTMLElement
 		});
 
 		socialLink.getMesh().actionManager = new BABYLON.ActionManager( this.scene );
-
 		socialLink.getMesh().actionManager.registerAction(
 			new BABYLON.ExecuteCodeAction(
-				{
-					trigger: BABYLON.ActionManager.OnPickTrigger,
-				},
+				BABYLON.ActionManager.OnPickTrigger,
 				function() {
 					console.log( `Hello ${name}` );
 					window.open( url );
@@ -154,6 +158,17 @@ class NateHub extends HTMLElement
 		icon.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
 		icon.position = new BABYLON.Vector3( 2, 0.1, zPosition + 1 );
 		icon.material = material;
+
+		icon.actionManager = new BABYLON.ActionManager( this.scene );
+		icon.actionManager.registerAction(
+			new BABYLON.ExecuteCodeAction(
+				BABYLON.ActionManager.OnPickTrigger,
+				function() {
+					console.log( `Hello ${name}` );
+					window.open( url );
+				}
+			)
+		);
 	}
 
 	createCamera( index ) {
