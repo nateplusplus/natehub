@@ -4,6 +4,12 @@ import 'meshwriter/dist/meshwriter.min.js';
 import PlayerInput from './playerInput';
 import './style.scss';
 
+import profilePhoto from './nate-blair_web-developer.jpg';
+import iconBehance from './icon-behance.png';
+import iconInstagram from './icon-instagram.png';
+import iconLinkedin from './icon-linkedin.png';
+import iconTwitter from './icon-twitter.png';
+
 // TODO: Put this in an env variable for use with webpack and stuff
 const build = 'alpha';
 
@@ -44,7 +50,7 @@ class NateHub extends HTMLElement
 		this.home = BABYLON.Mesh.CreateSphere( 'Home', 16, 0.1, this.scene );
 		this.home.position = new BABYLON.Vector3( 10, -1, -15 );
 
-		let Writer = MeshWriter( this.scene, { scale: 1 } );
+		const Writer = MeshWriter( this.scene, { scale: 1 } );
 		this.nateHubText = new Writer( "NATEHUB", {
 			"anchor": "center",
 			"font-family": "Helvetica",
@@ -59,57 +65,44 @@ class NateHub extends HTMLElement
 		});
 		this.nateHubText.getMesh().rotation = new BABYLON.Vector3( Math.PI / -2, 0, 0 );
 
-		this.linkedin = new Writer( "LinkedIn:    linkedin.com/in/nateplusplus", {
-			"anchor": "left",
-			"font-family": "Helvetica",
-			"letter-height": 2,
-			"letter-thickness": .25,
-			"color": "#1C3870",
-			"position": {
-				"x": 5,
-				"y": .2,
-				"z": -18
+		const socialLinks = [
+			{
+				name  : 'linkedin',
+				label : "LinkedIn:    linkedin.com/in/nateplusplus",
+				image : iconLinkedin,
+				url  : 'https://www.linkedin.com/in/nateplusplus/'
+			},
+			{
+				name: 'behance',
+				label: "Behance:   behance.net/nateplusplus",
+				image: iconBehance,
+				url  : 'https://www.linkedin.com/in/nateplusplus/'
+			},
+			{
+				name: 'instagram',
+				label: "Instagram: @nateplusplus",
+				image: iconInstagram,
+				url  : 'https://www.linkedin.com/in/nateplusplus/'
+			},
+			{
+				name: 'twitter',
+				label: "Twitter:      @nateplusplus",
+				image: iconTwitter,
+				url  : 'https://www.linkedin.com/in/nateplusplus/'
 			}
-		});
-		this.liIcon = BABYLON.MeshBuilder.CreatePlane( "liIcon", { size: 2 }, this.scene );
-		this.liIcon.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
-		this.liIcon.position = new BABYLON.Vector3( 2, 0.1, -17 );
+		];
 
-		this.instagram = new Writer( "Instagram: @nateplusplus", {
-			"anchor": "left",
-			"font-family": "Helvetica",
-			"letter-height": 2,
-			"letter-thickness": .25,
-			"color": "#1C3870",
-			"position": {
-				"x": 5,
-				"y": .2,
-				"z": -23
-			}
+		socialLinks.forEach( ( data, index ) => {
+			this.createSocialLink( data.name, data.label, data.image, data.url, index );
 		});
-		this.istaIcon = BABYLON.MeshBuilder.CreatePlane( "instaIcon", { size: 2 }, this.scene );
-		this.istaIcon.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
-		this.istaIcon.position = new BABYLON.Vector3( 2, 0.1, -22 );
 
-		this.twitter = new Writer( "Twitter:      @nateplusplus", {
-			"anchor": "left",
-			"font-family": "Helvetica",
-			"letter-height": 2,
-			"letter-thickness": .25,
-			"color": "#1C3870",
-			"position": {
-				"x": 5,
-				"y": .2,
-				"z": -28
-			}
-		});
-		this.twIcon = BABYLON.MeshBuilder.CreatePlane( "twIcon", { size: 2 }, this.scene );
-		this.twIcon.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
-		this.twIcon.position = new BABYLON.Vector3( 2, 0.1, -27 );
+		const photoMaterial          = new BABYLON.StandardMaterial( 'photo' );
+		photoMaterial.diffuseTexture = new BABYLON.Texture( profilePhoto, this.scene );
 
 		this.photo = BABYLON.MeshBuilder.CreatePlane( "photo", { size: 25 }, this.scene );
 		this.photo.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
 		this.photo.position = new BABYLON.Vector3( -20, 0.1, -26 );
+		this.photo.material = photoMaterial;
 
 		if ( build === 'beta' ) {
 			this.player = BABYLON.Mesh.CreateSphere( "Player", 32, 2, this.scene );
@@ -119,6 +112,48 @@ class NateHub extends HTMLElement
 		} else {
 			this.createCamera(2);
 		}
+	}
+
+	createSocialLink( name, label, image, url, index ) {
+		const zPosition = -18 - ( index * 5 );
+
+		const Writer = MeshWriter( this.scene, { scale: 1 } );
+		const socialLink = new Writer( label, {
+			"anchor": "left",
+			"font-family": "Helvetica",
+			"letter-height": 2,
+			"letter-thickness": .25,
+			"color": "#1C3870",
+			"position": {
+				"x": 5,
+				"y": .2,
+				"z": zPosition
+			}
+		});
+
+		socialLink.getMesh().actionManager = new BABYLON.ActionManager( this.scene );
+
+		socialLink.getMesh().actionManager.registerAction(
+			new BABYLON.ExecuteCodeAction(
+				{
+					trigger: BABYLON.ActionManager.OnPickTrigger,
+				},
+				function() {
+					console.log( `Hello ${name}` );
+					window.open( url );
+				}
+			)
+		);
+
+		const material          = new BABYLON.StandardMaterial( `${name}Material` );
+		material.diffuseTexture = new BABYLON.Texture( image, this.scene );
+		material.opacityTexture = new BABYLON.Texture( image, this.scene );
+		material.hasAlpha       = true;
+
+		const icon    = BABYLON.MeshBuilder.CreatePlane( `${name}Icon`, { size: 2 }, this.scene );
+		icon.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
+		icon.position = new BABYLON.Vector3( 2, 0.1, zPosition + 1 );
+		icon.material = material;
 	}
 
 	createCamera( index ) {
