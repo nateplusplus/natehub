@@ -123,6 +123,12 @@ class NateHub extends HTMLElement
 
 	createSocialLink( name, label, image, url, index ) {
 		const zPosition = -18 - ( index * 5 );
+		const openLink  = new BABYLON.ExecuteCodeAction(
+			BABYLON.ActionManager.OnPickTrigger,
+			function() {
+				window.open( url );
+			}
+		)
 
 		const Writer = MeshWriter( this.scene, { scale: 1 } );
 		const socialLink = new Writer( label, {
@@ -138,16 +144,16 @@ class NateHub extends HTMLElement
 			}
 		});
 
-		socialLink.getMesh().actionManager = new BABYLON.ActionManager( this.scene );
-		socialLink.getMesh().actionManager.registerAction(
-			new BABYLON.ExecuteCodeAction(
-				BABYLON.ActionManager.OnPickTrigger,
-				function() {
-					console.log( `Hello ${name}` );
-					window.open( url );
-				}
-			)
-		);
+		const width  = socialLink.getMesh()._boundingInfo.boundingBox.maximum.x + 1;
+		const height = socialLink.getMesh()._boundingInfo.boundingBox.maximum.z + 1;
+
+		const clickable      = BABYLON.MeshBuilder.CreatePlane( `${name}Box`, { width, height }, this.scene );
+		clickable.position   = socialLink.getMesh()._boundingInfo.boundingBox.centerWorld;
+		clickable.rotation   = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
+		clickable.visibility = 0;
+
+		clickable.actionManager = new BABYLON.ActionManager( this.scene );
+		clickable.actionManager.registerAction( openLink );
 
 		const material          = new BABYLON.StandardMaterial( `${name}Material` );
 		material.diffuseTexture = new BABYLON.Texture( image, this.scene );
@@ -160,15 +166,8 @@ class NateHub extends HTMLElement
 		icon.material = material;
 
 		icon.actionManager = new BABYLON.ActionManager( this.scene );
-		icon.actionManager.registerAction(
-			new BABYLON.ExecuteCodeAction(
-				BABYLON.ActionManager.OnPickTrigger,
-				function() {
-					console.log( `Hello ${name}` );
-					window.open( url );
-				}
-			)
-		);
+		icon.actionManager.registerAction( openLink );
+
 	}
 
 	createCamera( index ) {
@@ -194,9 +193,9 @@ class NateHub extends HTMLElement
 					this.scene,
 					this.home
 				);
-				this.camera.heightOffset = 35;
+				this.camera.heightOffset = 40;
 				this.camera.radius = 70;
-				this.camera.rotationOffset = 150;
+				this.camera.rotationOffset = 155;
 				this.camera.attachControl( this.engine._renderingCanvas, true );
 			default:
 				this.camera = new BABYLON.FreeCamera(
