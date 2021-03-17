@@ -37,6 +37,11 @@ class NateHub extends HTMLElement
 		this.scene = new BABYLON.Scene( this.engine );
 		// 252, 205, 224
 		this.scene.clearColor = new BABYLON.Color3( 0.98, .8, 0.88 );
+		this.scene.fogMode    = BABYLON.Scene.FOGMODE_LINEAR;
+		this.scene.fogColor   = new BABYLON.Color3( 0.98, .8, 0.88 );
+		this.scene.fogDensity = 0.01;
+		this.scene.fogStart   = 100;
+		this.scene.fogEnd     = 300;
 
 		this.light = new BABYLON.HemisphericLight( "light", new BABYLON.Vector3( -100, 200, 100 ), this.scene );
 		this.light.intensity = .5;
@@ -167,7 +172,6 @@ class NateHub extends HTMLElement
 
 		icon.actionManager = new BABYLON.ActionManager( this.scene );
 		icon.actionManager.registerAction( openLink );
-
 	}
 
 	createCamera( index ) {
