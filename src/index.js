@@ -51,9 +51,9 @@ class NateHub extends HTMLElement
 		this.ground.material = groundMat;
 
 		let homePosition  = new BABYLON.Vector3( 0, -1, -10 );
-		let textPosition  = new BABYLON.Vector3( -15, 0.2, 30 );
-		let textRotation  = new BABYLON.Vector3( Math.PI / -2, .35, 0 );
-		let photoPosition = new BABYLON.Vector3( -30, 0.1, -6 );
+		let textPosition  = new BABYLON.Vector3( -10, 0.2, 15 );
+		let textRotation  = new BABYLON.Vector3( Math.PI / -2, .3, 0 );
+		let photoPosition = new BABYLON.Vector3( -30, 0.1, -26 );
 		let photoRotation = new BABYLON.Vector3( Math.PI / 2, .3, 0 );
 		let cameraRadius  = 90;
 		let cameraHeight  = 55;
