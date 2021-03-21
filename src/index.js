@@ -11,9 +11,6 @@ import iconInstagram from './icon-instagram.png';
 import iconLinkedin from './icon-linkedin.png';
 import iconTwitter from './icon-twitter.png';
 
-// TODO: Put this in an env variable for use with webpack and stuff
-const build = 'alpha';
-
 class NateHub extends HTMLElement
 {
 	connectedCallback() {
@@ -53,23 +50,37 @@ class NateHub extends HTMLElement
 		groundMat.diffuseColor = new BABYLON.Color3( 96/255, 135/255, 192/255 );
 		this.ground.material = groundMat;
 
+		let homePosition  = new BABYLON.Vector3( 0, -1, -10 );
+		let textPosition  = new BABYLON.Vector3( -15, 0.2, 30 );
+		let textRotation  = new BABYLON.Vector3( Math.PI / -2, .35, 0 );
+		let photoPosition = new BABYLON.Vector3( -30, 0.1, -6 );
+		let photoRotation = new BABYLON.Vector3( Math.PI / 2, .3, 0 );
+		let cameraRadius  = 90;
+		let cameraHeight  = 55;
+		if ( this.getBreakpoint() === 'lg' ) {
+			homePosition  = new BABYLON.Vector3( 10, -1, -15 );
+			textPosition  = new BABYLON.Vector3( 0, 0.2, 0 );
+			textRotation  = new BABYLON.Vector3( Math.PI / -2, 0, 0 );
+			photoPosition = new BABYLON.Vector3( -20, 0.1, -26 );
+			photoRotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
+			cameraRadius  = 70;
+			cameraHeight  = 40;
+		}
+
 		this.home = BABYLON.Mesh.CreateSphere( 'Home', 16, 0.1, this.scene );
-		this.home.position = new BABYLON.Vector3( 10, -1, -15 );
+		this.home.position = homePosition;
 
 		const Writer = MeshWriter( this.scene, { scale: 1 } );
+
 		this.nateHubText = new Writer( "NATEHUB", {
 			"anchor": "center",
 			"font-family": "Helvetica",
 			"letter-height": 15,
 			"letter-thickness": 2.3,
 			"color": "#1C3870",
-			"position": {
-				"x": 0,
-				"y": 0.2,
-				"z": 0
-			}
+			"position": textPosition
 		});
-		this.nateHubText.getMesh().rotation = new BABYLON.Vector3( Math.PI / -2, 0, 0 );
+		this.nateHubText.getMesh().rotation = textRotation;
 
 		const socialLinks = [
 			{
@@ -112,18 +123,20 @@ class NateHub extends HTMLElement
 		photoMaterial.diffuseTexture = new BABYLON.Texture( profilePhoto, this.scene );
 
 		this.photo = BABYLON.MeshBuilder.CreatePlane( "photo", { size: 25 }, this.scene );
-		this.photo.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
-		this.photo.position = new BABYLON.Vector3( -20, 0.1, -26 );
+		this.photo.rotation = photoRotation;
+		this.photo.position = photoPosition;
 		this.photo.material = photoMaterial;
 
-		if ( build === 'beta' ) {
-			this.player = BABYLON.Mesh.CreateSphere( "Player", 32, 2, this.scene );
-			this.player.position = new BABYLON.Vector3( 0, 0, -10 );
-			this.createCamera( 1 );
-			this.input = new PlayerInput( this.scene );
-		} else {
-			this.createCamera(2);
-		}
+		this.camera = new BABYLON.FollowCamera(
+			'followCam',
+			new BABYLON.Vector3( 0, 0, 0 ),
+			this.scene,
+			this.home
+		);
+		this.camera.heightOffset = cameraHeight;
+		this.camera.radius = cameraRadius;
+		this.camera.rotationOffset = 155;
+		this.camera.attachControl( this.engine._renderingCanvas, true );
 	}
 
 	createSocialLink( name, label, image, url, index ) {
@@ -135,6 +148,11 @@ class NateHub extends HTMLElement
 			}
 		)
 
+		let xPosition = -5;
+		if ( this.getBreakpoint() === 'lg' ) {
+			xPosition = 5;
+		}
+
 		const Writer = MeshWriter( this.scene, { scale: 1 } );
 		const socialLink = new Writer( label, {
 			"anchor": "left",
@@ -143,7 +161,7 @@ class NateHub extends HTMLElement
 			"letter-thickness": .25,
 			"color": "#1C3870",
 			"position": {
-				"x": 5,
+				"x": xPosition,
 				"y": .2,
 				"z": zPosition
 			}
@@ -167,54 +185,29 @@ class NateHub extends HTMLElement
 
 		const icon    = BABYLON.MeshBuilder.CreatePlane( `${name}Icon`, { size: 2 }, this.scene );
 		icon.rotation = new BABYLON.Vector3( Math.PI / 2, 0, 0 );
-		icon.position = new BABYLON.Vector3( 2, 0.1, zPosition + 1 );
+		icon.position = new BABYLON.Vector3( xPosition - 3, 0.1, zPosition + 1 );
 		icon.material = material;
 
 		icon.actionManager = new BABYLON.ActionManager( this.scene );
 		icon.actionManager.registerAction( openLink );
 	}
 
-	createCamera( index ) {
-		index = index || 0;
-
-		switch ( index ) {
-			case 1 : 
-				this.camera = new BABYLON.FollowCamera(
-					'followCam',
-					new BABYLON.Vector3( 0, 0, 0 ),
-					this.scene,
-					this.player
-				);
-				this.camera.heightOffset = 50;
-				this.camera.radius = 50;
-				this.camera.rotationOffset = 180;
-				this.camera.attachControl( this.engine._renderingCanvas, true );
-				break;
-			case 2 : 
-				this.camera = new BABYLON.FollowCamera(
-					'followCam',
-					new BABYLON.Vector3( 0, 0, 0 ),
-					this.scene,
-					this.home
-				);
-				this.camera.heightOffset = 40;
-				this.camera.radius = 70;
-				this.camera.rotationOffset = 155;
-				this.camera.attachControl( this.engine._renderingCanvas, true );
-			default:
-				this.camera = new BABYLON.FreeCamera(
-					'camera1',
-					new BABYLON.Vector3( 30, 30, -50 ),
-					this.scene
-				);
-				this.camera.setTarget( BABYLON.Vector3.Zero() );
-		}
-	}
-
 	run() {
 		this.engine.runRenderLoop( () => {
 			this.scene.render();
 		} );
+	}
+
+	getBreakpoint() {
+		let breakpoint = 'sm';
+		if ( window.innerWidth >= 787 ) {
+			breakpoint = 'md';
+		}
+		if ( window.innerWidth >= 1024 ) {
+			breakpoint = 'lg';
+		}
+
+		return breakpoint;
 	}
 }
 
