@@ -1,31 +1,14 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.js');
 
-module.exports = {
+module.exports = merge(common, {
     mode: 'development',
-    entry: {
-        index: './src/index.js'
-    },
     devtool: 'inline-source-map',
     devServer: {
         contentBase: './dist',
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            title: 'NateHub',
-        }),
-    ],
-    output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist'),
-        clean: true,
-    },
     module: {
         rules: [
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader'],
-            },
             {
                 test: /\.s[ac]ss$/i,
                 use: [
@@ -43,4 +26,4 @@ module.exports = {
             },
         ],
     },
-};
+});
