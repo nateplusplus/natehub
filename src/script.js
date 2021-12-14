@@ -5,16 +5,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as dat from 'lil-gui'
 import * as TWEEN from '@tweenjs/tween.js'
 
-// const toggle = document.querySelector( '.site-nav__toggle' )
-// toggle.addEventListener( 'click', ( event ) => {
-//     const menu = document.querySelector( '.site-nav' )
-//     menu.classList.toggle( 'collapse' )
-
-//     if ( ! menu.classList.contains( 'collapse' ) ) {
-//         menu.querySelector('li a').focus()
-//     }
-// } )
-
 /**
  * Base
  */
@@ -23,6 +13,18 @@ import * as TWEEN from '@tweenjs/tween.js'
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
+
+const toggle = document.querySelector( '.site-nav__toggle' )
+toggle.addEventListener( 'click', ( event ) => {
+    event.preventDefault()
+
+    const menu = document.querySelector( '.site-nav__list' )
+
+    if ( menu.getBoundingClientRect().left >= 0 ) {
+        canvas.setAttribute( 'tabindex', -1 )
+        canvas.focus()
+    }
+} )
 
 // Scene
 const scene = new THREE.Scene()
