@@ -17,13 +17,14 @@ body {
 }
 
 
-
+/* NAVIGATION */
 
 .site-nav {
     width: 40px;
     height: 40px;
     display: block;
     position: relative;
+    z-index: 10;
 }
 
 .site-nav__list, .intro {
@@ -112,4 +113,39 @@ body {
 }
 .site-nav:focus-within .site-nav__toggle::after {
     transform: rotate(-45deg) translate(2px, -2px);
+}
+
+
+/* Modal */
+.modal {
+    clip-path: polygon( 0 50%, 100% 50%, 100% 50%, 0 50% );
+    transition: clip-path 400ms;
+    position: fixed;
+    height: 80%;
+    width: 90%;
+    background: rgba( 0, 0, 0, .6 );
+    color: rgb(233, 233, 233);
+    left: 5%;
+    top: 10%;
+    padding: 20px;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.modal:focus,
+.modal:focus-within {
+    clip-path: polygon( 0 0, 100% 0, 100% 100%, 0 100% );
+}
+
+.modal__close {
+    background: 0;
+    border-radius: 50%;
+    font-size: 2em;
+    color: white;
+    border: none;
+    float: right;
+}
+
+.modal h2 {
+    margin-bottom: 1em;
 }
