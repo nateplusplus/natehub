@@ -9,7 +9,7 @@ import * as TWEEN from '@tweenjs/tween.js'
  * Base
  */
 // Debug
-// const gui = new dat.GUI()
+const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -77,6 +77,38 @@ const hemisphereLight = new THREE.HemisphereLight( '#ffb184', '#03045e', .5 )
 const hemisphereLightHelper = new THREE.HemisphereLightHelper( hemisphereLight )
 scene.add(hemisphereLightHelper)
 scene.add(hemisphereLight)
+
+
+/**
+ * Computer screens
+ */
+const monitorScreen = new THREE.Mesh(
+    new THREE.BoxBufferGeometry( 2, 2, 0.01 ),
+    new THREE.MeshStandardMaterial(
+        {
+            emissive: new THREE.Color( '#fff' ),
+        }
+    )
+)
+monitorScreen.position.set( 9.89, 135.09, -15.367 )
+monitorScreen.rotation.y = -0.1025
+monitorScreen.scale.set( 1.54, 0.95, 1 )
+scene.add( monitorScreen )
+
+const officeTarget = new THREE.Object3D()
+officeTarget.position.set( 6.5, 133, 16 )
+scene.add(officeTarget)
+
+const monitorLight = new THREE.DirectionalLight('#fff', 0.5)
+monitorLight.position.set( 9.89, 135.09, -15.367 )
+monitorLight.target = officeTarget
+
+// gui.add( monitorLight, 'intensity', 0, 1, .001 )
+
+scene.add( monitorLight )
+
+const helper = new THREE.DirectionalLightHelper( monitorLight, 5 );
+scene.add( helper );
 
 /**
  * Models

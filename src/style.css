@@ -66,6 +66,15 @@ body {
     color: #fff;
 }
 
+.site-nav__list a:target {
+    outline: red dashed thin;
+    /* content: '&rsaquo;';
+    display: block;
+    position: absolute;
+    left: -10px;
+    color: #ffffff; */
+}
+
 .intro {
     padding: 0 8px;
     left: 0;
@@ -130,6 +139,11 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-sizing: border-box;
+}
+
+.modal p {
+    letter-spacing: 1px;
+    line-height: 1.5;
 }
 
 .modal:focus,
