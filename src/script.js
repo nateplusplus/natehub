@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as dat from 'lil-gui'
 import * as TWEEN from '@tweenjs/tween.js'
+import { SpotLightHelper } from 'three'
 
 /**
  * Base
@@ -90,25 +91,20 @@ const monitorScreen = new THREE.Mesh(
         }
     )
 )
-monitorScreen.position.set( 9.89, 135.09, -15.367 )
+monitorScreen.position.set( 9.89, 135.09, -15.36 )
 monitorScreen.rotation.y = -0.1025
 monitorScreen.scale.set( 1.54, 0.95, 1 )
 scene.add( monitorScreen )
 
 const officeTarget = new THREE.Object3D()
-officeTarget.position.set( 6.5, 133, 16 )
+officeTarget.position.set( 3.5, 133, 20 )
 scene.add(officeTarget)
 
-const monitorLight = new THREE.DirectionalLight('#fff', 0.5)
+const monitorLight = new THREE.SpotLight( '#fff', 0.6, 10, Math.PI * 0.5, 0.2 )
 monitorLight.position.set( 9.89, 135.09, -15.367 )
 monitorLight.target = officeTarget
 
-// gui.add( monitorLight, 'intensity', 0, 1, .001 )
-
 scene.add( monitorLight )
-
-const helper = new THREE.DirectionalLightHelper( monitorLight, 5 );
-scene.add( helper );
 
 /**
  * Models
