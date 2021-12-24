@@ -1,6 +1,7 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as dat from 'lil-gui'
 import * as TWEEN from '@tweenjs/tween.js'
@@ -166,23 +167,31 @@ function getHashPosition() {
     return position
 }
 
-let cameraPosition = getHashPosition()
+// let cameraPosition = getHashPosition()
+let cameraPosition = new THREE.Vector3(0, 0, 300)
+
 
 /**
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 2000)
+const camera = new THREE.PerspectiveCamera(10, sizes.width / sizes.height, 0.1, 2000)
 camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 scene.add(camera)
 
 
 // Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+// let controls = new OrbitControls(camera, canvas)
+// controls.enableDamping = true
 
 let cameraTarget = getHashTarget();
-controls.target = new THREE.Vector3( cameraTarget.x, cameraTarget.y, cameraTarget.z )
+// controls.target = new THREE.Vector3( cameraTarget.x, cameraTarget.y, cameraTarget.z )
+
+let controls = new FlyControls( camera, canvas )
+controls.movementSpeed = 100;
+controls.rollSpeed = Math.PI / 24;
+controls.autoForward = false;
+controls.dragToLook = true;
 
 /**
  * Renderer
@@ -194,19 +203,22 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-window.addEventListener( 'hashchange', ( event ) => {
-    event.preventDefault()
-    cameraTarget   = getHashTarget()
-    cameraPosition = getHashPosition()
+// window.addEventListener( 'hashchange', ( event ) => {
+//     event.preventDefault()
+//     cameraTarget   = getHashTarget()
+//     cameraPosition = getHashPosition()
 
-    const targetTween = new TWEEN.Tween( controls.target ).to( cameraTarget, 1400 )
-    targetTween.easing(TWEEN.Easing.Quadratic.InOut)
-    targetTween.start()
+//     controls = new OrbitControls(camera, canvas)
+//     controls.enableDamping = true
 
-    const positionTween = new TWEEN.Tween( camera.position ).to( cameraPosition, 1400 )
-    positionTween.easing(TWEEN.Easing.Quadratic.InOut)
-    positionTween.start()
-} )
+//     const targetTween = new TWEEN.Tween( new THREE.Vector3( 0, 0, 50 ) ).to( cameraTarget, 1400 )
+//     targetTween.easing(TWEEN.Easing.Quadratic.InOut)
+//     targetTween.start()
+
+//     const positionTween = new TWEEN.Tween( camera.position ).to( cameraPosition, 1400 )
+//     positionTween.easing(TWEEN.Easing.Quadratic.InOut)
+//     positionTween.start()
+// } )
 
 canvas.addEventListener( 'click', ( event ) => {
     const intersects = mouseRaycaster.intersectObjects( interactiveElements )
@@ -224,7 +236,8 @@ canvas.addEventListener( 'click', ( event ) => {
 const tick = ( time ) =>
 {
     // Update controls
-    controls.update()
+    controls.update( 0.01 )
+    console.log( camera.position )
 
     mouseRaycaster.setFromCamera( mouse, camera )
 
