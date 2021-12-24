@@ -4,13 +4,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as dat from 'lil-gui'
 import * as TWEEN from '@tweenjs/tween.js'
-import { SpotLightHelper } from 'three'
 
 /**
  * Base
  */
 // Debug
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -42,22 +41,6 @@ const pointsOfInterest = {
     }
 }
 
-/**
- * Focal Point for camera
- */
-// const focalPoint = new THREE.Mesh(
-//     new THREE.SphereBufferGeometry( 2, 20, 20 ),
-//     new THREE.MeshBasicMaterial( {
-//         color: 0xff0000,
-//     } )
-// )
-
-// focalPoint.position.x =  pointsOfInterest.about.x
-// focalPoint.position.y =  pointsOfInterest.about.y
-// focalPoint.position.z =  pointsOfInterest.about.z
-
-// scene.add(focalPoint)
-
 
 /**
  * Lights
@@ -65,13 +48,6 @@ const pointsOfInterest = {
 const directionalLight = new THREE.DirectionalLight('#ffffff', 1)
 directionalLight.position.set(27, 112, - 43)
 
-// const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight, 30 )
-// scene.add( directionalLightHelper )
-
-// const lightGui = gui.addFolder( 'Directional Light' )
-// lightGui.add( directionalLight.position, 'x' )
-// lightGui.add( directionalLight.position, 'y' )
-// lightGui.add( directionalLight.position, 'z' )
 scene.add(directionalLight)
 
 const hemisphereLight = new THREE.HemisphereLight( '#ffb184', '#03045e', .5 )
@@ -79,6 +55,7 @@ const hemisphereLightHelper = new THREE.HemisphereLightHelper( hemisphereLight )
 scene.add(hemisphereLightHelper)
 scene.add(hemisphereLight)
 
+let interactiveElements = []
 
 /**
  * Computer screens
@@ -94,6 +71,10 @@ const monitorScreen = new THREE.Mesh(
 monitorScreen.position.set( 9.89, 135.09, -15.36 )
 monitorScreen.rotation.y = -0.1025
 monitorScreen.scale.set( 1.54, 0.95, 1 )
+monitorScreen.name = 'monitorScreen';
+
+interactiveElements.push( monitorScreen )
+
 scene.add( monitorScreen )
 
 const officeTarget = new THREE.Object3D()
@@ -105,6 +86,19 @@ monitorLight.position.set( 9.89, 135.09, -15.367 )
 monitorLight.target = officeTarget
 
 scene.add( monitorLight )
+
+
+/**
+ * Mouse
+ */
+const mouse = new THREE.Vector2()
+
+window.addEventListener('mousemove', (event) => {
+    mouse.x = event.clientX / sizes.width * 2 - 1
+    mouse.y = - (event.clientY / sizes.height) * 2 + 1
+})
+const mouseRaycaster = new THREE.Raycaster()
+
 
 /**
  * Models
@@ -126,8 +120,7 @@ gltfLoader.load(
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -159,8 +152,6 @@ function getHashTarget() {
     return targetPosition
 }
 
-let cameraTarget = getHashTarget();
-
 function getHashPosition() {
     let position
     const hash = window.location.hash
@@ -189,6 +180,8 @@ scene.add(camera)
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+
+let cameraTarget = getHashTarget();
 controls.target = new THREE.Vector3( cameraTarget.x, cameraTarget.y, cameraTarget.z )
 
 /**
@@ -215,6 +208,16 @@ window.addEventListener( 'hashchange', ( event ) => {
     positionTween.start()
 } )
 
+canvas.addEventListener( 'click', ( event ) => {
+    const intersects = mouseRaycaster.intersectObjects( interactiveElements )
+    if ( intersects.length > 0 && intersects[0].distance < 80 && intersects[0].object.name !== '' ) {
+        if ( intersects[0].object.name === 'monitorScreen' ) {
+            console.log( 'Bio' )
+            document.querySelector('.modal').focus()
+        }
+    }
+} )
+
 /**
  * Animate
  */
@@ -222,6 +225,8 @@ const tick = ( time ) =>
 {
     // Update controls
     controls.update()
+
+    mouseRaycaster.setFromCamera( mouse, camera )
 
     // Update tween
     TWEEN.update( time )
