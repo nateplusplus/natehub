@@ -1,8 +1,11 @@
-# Three.js Journey
+# NateHub
+
+My crazy website.
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
-Run this followed commands:
+
+Run these commands:
 
 ``` bash
 # Install dependencies (only the first time)
@@ -14,3 +17,8 @@ npm run dev
 # Build for production in the dist/ directory
 npm run build
 ```
+
+---
+
+Thanks to [Three.js Journey](https://threejs-journey.xyz/) for the 3D site design wisdom!
+
