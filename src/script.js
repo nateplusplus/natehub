@@ -58,7 +58,7 @@ scene.add(hemisphereLight)
 let interactiveElements = []
 
 /**
- * Computer screens
+ * Monitor Screen
  */
 const monitorScreen = new THREE.Mesh(
     new THREE.BoxBufferGeometry( 2, 2, 0.01 ),
@@ -89,6 +89,27 @@ scene.add( monitorLight )
 
 
 /**
+ * Laptop Screen
+ */
+const laptopScreen = new THREE.Mesh(
+    new THREE.BoxBufferGeometry( 2, 2, 0.01 ),
+    new THREE.MeshStandardMaterial(
+        {
+            emissive: new THREE.Color( '#fff' ),
+        }
+    )
+)
+laptopScreen.position.set( 6.885, 135.505, -14.986 )
+laptopScreen.rotation.y = Math.PI * .077
+laptopScreen.scale.set( 0.721, 0.514, 1 )
+laptopScreen.name = 'laptopScreen';
+
+interactiveElements.push( laptopScreen )
+
+scene.add( laptopScreen )
+
+
+/**
  * Mouse
  */
 const mouse = new THREE.Vector2()
@@ -98,6 +119,8 @@ window.addEventListener('mousemove', (event) => {
     mouse.y = - (event.clientY / sizes.height) * 2 + 1
 })
 const mouseRaycaster = new THREE.Raycaster()
+
+const interactiveDistance = 50
 
 
 /**
@@ -172,17 +195,25 @@ let cameraPosition = getHashPosition()
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 2000)
+const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 2000)
 camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 scene.add(camera)
 
 
-// Controls
+/**
+ * Controls
+ */
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
-let cameraTarget = getHashTarget();
-controls.target = new THREE.Vector3( cameraTarget.x, cameraTarget.y, cameraTarget.z )
+const cameraTarget = new THREE.Mesh( new THREE.BoxBufferGeometry( 1, 1, 1, 2, 2, 2 ) )
+const targetStart = getHashTarget();
+cameraTarget.position.set( targetStart.x, targetStart.y, targetStart.z )
+// scene.add( cameraTarget )
+
+controls.target = cameraTarget.position
+
+console.log( controls.target )
 
 /**
  * Renderer
@@ -196,25 +227,44 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 window.addEventListener( 'hashchange', ( event ) => {
     event.preventDefault()
-    cameraTarget   = getHashTarget()
-    cameraPosition = getHashPosition()
 
-    const targetTween = new TWEEN.Tween( controls.target ).to( cameraTarget, 1400 )
+    const targetTween = new TWEEN.Tween( cameraTarget.position ).to( getHashTarget(), 1400 )
     targetTween.easing(TWEEN.Easing.Quadratic.InOut)
     targetTween.start()
+
+    cameraPosition = getHashPosition()
 
     const positionTween = new TWEEN.Tween( camera.position ).to( cameraPosition, 1400 )
     positionTween.easing(TWEEN.Easing.Quadratic.InOut)
     positionTween.start()
 } )
 
+// Click interactions
 canvas.addEventListener( 'click', ( event ) => {
     const intersects = mouseRaycaster.intersectObjects( interactiveElements )
-    if ( intersects.length > 0 && intersects[0].distance < 80 && intersects[0].object.name !== '' ) {
-        if ( intersects[0].object.name === 'monitorScreen' ) {
-            console.log( 'Bio' )
+    if ( intersects.length > 0 && intersects[0].distance < interactiveDistance && intersects[0].object.name !== '' ) {
+        const bioToggles = [ 'monitorScreen', 'laptopScreen' ]
+        if (  bioToggles.indexOf( intersects[0].object.name ) > -1 ) {
             document.querySelector('.modal').focus()
         }
+    }
+} )
+
+// Modal close
+const modal = document.querySelector('.modal')
+modal.addEventListener( 'click', ( event ) => {
+    if ( event.target.classList.contains( 'modal__close' ) ) {
+        canvas.focus()
+    }
+} )
+
+// Cursor change on hover
+canvas.addEventListener( 'mousemove', ( event ) => {
+    const intersects = mouseRaycaster.intersectObjects( interactiveElements )
+    if ( intersects.length > 0 && intersects[0].distance < interactiveDistance && intersects[0].object.name !== '' ) {
+        canvas.style.cursor = 'pointer'
+    } else if ( canvas.style.cursor !== 'auto' ) {
+        canvas.style.cursor = 'auto'
     }
 } )
 
