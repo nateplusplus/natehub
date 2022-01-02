@@ -253,6 +253,7 @@ canvas.addEventListener( 'click', ( event ) => {
 // Modal close
 const modal = document.querySelector('.modal')
 modal.addEventListener( 'click', ( event ) => {
+    console.log( event.target.classList );
     if ( event.target.classList.contains( 'modal__close' ) ) {
         canvas.focus()
     }
