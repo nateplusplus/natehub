@@ -213,8 +213,6 @@ cameraTarget.position.set( targetStart.x, targetStart.y, targetStart.z )
 
 controls.target = cameraTarget.position
 
-console.log( controls.target )
-
 /**
  * Renderer
  */
@@ -239,21 +237,58 @@ window.addEventListener( 'hashchange', ( event ) => {
     positionTween.start()
 } )
 
+let mouseMove = false
+let mouseDown = false
+canvas.addEventListener( 'mousedown', ( event ) => {
+    mouseDown = true
+} )
+
+canvas.addEventListener( 'mousemove', ( event ) => {
+    if ( mouseDown ) {
+        mouseMove = true
+    }
+} )
+
 // Click interactions
-canvas.addEventListener( 'click', ( event ) => {
+canvas.addEventListener( 'mouseup', ( event ) => {
+    console.log( mouseMove );
     const intersects = mouseRaycaster.intersectObjects( interactiveElements )
     if ( intersects.length > 0 && intersects[0].distance < interactiveDistance && intersects[0].object.name !== '' ) {
         const bioToggles = [ 'monitorScreen', 'laptopScreen' ]
         if (  bioToggles.indexOf( intersects[0].object.name ) > -1 ) {
             document.querySelector('.modal').focus()
+        } else {
+            const focusOnObject = new TWEEN.Tween( controls.target ).to( intersects[0].object.position, 1400 )
+            focusOnObject.easing(TWEEN.Easing.Quadratic.InOut)
+            focusOnObject.start()
+
+            // const moveTowardObject = new TWEEN.Tween( camera.position ).to( intersects[0].object.position, 1400 )
+            // moveTowardObject.easing(TWEEN.Easing.Quadratic.InOut)
+            // moveTowardObject.start()
         }
+    } else if ( ! mouseMove ) {
+        let moveTarget = new THREE.Vector3();
+        mouseRaycaster.ray.at( 70, moveTarget );
+
+        const positionTween = new TWEEN.Tween( controls.target ).to( moveTarget, 1400 )
+        positionTween.easing(TWEEN.Easing.Quadratic.InOut)
+        positionTween.start()   
+
+        let moveCamera = new THREE.Vector3();
+        mouseRaycaster.ray.at( 50, moveCamera );
+
+        const cameraPosition = new TWEEN.Tween( camera.position ).to( moveCamera, 1400 )
+        cameraPosition.easing(TWEEN.Easing.Quadratic.InOut)
+        cameraPosition.start()
     }
+
+    mouseMove = false;
+    mouseDown = false;
 } )
 
 // Modal close
 const modal = document.querySelector('.modal')
 modal.addEventListener( 'click', ( event ) => {
-    console.log( event.target.classList );
     if ( event.target.classList.contains( 'modal__close' ) ) {
         canvas.focus()
     }
