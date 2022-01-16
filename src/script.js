@@ -1,7 +1,12 @@
 import './style.css'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import * as dat from 'lil-gui'
 import * as TWEEN from '@tweenjs/tween.js'
 
@@ -165,6 +170,10 @@ window.addEventListener('resize', () => {
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    composer.setSize(sizes.width, sizes.height)
+    composer.setPixelRatio( Math.min(window.devicePixelRatio, 2) )
+
+    effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight )
 })
 
 /**
@@ -321,6 +330,27 @@ canvas.addEventListener( 'mousemove', ( event ) => {
     }
 } )
 
+// Postprocessing
+
+const composer = new EffectComposer( renderer )
+
+const renderPass = new RenderPass( scene, camera )
+renderPass.antialias = true
+composer.addPass( renderPass )
+
+const outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera)
+console.log( outlinePass )
+outlinePass.pulsePeriod = 3
+outlinePass.edgeStrength = 4
+outlinePass.edgeGlow = 0.1
+outlinePass.visibleEdgeColor = new THREE.Color( '#3ec7ea' )
+outlinePass.selectedObjects = interactiveElements
+composer.addPass( outlinePass )
+
+const effectFXAA = new ShaderPass( FXAAShader )
+effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight )
+composer.addPass( effectFXAA )
+
 /**
  * Animate
  */
@@ -335,7 +365,8 @@ const tick = ( time ) =>
     TWEEN.update( time )
 
     // Render
-    renderer.render(scene, camera)
+    // renderer.render(scene, camera)
+    composer.render();
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
