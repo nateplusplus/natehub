@@ -5,6 +5,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as dat from 'lil-gui'
 import * as TWEEN from '@tweenjs/tween.js'
 
+function getPointInBetweenByLen(pointA, pointB, length) {
+    var dir = pointB.clone().sub(pointA).normalize().multiplyScalar(length);
+    return pointA.clone().add(dir);
+
+}
+
 /**
  * Base
  */
@@ -37,7 +43,7 @@ const pointsOfInterest = {
     },
     about : {
         target: new THREE.Vector3( 8, 134, -14 ),
-        position: new THREE.Vector3( 6.5, 133, 16 )
+        position: new THREE.Vector3( 6.5, 133, 15 )
     }
 }
 
@@ -109,6 +115,9 @@ interactiveElements.push( laptopScreen )
 scene.add( laptopScreen )
 
 
+let focusableObjects = interactiveElements;
+
+
 /**
  * Mouse
  */
@@ -132,6 +141,7 @@ gltfLoader.load(
     (gltf) =>
     {
         scene.add(gltf.scene)
+        focusableObjects = focusableObjects.concat( gltf.scene.children )
     }
 )
 
@@ -240,31 +250,38 @@ window.addEventListener( 'hashchange', ( event ) => {
 let mouseMove = false
 let mouseDown = false
 canvas.addEventListener( 'mousedown', ( event ) => {
-    mouseDown = true
+    mouseDown = event
 } )
 
 canvas.addEventListener( 'mousemove', ( event ) => {
     if ( mouseDown ) {
-        mouseMove = true
+        const differenceX = event.clientX - mouseDown.clientX;
+        const differenceY = event.clientY - mouseDown.clientY;
+
+        if ( Math.abs( differenceX ) > 1 || Math.abs( differenceY ) > 1 ) {
+            mouseMove = event
+        }
     }
 } )
 
 // Click interactions
 canvas.addEventListener( 'mouseup', ( event ) => {
-    console.log( mouseMove );
-    const intersects = mouseRaycaster.intersectObjects( interactiveElements )
+    const intersects = mouseRaycaster.intersectObjects( focusableObjects )
     if ( intersects.length > 0 && intersects[0].distance < interactiveDistance && intersects[0].object.name !== '' ) {
         const bioToggles = [ 'monitorScreen', 'laptopScreen' ]
         if (  bioToggles.indexOf( intersects[0].object.name ) > -1 ) {
             document.querySelector('.modal').focus()
-        } else {
-            const focusOnObject = new TWEEN.Tween( controls.target ).to( intersects[0].object.position, 1400 )
+        } else if ( ! mouseMove ) {
+            const focusOnObject = new TWEEN.Tween( controls.target ).to( intersects[0].point, 1400 )
             focusOnObject.easing(TWEEN.Easing.Quadratic.InOut)
             focusOnObject.start()
 
-            // const moveTowardObject = new TWEEN.Tween( camera.position ).to( intersects[0].object.position, 1400 )
-            // moveTowardObject.easing(TWEEN.Easing.Quadratic.InOut)
-            // moveTowardObject.start()
+            if ( intersects[0].distance > 20 ) {
+                const moveTo = getPointInBetweenByLen( camera.position, intersects[0].point, 10 )
+                const moveTowardObject = new TWEEN.Tween( camera.position ).to( moveTo, 1400 )
+                moveTowardObject.easing(TWEEN.Easing.Quadratic.InOut)
+                moveTowardObject.start()
+            }
         }
     } else if ( ! mouseMove ) {
         let moveTarget = new THREE.Vector3();
