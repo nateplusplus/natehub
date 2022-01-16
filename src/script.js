@@ -71,13 +71,21 @@ let interactiveElements = []
 /**
  * Monitor Screen
  */
+const textureLoader = new THREE.TextureLoader()
+
+const monitorColorTexture = textureLoader.load('coding-screen.png')
+const monitorAlphaTexture = textureLoader.load('coding-screen-alpha.png')
+
+const monitorMaterial = new THREE.MeshStandardMaterial({
+    map: monitorColorTexture,
+    emissive: new THREE.Color( '#fff' )
+})
+monitorMaterial.transparent = true
+monitorMaterial.alphaMap = monitorAlphaTexture
+
 const monitorScreen = new THREE.Mesh(
     new THREE.BoxBufferGeometry( 2, 2, 0.01 ),
-    new THREE.MeshStandardMaterial(
-        {
-            emissive: new THREE.Color( '#fff' ),
-        }
-    )
+    monitorMaterial
 )
 monitorScreen.position.set( 9.89, 135.09, -15.36 )
 monitorScreen.rotation.y = -0.1025
@@ -104,11 +112,7 @@ scene.add( monitorLight )
  */
 const laptopScreen = new THREE.Mesh(
     new THREE.BoxBufferGeometry( 2, 2, 0.01 ),
-    new THREE.MeshStandardMaterial(
-        {
-            emissive: new THREE.Color( '#fff' ),
-        }
-    )
+    monitorMaterial
 )
 laptopScreen.position.set( 6.885, 135.505, -14.986 )
 laptopScreen.rotation.y = Math.PI * .077

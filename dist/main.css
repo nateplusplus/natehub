@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 html,
@@ -118,23 +119,56 @@ body {
 
 /* Modal */
 .modal {
-    clip-path: polygon( 0 50%, 100% 50%, 100% 50%, 0 50% );
-    transition: clip-path 400ms;
-    position: fixed;
-    height: 80%;
-    width: 90%;
-    background: rgba( 0, 0, 0, .6 );
-    color: rgb(233, 233, 233);
-    left: 5%;
-    top: 10%;
-    padding: 20px;
-    border-radius: 8px;
+    background: rgba( 0, 0, 0, .7 );
     box-sizing: border-box;
+    border: 1px solid #333;
+    border-radius: 8px;
+    -webkit-box-shadow: inset 0px -32px 24px -15px rgba(0,0,0,0.85); 
+    box-shadow: inset 0px -32px 24px -15px rgba(0,0,0,0.85);
+    clip-path: polygon( 0 50%, 100% 50%, 100% 50%, 0 50% );
+    color: rgb(233, 233, 233);
+    height: 80%;
+    left: 10%;
+    position: fixed;
+    top: 10%;
+    transition: clip-path 400ms;
+    width: 80%;
+    font-size: 0.8rem;
+}
+
+@media (min-width: 768px) {
+    .modal {
+        font-size: 1rem;
+    }
+}
+
+.modal-content {
+    height: 80%;
+    overflow-y: auto;
+    margin-top: 15%;
+    padding: 20px 20px 40px;
+    width: 100%;
+    mask-image: linear-gradient(180deg, #000 90%, transparent);
+    -webkit-mask-image: linear-gradient(180deg, #000 90%, transparent);
+}
+
+@media (min-width: 768px) {
+    .modal-content {
+        margin-top: 0;
+        height: 95%;
+        padding: 60px;
+    }
 }
 
 .modal p {
     letter-spacing: 1px;
     line-height: 1.5;
+    margin-bottom: 1em;
+    -webkit-font-smoothing: antialiased
+}
+
+.modal p:last-child {
+    margin-bottom: 0;
 }
 
 .modal:focus,
@@ -144,16 +178,21 @@ body {
 
 .modal__close {
     background: 0;
-    border-radius: 50%;
-    font-size: 2em;
-    color: white;
     border: none;
-    float: right;
+    border-radius: 50%;
+    color: white;
     cursor: pointer;
+    font-size: 3em;
+    position: absolute;
+    right: 0.25em;
+    top: 0;
+    z-index: 100;
 }
 
 .modal h2 {
     margin-bottom: 1em;
+    font-size: 2em;
+    -webkit-font-smoothing: antialiased
 }
 
 /*# sourceMappingURL=main.css.map*/
