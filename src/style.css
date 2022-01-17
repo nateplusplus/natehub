@@ -8,6 +8,7 @@ html,
 body {
     overflow: hidden;
     font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
 }
 
 .webgl {
@@ -22,7 +23,7 @@ body {
 
 .site-nav {
     width: 40px;
-    height: 40px;
+    height: 100%;
     display: block;
     position: relative;
     z-index: 10;

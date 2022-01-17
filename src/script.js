@@ -74,14 +74,8 @@ let interactiveElements = []
 const textureLoader = new THREE.TextureLoader()
 
 const monitorColorTexture = textureLoader.load('coding-screen.png')
-const monitorAlphaTexture = textureLoader.load('coding-screen-alpha.png')
-
-const monitorMaterial = new THREE.MeshStandardMaterial({
-    map: monitorColorTexture,
-    emissive: new THREE.Color( '#fff' )
-})
-monitorMaterial.transparent = true
-monitorMaterial.alphaMap = monitorAlphaTexture
+const monitorMaterial = new THREE.MeshBasicMaterial()
+monitorMaterial.map = monitorColorTexture
 
 const monitorScreen = new THREE.Mesh(
     new THREE.BoxBufferGeometry( 2, 2, 0.01 ),
@@ -190,8 +184,12 @@ function getHashTarget() {
 
     if ( hash.length > 1 ) {
         const targetKey = hash.replace( '#', '' )
-        targetPosition = pointsOfInterestCopy[targetKey].target
-    } else {
+        if ( pointsOfInterestCopy.hasOwnProperty( targetKey ) ) {
+            targetPosition = pointsOfInterestCopy[targetKey].target
+        }
+    }
+
+    if ( ! targetPosition ) {
         targetPosition = pointsOfInterestCopy.start.target
     }
 
@@ -204,8 +202,12 @@ function getHashPosition() {
 
     if ( hash.length > 1 ) {
         const target = hash.replace( '#', '' )
-        position = pointsOfInterest[target].position
-    } else {
+        if ( pointsOfInterest.hasOwnProperty( target ) ) {
+            position = pointsOfInterest[target].position
+        }
+    }
+    
+    if ( ! position ) {
         position = pointsOfInterest.start.position
     }
 
@@ -343,7 +345,7 @@ renderPass.antialias = true
 composer.addPass( renderPass )
 
 const outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera)
-console.log( outlinePass )
+
 outlinePass.pulsePeriod = 3
 outlinePass.edgeStrength = 4
 outlinePass.edgeGlow = 0.1
