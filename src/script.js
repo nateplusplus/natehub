@@ -168,8 +168,6 @@ window.addEventListener('resize', () => {
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    composer.setSize(sizes.width, sizes.height)
-    composer.setPixelRatio( Math.min(window.devicePixelRatio, 2) )
 
     effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight )
 })
@@ -336,27 +334,6 @@ canvas.addEventListener( 'mousemove', ( event ) => {
     }
 } )
 
-// Postprocessing
-
-const composer = new EffectComposer( renderer )
-
-const renderPass = new RenderPass( scene, camera )
-renderPass.antialias = true
-composer.addPass( renderPass )
-
-const outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera)
-
-outlinePass.pulsePeriod = 3
-outlinePass.edgeStrength = 4
-outlinePass.edgeGlow = 0.1
-outlinePass.visibleEdgeColor = new THREE.Color( '#3ec7ea' )
-outlinePass.selectedObjects = interactiveElements
-composer.addPass( outlinePass )
-
-const effectFXAA = new ShaderPass( FXAAShader )
-effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight )
-composer.addPass( effectFXAA )
-
 /**
  * Animate
  */
@@ -371,8 +348,7 @@ const tick = ( time ) =>
     TWEEN.update( time )
 
     // Render
-    // renderer.render(scene, camera)
-    composer.render();
+    renderer.render(scene, camera)
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
