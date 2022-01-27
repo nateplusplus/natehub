@@ -2,11 +2,6 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import * as dat from 'lil-gui'
 import * as TWEEN from '@tweenjs/tween.js'
 
@@ -168,8 +163,6 @@ window.addEventListener('resize', () => {
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-    effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight )
 })
 
 /**
@@ -260,6 +253,8 @@ window.addEventListener( 'hashchange', ( event ) => {
     positionTween.start()
 } )
 
+let modalFocus = false;
+
 let mouseMove = false
 let mouseDown = false
 canvas.addEventListener( 'mousedown', ( event ) => {
@@ -279,7 +274,13 @@ canvas.addEventListener( 'mousemove', ( event ) => {
 
 // Click interactions
 canvas.addEventListener( 'mouseup', ( event ) => {
-    const intersects = mouseRaycaster.intersectObjects( focusableObjects )
+    const intersects = mouseRaycaster.intersectObjects( focusableObjects );
+
+    if ( modalFocus ) {
+        return;
+    }
+
+
     if ( intersects.length > 0 && intersects[0].distance < interactiveDistance && intersects[0].object.name !== '' ) {
         const bioToggles = [ 'monitorScreen', 'laptopScreen' ]
         if (  bioToggles.indexOf( intersects[0].object.name ) > -1 ) {
@@ -290,39 +291,56 @@ canvas.addEventListener( 'mouseup', ( event ) => {
             focusOnObject.start()
 
             if ( intersects[0].distance > 20 ) {
-                const moveTo = getPointInBetweenByLen( camera.position, intersects[0].point, 10 )
-                const moveTowardObject = new TWEEN.Tween( camera.position ).to( moveTo, 1400 )
-                moveTowardObject.easing(TWEEN.Easing.Quadratic.InOut)
-                moveTowardObject.start()
+                const moveTo = getPointInBetweenByLen( camera.position, intersects[0].point, 10 );
+                const moveTowardObject = new TWEEN.Tween( camera.position ).to( moveTo, 1400 );
+                moveTowardObject.easing(TWEEN.Easing.Quadratic.InOut);
+                moveTowardObject.start();
             }
         }
     } else if ( ! mouseMove ) {
         let moveTarget = new THREE.Vector3();
-        mouseRaycaster.ray.at( 70, moveTarget );
+        mouseRaycaster.ray.at( 200, moveTarget );
 
-        const positionTween = new TWEEN.Tween( controls.target ).to( moveTarget, 1400 )
-        positionTween.easing(TWEEN.Easing.Quadratic.InOut)
-        positionTween.start()   
+        const positionTween = new TWEEN.Tween( controls.target ).to( moveTarget, 1400 );
+        positionTween.easing(TWEEN.Easing.Quadratic.InOut);
+        positionTween.start();
 
         let moveCamera = new THREE.Vector3();
         mouseRaycaster.ray.at( 50, moveCamera );
 
-        const cameraPosition = new TWEEN.Tween( camera.position ).to( moveCamera, 1400 )
-        cameraPosition.easing(TWEEN.Easing.Quadratic.InOut)
-        cameraPosition.start()
+        const cameraPosition = new TWEEN.Tween( camera.position ).to( moveCamera, 1400 );
+        cameraPosition.easing(TWEEN.Easing.Quadratic.InOut);
+        cameraPosition.start();
     }
 
     mouseMove = false;
     mouseDown = false;
-} )
+} );
 
 // Modal close
-const modal = document.querySelector('.modal')
+const modal = document.querySelector('.modal');
 modal.addEventListener( 'click', ( event ) => {
     if ( event.target.classList.contains( 'modal__close' ) ) {
-        canvas.focus()
+        canvas.focus();
     }
-} )
+} );
+
+modal.addEventListener( 'focus', (event) => {
+    modalFocus = true;
+    modal.ariaHidden = false;
+
+    setTimeout( () => {
+        modal.classList.add('open');
+    }, 100 );
+} );
+
+modal.addEventListener( 'blur', (event) => {
+    modal.classList.remove('open');
+    setTimeout( () => {
+        modal.ariaHidden = true;
+        modalFocus = false;
+    }, 500 );
+} );
 
 // Cursor change on hover
 canvas.addEventListener( 'mousemove', ( event ) => {

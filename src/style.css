@@ -129,10 +129,10 @@ body {
     clip-path: polygon( 0 50%, 100% 50%, 100% 50%, 0 50% );
     color: rgb(233, 233, 233);
     height: 80%;
-    left: 10%;
     position: fixed;
+    left: 10%;
     top: 10%;
-    transition: clip-path 400ms;
+    transition: clip-path 400ms ease;
     width: 80%;
     font-size: 0.8rem;
 }
@@ -141,6 +141,14 @@ body {
     .modal {
         font-size: 1rem;
     }
+}
+
+.modal.open {
+    clip-path: polygon( 0 0, 100% 0, 100% 100%, 0 100% );
+}
+
+.modal[aria-hidden=true] {
+    left: -1000px;
 }
 
 .modal-content {
@@ -172,10 +180,6 @@ body {
     margin-bottom: 0;
 }
 
-.modal:focus,
-.modal:focus-within {
-    clip-path: polygon( 0 0, 100% 0, 100% 100%, 0 100% );
-}
 
 .modal__close {
     background: 0;
