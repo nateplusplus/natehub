@@ -298,15 +298,17 @@ canvas.addEventListener( 'mouseup', ( event ) => {
             }
         }
     } else if ( ! mouseMove ) {
+        const point = intersects.length > 0 ? intersects[0].distance : 200;
+
         let moveTarget = new THREE.Vector3();
-        mouseRaycaster.ray.at( 200, moveTarget );
+        mouseRaycaster.ray.at( point, moveTarget );
 
         const positionTween = new TWEEN.Tween( controls.target ).to( moveTarget, 1400 );
         positionTween.easing(TWEEN.Easing.Quadratic.InOut);
         positionTween.start();
 
         let moveCamera = new THREE.Vector3();
-        mouseRaycaster.ray.at( 50, moveCamera );
+        mouseRaycaster.ray.at( point / 2, moveCamera );
 
         const cameraPosition = new TWEEN.Tween( camera.position ).to( moveCamera, 1400 );
         cameraPosition.easing(TWEEN.Easing.Quadratic.InOut);
