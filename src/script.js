@@ -117,6 +117,57 @@ let focusableObjects = interactiveElements;
 
 
 /**
+ * Ground
+ */
+ const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(3000, 3000),
+    new THREE.MeshStandardMaterial({ color: '#aa7b7b' })
+)
+ground.rotation.x = - Math.PI / 2
+
+scene.add(ground)
+
+
+/**
+ * Trees
+ */
+
+// Material
+const treeSize = 30;
+const treesMaterial = new THREE.PointsMaterial({
+    size: treeSize,
+    sizeAttenuation: true
+})
+
+const treesGeometry = new THREE.BufferGeometry()
+const count = 800
+
+// Multiply by 3 because each position is composed of 3 values (x, y, z)
+const positions = new Float32Array( count * 3 )
+
+for ( let i = 0; i < count * 3; i++ ) {
+    let value = (Math.random() - 0.5) * 2000;
+
+    // keep the 2nd value of each set of 3 at 0 for a flat pattern (y axis)
+    if ( ( i + 2 ) % 3 === 0 ) {
+        value = treeSize / 6;
+    }
+    positions[i] = value;
+}
+
+treesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3)) // Create the Three.js BufferAttribute and specify that each information is composed of 3 values
+
+const trees = new THREE.Points(treesGeometry, treesMaterial)
+scene.add(trees)
+
+/**
+ * Fog
+ */
+ const fog = new THREE.Fog('#000000', 1, 1850)
+ scene.fog = fog
+
+
+/**
  * Mouse
  */
 const mouse = new THREE.Vector2()
@@ -211,7 +262,7 @@ let cameraPosition = getHashPosition()
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 2000)
+const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 3000)
 camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 scene.add(camera)
 
