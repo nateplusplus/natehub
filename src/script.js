@@ -132,7 +132,6 @@ scene.add(ground)
  * Trees
  */
 
-// Material
 const treeSize = 30;
 const treesMaterial = new THREE.PointsMaterial({
     size: treeSize,
@@ -160,10 +159,46 @@ treesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3)) 
 const trees = new THREE.Points(treesGeometry, treesMaterial)
 scene.add(trees)
 
+
+/**
+ * Stars
+ */
+
+const starsDistance = 1200;
+const starCount = 1000;
+const starsGeometry = new THREE.BufferGeometry();
+const starsPositions = new Float32Array( starCount * 3 );
+
+const starsMaterial = new THREE.PointsMaterial({
+    size: 3,
+    sizeAttenuation: true,
+    fog: false,
+})
+
+for ( let i = 0; i < starCount; i++ ) {
+    const index = ((i + 1) * 3) - 1;
+
+    const starsVertex = new THREE.Vector3();
+
+    const theta = THREE.Math.randFloatSpread(360);
+    const phi = THREE.Math.randFloatSpread(360);
+
+    starsVertex.x = starsDistance * Math.sin(theta) * Math.cos(phi);
+    starsVertex.y = Math.abs( starsDistance * Math.sin(theta) * Math.sin(phi) );
+    starsVertex.z = starsDistance * Math.cos(theta);
+
+    starsPositions[index-2] = starsVertex.x;
+    starsPositions[index-1] = starsVertex.y;
+    starsPositions[index] = starsVertex.z;
+}
+starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3))
+const stars = new THREE.Points(starsGeometry, starsMaterial);
+scene.add(stars);
+
 /**
  * Fog
  */
- const fog = new THREE.Fog('#000000', 1, 1850)
+ const fog = new THREE.Fog('#000000', 1, 1800)
  scene.fog = fog
 
 
@@ -262,7 +297,7 @@ let cameraPosition = getHashPosition()
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 3000)
+const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 4500)
 camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 scene.add(camera)
 
@@ -272,6 +307,8 @@ scene.add(camera)
  */
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+controls.minDistance = 5
+controls.maxDistance = 1000
 
 const cameraTarget = new THREE.Mesh( new THREE.BoxBufferGeometry( 1, 1, 1, 2, 2, 2 ) )
 const targetStart = getHashTarget();
@@ -285,7 +322,7 @@ controls.target = cameraTarget.position
  */
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    antialias: true
+    antialias: true,
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
