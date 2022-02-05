@@ -121,7 +121,7 @@ let focusableObjects = interactiveElements;
  */
  const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(3000, 3000),
-    new THREE.MeshStandardMaterial({ color: '#aa7b7b' })
+    new THREE.MeshStandardMaterial({ color: '#1a4683' })
 )
 ground.rotation.x = - Math.PI / 2
 
@@ -130,13 +130,24 @@ scene.add(ground)
 
 /**
  * Trees
- */
+**/
+
+const treeLoadingManager = new THREE.LoadingManager()
+const treeTextureLoader = new THREE.TextureLoader(treeLoadingManager)
+
+// Tree 1
+const treeColorTexture = treeTextureLoader.load('/twisty-tree.png')
+const treeAlphaTexture = treeTextureLoader.load('/twisty-tree-alpha.png')
 
 const treeSize = 30;
 const treesMaterial = new THREE.PointsMaterial({
     size: treeSize,
-    sizeAttenuation: true
+    sizeAttenuation: true,
+    map: treeColorTexture,
+    alphaMap: treeAlphaTexture,
+    alphaTest: 0.1
 })
+treesMaterial.transparent = true;
 
 const treesGeometry = new THREE.BufferGeometry()
 const count = 800
@@ -159,6 +170,41 @@ treesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3)) 
 const trees = new THREE.Points(treesGeometry, treesMaterial)
 scene.add(trees)
 
+// Tree 2
+const tree2ColorTexture = treeTextureLoader.load('/twisty-tree-2-color.png')
+const tree2AlphaTexture = treeTextureLoader.load('/twisty-tree-2-alpha.png')
+
+const tree2Size = 30;
+const tree2Material = new THREE.PointsMaterial({
+    size: tree2Size,
+    sizeAttenuation: true,
+    map: tree2ColorTexture,
+    alphaMap: tree2AlphaTexture,
+    alphaTest: 0.1
+})
+tree2Material.transparent = true;
+
+const tree2Geometry = new THREE.BufferGeometry()
+const tree2Count = 800
+
+// Multiply by 3 because each position is composed of 3 values (x, y, z)
+const tree2Positions = new Float32Array( tree2Count * 3 )
+
+for ( let i = 0; i < tree2Count * 3; i++ ) {
+    let value = (Math.random() - 0.5) * 2000;
+
+    // keep the 2nd value of each set of 3 at 0 for a flat pattern (y axis)
+    if ( ( i + 2 ) % 3 === 0 ) {
+        value = tree2Size / 6;
+    }
+    tree2Positions[i] = value;
+}
+
+tree2Geometry.setAttribute('position', new THREE.BufferAttribute(tree2Positions, 3)) // Create the Three.js BufferAttribute and specify that each information is composed of 3 values
+
+const tree2 = new THREE.Points(tree2Geometry, tree2Material)
+scene.add(tree2)
+
 
 /**
  * Stars
@@ -170,8 +216,8 @@ const starsGeometry = new THREE.BufferGeometry();
 const starsPositions = new Float32Array( starCount * 3 );
 
 const starsMaterial = new THREE.PointsMaterial({
-    size: 3,
-    sizeAttenuation: true,
+    size: 1,
+    sizeAttenuation: false,
     fog: false,
 })
 
