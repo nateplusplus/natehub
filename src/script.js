@@ -158,10 +158,17 @@ const positions = new Float32Array( count * 3 )
 for ( let i = 0; i < count * 3; i++ ) {
     let value = (Math.random() - 0.5) * 2000;
 
-    // keep the 2nd value of each set of 3 at 0 for a flat pattern (y axis)
-    if ( ( i + 2 ) % 3 === 0 ) {
+    if ( ( i + 1 ) % 3 === 2 ) {
+        // y-axis - keep trees flat to the ground
         value = treeSize / 6;
+    } else if ( ( i + 1 ) % 3 === 0 ) {
+        // z-axis - keep trees away from title if x-axis is too close
+        if (  Math.abs( positions[i-2] ) < 90 && Math.abs( value ) < 150 ) {
+            value = value + ( Math.sign( value ) * 150 );
+            positions[i-2] = positions[i-2] + ( Math.sign( positions[i-2] ) * 90 );
+        }
     }
+
     positions[i] = value;
 }
 
@@ -193,9 +200,15 @@ const tree2Positions = new Float32Array( tree2Count * 3 )
 for ( let i = 0; i < tree2Count * 3; i++ ) {
     let value = (Math.random() - 0.5) * 2000;
 
-    // keep the 2nd value of each set of 3 at 0 for a flat pattern (y axis)
-    if ( ( i + 2 ) % 3 === 0 ) {
+    if ( ( i + 1 ) % 3 === 2 ) {
+        // y-axis - keep trees flat to the ground
         value = tree2Size / 6;
+    } else if ( ( i + 1 ) % 3 === 0 ) {
+        // z-axis - keep trees away from title if x-axis is too close
+        if (  Math.abs( tree2Positions[i-2] ) < 90 && Math.abs( value ) < 150 ) {
+            value = value + ( Math.sign( value ) * 150 );
+            tree2Positions[i-2] = tree2Positions[i-2] + ( Math.sign( tree2Positions[i-2] ) * 90 );
+        }
     }
     tree2Positions[i] = value;
 }
@@ -205,12 +218,53 @@ tree2Geometry.setAttribute('position', new THREE.BufferAttribute(tree2Positions,
 const tree2 = new THREE.Points(tree2Geometry, tree2Material)
 scene.add(tree2)
 
+// Tree 2
+const tree3ColorTexture = treeTextureLoader.load('/twisty-tree-3-color.png')
+const tree3AlphaTexture = treeTextureLoader.load('/twisty-tree-3-alpha.png')
+
+const tree3Size = 30;
+const tree3Material = new THREE.PointsMaterial({
+    size: tree3Size,
+    sizeAttenuation: true,
+    map: tree3ColorTexture,
+    alphaMap: tree3AlphaTexture,
+    alphaTest: 0.1
+})
+tree3Material.transparent = true;
+
+const tree3Geometry = new THREE.BufferGeometry()
+const tree3Count = 800
+
+// Multiply by 3 because each position is composed of 3 values (x, y, z)
+const tree3Positions = new Float32Array( tree3Count * 3 )
+
+for ( let i = 0; i < tree3Count * 3; i++ ) {
+    let value = (Math.random() - 0.5) * 2000;
+
+    if ( ( i + 1 ) % 3 === 2 ) {
+        // y-axis - keep trees flat to the ground
+        value = tree3Size / 6;
+    } else if ( ( i + 1 ) % 3 === 0 ) {
+        // z-axis - keep trees away from title if x-axis is too close
+        if (  Math.abs( tree3Positions[i-2] ) < 90 && Math.abs( value ) < 150 ) {
+            value = value + ( Math.sign( value ) * 150 );
+            tree3Positions[i-2] = tree3Positions[i-2] + ( Math.sign( tree3Positions[i-2] ) * 90 );
+        }
+    }
+    tree3Positions[i] = value;
+}
+
+tree3Geometry.setAttribute('position', new THREE.BufferAttribute(tree3Positions, 3)) // Create the Three.js BufferAttribute and specify that each information is composed of 3 values
+
+const tree3 = new THREE.Points(tree3Geometry, tree3Material)
+scene.add(tree3)
+
 
 /**
  * Stars
  */
 
-const starsDistance = 1200;
+const starsDistance = 2000;
 const starCount = 1000;
 const starsGeometry = new THREE.BufferGeometry();
 const starsPositions = new Float32Array( starCount * 3 );
@@ -230,7 +284,8 @@ for ( let i = 0; i < starCount; i++ ) {
     const phi = THREE.Math.randFloatSpread(360);
 
     starsVertex.x = starsDistance * Math.sin(theta) * Math.cos(phi);
-    starsVertex.y = Math.abs( starsDistance * Math.sin(theta) * Math.sin(phi) );
+    starsVertex.y = starsDistance * Math.sin(theta) * Math.sin(phi)
+    starsVertex.y = starsVertex.y < -50 ? Math.abs( starsVertex.y ) : starsVertex.y;
     starsVertex.z = starsDistance * Math.cos(theta);
 
     starsPositions[index-2] = starsVertex.x;
