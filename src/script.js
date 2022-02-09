@@ -330,6 +330,24 @@ gltfLoader.load(
     }
 )
 
+gltfLoader.load(
+    'office-lamp.gltf',
+    (gltf) =>
+    {
+        gltf.scene.scale.x = 1.6
+        gltf.scene.scale.y = 1.6
+        gltf.scene.scale.z = 1.6
+
+        gltf.scene.position.y = 129
+        gltf.scene.position.z = -14
+        gltf.scene.position.x = 1
+
+        gltf.scene.rotation.y = Math.PI / 5
+        scene.add(gltf.scene)
+        focusableObjects = focusableObjects.concat( gltf.scene.children )
+    }
+)
+
 /**
  * Sizes
  */
