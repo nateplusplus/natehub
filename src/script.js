@@ -119,7 +119,7 @@ let focusableObjects = interactiveElements;
 /**
  * Ground
  */
- const ground = new THREE.Mesh(
+const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(3000, 3000),
     new THREE.MeshStandardMaterial({ color: '#1a4683' })
 )
@@ -299,8 +299,8 @@ scene.add(stars);
 /**
  * Fog
  */
- const fog = new THREE.Fog('#000000', 1, 1800)
- scene.fog = fog
+const fog = new THREE.Fog('#000000', 1, 1800)
+scene.fog = fog
 
 
 /**
