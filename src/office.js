@@ -2,6 +2,8 @@ import * as THREE from 'three'
 
 export default class Office {
     constructor ( nateHub ) {
+        this.nateHub = nateHub
+
         this.officeLights( nateHub.scene )
         this.officeComputer( nateHub )
 
@@ -11,30 +13,14 @@ export default class Office {
             {
                 nateHub.scene.add(gltf.scene)
                 nateHub.focusableObjects = nateHub.focusableObjects.concat( gltf.scene.children )
-            }
-        )
-        
-        nateHub.gltfLoader.load(
-            'office-lamp.gltf',
-            (gltf) =>
-            {
-                gltf.scene.scale.x = 1.6
-                gltf.scene.scale.y = 1.6
-                gltf.scene.scale.z = 1.6
-        
-                gltf.scene.position.y = 129
-                gltf.scene.position.z = -14
-                gltf.scene.position.x = 1
-        
-                gltf.scene.rotation.y = Math.PI / 5
-                nateHub.scene.add(gltf.scene)
-                nateHub.focusableObjects = nateHub.focusableObjects.concat( gltf.scene.children )
+
+                const lampShade = gltf.scene.children.find( mesh => mesh.name === 'lamp-shade' )
+                nateHub.interactiveElements.push( lampShade )
             }
         )
     }
 
     officeLights( scene ) {
-        // Monitor
         const officeTarget = new THREE.Object3D()
         officeTarget.position.set( 3.5, 133, 20 )
         scene.add(officeTarget)
@@ -42,8 +28,29 @@ export default class Office {
         const monitorLight = new THREE.SpotLight( '#fff', 0.6, 10, Math.PI * 0.5, 0.2 )
         monitorLight.position.set( 9.89, 135.09, -15.367 )
         monitorLight.target = officeTarget
-
         scene.add( monitorLight )
+
+        const officeCeilingTarget = new THREE.Object3D()
+        officeCeilingTarget.position.set( 0, 140, -15.5 )
+        scene.add(officeCeilingTarget)
+
+        this.nateHub.floorLampUp = new THREE.SpotLight( '#ffeebf', 0.8, 20, Math.PI * 0.2, 0.5 )
+        this.nateHub.floorLampUp.position.set( 0.5, 136.5, -13.5 )
+        this.nateHub.floorLampUp.target = officeCeilingTarget
+        scene.add( this.nateHub.floorLampUp )
+
+        const officeFloorTarget = new THREE.Object3D()
+        officeFloorTarget.position.set( 0, 130, -15.5 )
+        scene.add(officeFloorTarget)
+
+        this.nateHub.floorLampDown = new THREE.SpotLight( '#ffeebf', 0.8, 20, Math.PI * 0.2, 0.5 )
+        this.nateHub.floorLampDown.position.set( 0.5, 136.5, -13.5 )
+        this.nateHub.floorLampDown.target = officeFloorTarget
+        scene.add( this.nateHub.floorLampDown )
+
+        this.nateHub.floorLampGlow = new THREE.PointLight( '#ffeebf', 0.8, 10 )
+        this.nateHub.floorLampGlow.position.set( 0.5, 136.5, -13.5 )
+        scene.add( this.nateHub.floorLampGlow )
     }
 
     officeComputer( nateHub ) {

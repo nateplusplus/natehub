@@ -90,7 +90,7 @@ class NateHub {
             if ( this.mouseDown ) {
                 const differenceX = event.clientX - this.mouseDown.clientX;
                 const differenceY = event.clientY - this.mouseDown.clientY;
-        
+
                 if ( Math.abs( differenceX ) > 1 || Math.abs( differenceY ) > 1 ) {
                     this.mouseMove = event
                 }
@@ -99,16 +99,19 @@ class NateHub {
 
         this.canvas.addEventListener( 'mouseup', ( event ) => {
             const intersects = this.mouseRaycaster.intersectObjects( this.focusableObjects );
-        
+
             if ( this.modalFocus ) {
                 return;
             }
-        
-        
+
             if ( intersects.length > 0 && intersects[0].distance < this.interactiveDistance && intersects[0].object.name !== '' ) {
                 const bioToggles = [ 'monitorScreen', 'laptopScreen' ]
                 if (  bioToggles.indexOf( intersects[0].object.name ) > -1 ) {
                     document.querySelector('.modal').focus()
+                } else if ( intersects[0].object.name === 'lamp-shade' ) {
+                    this.floorLampGlow.intensity = this.floorLampGlow.intensity === 0 ? 0.8 : 0
+                    this.floorLampUp.intensity = this.floorLampUp.intensity === 0 ? 0.8 : 0
+                    this.floorLampDown.intensity = this.floorLampDown.intensity === 0 ? 0.8 : 0
                 } else if ( ! this.mouseMove ) {
                     const focusOnObject = new TWEEN.Tween( this.controls.target ).to( intersects[0].point, 1400 )
                     focusOnObject.easing(TWEEN.Easing.Quadratic.InOut)
@@ -205,8 +208,13 @@ class NateHub {
         }
     }
 
-    debug() {
-        this.gui = new dat.GUI()
+    debug( config ) {
+
+        if ( ! this.gui ) {
+            this.gui = new dat.GUI()
+        }
+
+        this.gui.add( config.object, config.property, config.min, config.max, config.step )
     }
 
     getPointInBetweenByLen(pointA, pointB, length) {

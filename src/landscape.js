@@ -15,7 +15,7 @@ export default class Landscape {
             new THREE.MeshStandardMaterial({ color: '#1a4683' })
         )
         ground.rotation.x = - Math.PI / 2
-        
+
         this.nateHub.scene.add(ground)
     }
 
