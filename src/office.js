@@ -73,6 +73,27 @@ export default class Office {
         nateHub.scene.add( monitorScreen )
 
         /**
+         * Hint
+         */
+         const hintTextureAlpha = nateHub.textureLoader.load('click-hint-alpha.png')
+         const hintTextureColor = nateHub.textureLoader.load('click-hint-color.png')
+         const hintMaterial = new THREE.MeshBasicMaterial()
+         hintMaterial.map = hintTextureColor
+         hintMaterial.alphaMap = hintTextureAlpha
+         hintMaterial.transparent = true
+
+         const monitorHint = new THREE.Mesh(
+            new THREE.PlaneBufferGeometry( 2.5, 1 ),
+            hintMaterial
+        )
+
+        monitorHint.rotation.y = monitorScreen.rotation.y
+
+        monitorHint.position.set( 10, 136.5, -15.36 )
+
+        nateHub.scene.add( monitorHint )
+
+        /**
          * Laptop Screen
          */
         const laptopScreen = new THREE.Mesh(

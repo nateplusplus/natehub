@@ -28,6 +28,8 @@ class NateHub {
         this.setupScene()
         this.bindEvents()
 
+        this.clock = new THREE.Clock()
+
         new Camera( this )
         new Landscape( this )
         new Sky( this )
@@ -188,6 +190,7 @@ class NateHub {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true,
+            alpha: true,
         })
         this.renderer.setSize( this.sizes.width, this.sizes.height )
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -199,7 +202,7 @@ class NateHub {
         this.pointsOfInterest = {
             start: {
                 target: new THREE.Vector3( 0, 80, 0 ),
-                position: new THREE.Vector3( 550, 200, -700 )
+                position: new THREE.Vector3( 400, 200, -400 )
             },
             about : {
                 target: new THREE.Vector3( 8, 134, -14 ),
@@ -261,6 +264,11 @@ class NateHub {
     }
 
     tick( time ) {
+        const elapsedTime = this.clock.getElapsedTime()
+
+        this.stars.rotation.y = elapsedTime * 0.01
+        this.stars.rotation.x = elapsedTime * 0.02
+
         // Update controls
         this.controls.update()
 

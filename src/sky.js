@@ -8,7 +8,7 @@ export default class Sky {
 
     stars() {
         const starsDistance = 2000;
-        const starCount = 1000;
+        const starCount = 3000;
         const starsGeometry = new THREE.BufferGeometry();
         const starsPositions = new Float32Array( starCount * 3 );
         
@@ -28,7 +28,6 @@ export default class Sky {
         
             starsVertex.x = starsDistance * Math.sin(theta) * Math.cos(phi);
             starsVertex.y = starsDistance * Math.sin(theta) * Math.sin(phi)
-            starsVertex.y = starsVertex.y < -50 ? Math.abs( starsVertex.y ) : starsVertex.y;
             starsVertex.z = starsDistance * Math.cos(theta);
         
             starsPositions[index-2] = starsVertex.x;
@@ -36,7 +35,7 @@ export default class Sky {
             starsPositions[index] = starsVertex.z;
         }
         starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3))
-        const stars = new THREE.Points(starsGeometry, starsMaterial);
-        this.nateHub.scene.add(stars);
+        this.nateHub.stars = new THREE.Points(starsGeometry, starsMaterial);
+        this.nateHub.scene.add(this.nateHub.stars);
     }
 }

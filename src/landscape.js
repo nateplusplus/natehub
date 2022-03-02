@@ -4,20 +4,10 @@ export default class Landscape {
     constructor( nateHub ) {
         this.nateHub = nateHub
 
-        this.ground()
-        this.trees()
+        // this.trees()
         this.lights()
     }
 
-    ground() {
-        const ground = new THREE.Mesh(
-            new THREE.PlaneGeometry(3000, 3000),
-            new THREE.MeshStandardMaterial({ color: '#1a4683' })
-        )
-        ground.rotation.x = - Math.PI / 2
-
-        this.nateHub.scene.add(ground)
-    }
 
     trees() {
         this.nateHub.scene.add( this.makeTree( 'twisty-tree', 30, 800 ) )
