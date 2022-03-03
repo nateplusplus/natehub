@@ -36,6 +36,7 @@ export default class Sky {
         }
         starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3))
         this.nateHub.stars = new THREE.Points(starsGeometry, starsMaterial);
+        this.nateHub.stars.rotation.z = 45
         this.nateHub.scene.add(this.nateHub.stars);
     }
 }

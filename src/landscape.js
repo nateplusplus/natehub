@@ -58,10 +58,10 @@ export default class Landscape {
     lights() {
         const hemisphereLight = new THREE.HemisphereLight( '#ffb184', '#03045e', .5 )
 
-        const directionalLight = new THREE.DirectionalLight('#ffffff', 1)
-        directionalLight.position.set(27, 112, - 43)
+        this.nateHub.directionalLight = new THREE.DirectionalLight('#ffffff', 1)
+        this.nateHub.directionalLight.position.set(27, 112, - 43)
 
         this.nateHub.scene.add(hemisphereLight)
-        this.nateHub.scene.add(directionalLight)
+        this.nateHub.scene.add(this.nateHub.directionalLight)
     }
 }

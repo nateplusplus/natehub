@@ -51,6 +51,14 @@ class NateHub {
             }
         } )
 
+        const helpToggle = document.querySelector( '#help' )
+        helpToggle.addEventListener( 'click', (event) => {
+            const helpContent = document.querySelector( '.modal-content--help' ).innerHTML;
+            const modalContent = this.modal.querySelector( '.modal-content' );
+            modalContent.innerHTML = helpContent;
+            document.querySelector('.modal').focus()
+        } )
+
         window.addEventListener('mousemove', (event) => {
             this.mouse.x = event.clientX / this.sizes.width * 2 - 1
             this.mouse.y = - (event.clientY / this.sizes.height) * 2 + 1
@@ -109,7 +117,12 @@ class NateHub {
             if ( intersects.length > 0 && intersects[0].distance < this.interactiveDistance && intersects[0].object.name !== '' ) {
                 const bioToggles = [ 'monitorScreen', 'laptopScreen' ]
                 if (  bioToggles.indexOf( intersects[0].object.name ) > -1 ) {
+
+                    const aboutContent = document.querySelector( '.modal-content--about' ).innerHTML;
+                    const modalContent = this.modal.querySelector( '.modal-content' );
+                    modalContent.innerHTML = aboutContent;
                     document.querySelector('.modal').focus()
+
                 } else if ( intersects[0].object.name === 'lamp-shade' ) {
                     this.floorLampGlow.intensity = this.floorLampGlow.intensity === 0 ? 0.8 : 0
                     this.floorLampUp.intensity = this.floorLampUp.intensity === 0 ? 0.8 : 0
@@ -267,7 +280,9 @@ class NateHub {
         const elapsedTime = this.clock.getElapsedTime()
 
         this.stars.rotation.y = elapsedTime * 0.01
-        this.stars.rotation.x = elapsedTime * 0.02
+
+        // Rotate lights
+        // this.directionalLight.position.x = 
 
         // Update controls
         this.controls.update()
