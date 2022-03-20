@@ -7,6 +7,7 @@ import Office from './office'
 import Landscape from './landscape'
 import Camera from './camera'
 import Sky from './sky'
+import NatehubModal from './natehubModal'
 
 class NateHub {
     constructor() {
@@ -51,12 +52,9 @@ class NateHub {
             }
         } )
 
-        const helpToggle = document.querySelector( '#help' )
+        const helpToggle = document.querySelector( '#help' );
         helpToggle.addEventListener( 'click', (event) => {
-            const helpContent = document.querySelector( '.modal-content--help' ).innerHTML;
-            const modalContent = this.modal.querySelector( '.modal-content' );
-            modalContent.innerHTML = helpContent;
-            document.querySelector('.modal').focus()
+            document.querySelector('.natehub-modal--help').focus()
         } )
 
         window.addEventListener('mousemove', (event) => {
@@ -117,12 +115,7 @@ class NateHub {
             if ( intersects.length > 0 && intersects[0].distance < this.interactiveDistance && intersects[0].object.name !== '' ) {
                 const bioToggles = [ 'monitorScreen', 'laptopScreen' ]
                 if (  bioToggles.indexOf( intersects[0].object.name ) > -1 ) {
-
-                    const aboutContent = document.querySelector( '.modal-content--about' ).innerHTML;
-                    const modalContent = this.modal.querySelector( '.modal-content' );
-                    modalContent.innerHTML = aboutContent;
-                    document.querySelector('.modal').focus()
-
+                    document.querySelector('.natehub-modal--about').focus()
                 } else if ( intersects[0].object.name === 'lamp-shade' ) {
                     this.floorLampGlow.intensity = this.floorLampGlow.intensity === 0 ? 0.8 : 0
                     this.floorLampUp.intensity = this.floorLampUp.intensity === 0 ? 0.8 : 0
@@ -160,29 +153,6 @@ class NateHub {
             this.mouseMove = false;
             this.mouseDown = false;
         } )
-
-        this.modal.addEventListener( 'click', ( event ) => {
-            if ( event.target.classList.contains( 'modal__close' ) ) {
-                this.canvas.focus();
-            }
-        } );
-
-        this.modal.addEventListener( 'focus', (event) => {
-            this.modalFocus = true;
-            this.modal.ariaHidden = false;
-        
-            setTimeout( () => {
-                this.modal.classList.add('open');
-            }, 100 );
-        } );
-
-        this.modal.addEventListener( 'blur', (event) => {
-            this.modal.classList.remove('open');
-            setTimeout( () => {
-                this.modal.ariaHidden = true;
-                this.modalFocus = false;
-            }, 500 );
-        } );
 
         this.canvas.addEventListener( 'mousemove', ( event ) => {
             const intersects = this.mouseRaycaster.intersectObjects( this.interactiveElements )
@@ -281,9 +251,6 @@ class NateHub {
 
         this.stars.rotation.y = elapsedTime * 0.01
 
-        // Rotate lights
-        // this.directionalLight.position.x = 
-
         // Update controls
         this.controls.update()
 
@@ -301,3 +268,5 @@ class NateHub {
 }
 
 window.nateHub = new NateHub()
+
+customElements.define('natehub-modal', NatehubModal);

@@ -20,6 +20,10 @@ body {
     outline: none;
 }
 
+a {
+    color: inherit;
+    font-weight: 700;
+}
 
 /* NAVIGATION */
 
@@ -121,8 +125,8 @@ body {
 
 
 /* Modal */
-.modal {
-    background: rgba( 0, 0, 0, .7 );
+natehub-modal {
+    background: rgba( 0, 0, 0, .8 );
     box-sizing: border-box;
     border: 1px solid #333;
     border-radius: 8px;
@@ -136,21 +140,20 @@ body {
     top: 0;
     transition: clip-path 400ms ease;
     width: 100%;
-    font-size: 0.8rem;
-    z-index: 100;
+    font-size: 1.25rem;
 }
 
 @media (min-width: 768px) {
-    .modal {
+    natehub-modal {
         font-size: 1rem;
     }
 }
 
-.modal.open {
+natehub-modal.open {
     clip-path: polygon( 0 0, 100% 0, 100% 100%, 0 100% );
 }
 
-.modal[aria-hidden=true] {
+natehub-modal[aria-hidden=true] {
     left: -1000px;
 }
 
@@ -165,6 +168,14 @@ body {
     width: 100%;
 }
 
+@media (min-width: 1440px) {
+    .modal-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
 @media (min-width: 768px) {
     .modal-content {
         margin-top: 0;
@@ -173,14 +184,22 @@ body {
     }
 }
 
-.modal p {
+p, li {
     letter-spacing: 1px;
-    line-height: 1.5;
+    line-height: 1.25;
     margin-bottom: 1em;
     -webkit-font-smoothing: antialiased
 }
 
-.modal p:last-child {
+ul, ol {
+    margin-left: 2rem;
+}
+
+li {
+    margin-bottom: 0.75em;
+}
+
+natehub-modal p:last-child {
     margin-bottom: 0;
 }
 
@@ -198,9 +217,10 @@ body {
     z-index: 100;
 }
 
-.modal h2 {
-    margin-bottom: 1em;
-    font-size: 2em;
+natehub-modal h2 {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    font-size: 2rem;
     -webkit-font-smoothing: antialiased
 }
 

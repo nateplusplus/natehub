@@ -29,41 +29,44 @@
 		</ul>
 	</nav>
 	<main>
-		<div class="modal-content--help d-none" aria-hidden="true">
-			<ol>
-				<li>Scroll or pinch-zoom to zoom in and out.</li>
-				<li>Drag to orbit around.</li>
-				<li>Click or tap anywhere to move in that direction.</li>
-				<li>Some objects are clickable. Explore!</li>
-			</ol>
-		</div>
-		<div class="modal-content--about d-none" aria-hidden="true">
-			<h2>Who is Nathan Blair?</h2>
-			<p>I'm a web developer at <a href="https://www.indeed.com" target="_blank">Indeed</a> and a watercolor painter,
-				living in Austin, Texas.</p>
-			<p>Before learning to code, I studied filmmaking at S.C.A.D., graduating with a B.F.A. in 2008. Straight out
-				of college (with that young ambitious spirit), I spent years building a successful freelance career as a
-				Cinematographer in New York City. I went from scraping the bottom of Craigslist for the oddest of odd
-				jobs to being on set with celebrities like Kate McKinnon and Stephen Baldwin.</p>
-			<p>After several years in the film industry, I was gradually drawn toward web development and this
-				eventually became my new passion when I developed custom WordPress themes for actors.</p>
-			<p>When I moved to Austin in 2015, I fully committed to the tech industry. I worked for the civic engagement
-				tech startup, <a href="https://givepulse.com" target="_blank">Givepulse</a>, for two years and helped
-				them to double their active users. I did contract work for a large energy consultancy named 5, building
-				custom analytics software that shaved hours off their weekly workload. I also took on freelance consulting
-				work with renowned Austin architect and UT professor, Larry Speck, helping him to redesign his website for
-				modern best practices.</p>
-			<p>At Indeed, I've worked hard to drive the Marketing Technology team toward our goal of a more unified web
-				experience across our landing pages and microsites, while also helping Marketers more easily build and
-				maintain web pages. My proudest accomplishments so far have been helping to drive the blog site <a href="https://www.indeed.com/lead" target="_blank">Lead
-				with Indeed</a> to a successful launch and developing the foundations for our modular page-building framework.</p>
-		</div>
-		<div class="modal" tabindex="-1" aria-hidden="true">
-			<button class="modal__close">&times;</button>
+		<natehub-modal class="natehub-modal--about" tabindex="-1" aria-hidden="true">
+			<button class="modal__close" aria-label="Close">&times;</button>
 			<div class="modal-content">
-				<!-- Content inserted from templates. -->
+				<div>
+					<h2>Who is Nathan Blair?</h2>
+					<p>I'm a web developer at <a href="https://www.indeed.com" target="_blank">Indeed</a> and a watercolor painter,
+						living in Austin, Texas.</p>
+					<p>Before learning to code, I  was a freelance Cinematographer in New York City for seven years. After graduating
+						from S.C.A.D, I went from scraping the bottom of Craigslist for the oddest of odd jobs to being on set with
+						celebrities like Kate McKinnon and Stephen Baldwin.</p>
+					<p>Years later, I was gradually drawn toward web development while building custom WordPress themes for actors.</p>
+					<p>When I moved to Austin in 2015, I fully committed to the tech industry. I worked for the civic engagement
+						tech startup, <a href="https://givepulse.com" target="_blank">Givepulse</a>, for two years and helped
+						them to double their active users. I did contract work for a large energy consultancy named 5, building
+						custom analytics software that shaved hours off their weekly workload. I also took on freelance consulting
+						work with renowned Austin architect and UT professor, Larry Speck, helping him to redesign his website for
+						modern best practices.</p>
+					<p>At Indeed, I've worked hard to drive the Marketing Technology team toward our goal of a more unified web
+						experience across our landing pages and microsites, while also helping Marketers more easily build and
+						maintain web pages. My proudest accomplishments so far have been helping to drive the blog site <a href="https://www.indeed.com/lead" target="_blank">Lead
+						with Indeed</a> to a successful launch and developing the foundations for our modular page-building framework.</p>
+				</div>
 			</div>
-		</div>
+		</natehub-modal>
+		<natehub-modal class="natehub-modal--help" tabindex="-1" aria-hidden="true">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal-content">
+				<div>
+					<h2>Navigation</h2>
+					<ol>
+						<li>Scroll or pinch-zoom to zoom in and out.</li>
+						<li>Drag to orbit around.</li>
+						<li>Click or tap anywhere to move in that direction.</li>
+						<li>Some objects are clickable. Explore!</li>
+					</ol>
+				</div>
+			</div>
+		</natehub-modal>
 	</main>
 	<footer>
 		<button id="help" aria-label="Help">?</button>
