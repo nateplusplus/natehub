@@ -4,6 +4,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import * as dat from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
 
+import House from './house';
+import Camera from './camera';
+
 class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
@@ -15,10 +18,21 @@ class NateHub {
 
     this.interactiveElements = [];
     this.focusableObjects = [];
-    this.mouseDown = false;
 
     this.setPoints();
     this.setupScene();
+
+    this.mouse = new THREE.Vector2();
+    this.mouseRaycaster = new THREE.Raycaster();
+    this.mouseDown = false;
+    this.interactiveDistance = 50;
+
+    this.cameraPosition = this.getHashPosition();
+    this.camera = Camera.make(this);
+    this.scene.add(this.camera);
+
+    this.controls = Camera.controls(this);
+
     this.bindEvents();
 
     this.clock = new THREE.Clock();
@@ -60,7 +74,7 @@ class NateHub {
     window.addEventListener('hashchange', (event) => {
       event.preventDefault();
 
-      const targetTween = new TWEEN.Tween(this.cameraTarget.position);
+      const targetTween = new TWEEN.Tween(this.controls.target.position);
       targetTween.to(this.getHashTarget(), 1400);
       targetTween.easing(TWEEN.Easing.Quadratic.InOut);
       targetTween.start();
@@ -110,13 +124,15 @@ class NateHub {
     });
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    this.house = new House(this);
   }
 
   setPoints() {
     this.pointsOfInterest = {
       start: {
-        target: new THREE.Vector3(0, 80, 0),
-        position: new THREE.Vector3(400, 200, -400),
+        target: new THREE.Vector3(8, 29, 8),
+        position: new THREE.Vector3(35, 38, -3),
       },
     };
   }
@@ -159,14 +175,12 @@ class NateHub {
   }
 
   tick(time) {
-    const elapsedTime = this.clock.getElapsedTime();
-
-    this.stars.rotation.y = elapsedTime * 0.01;
+    // const elapsedTime = this.clock.getElapsedTime();
 
     // Update controls
     this.controls.update();
 
-    this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
+    // this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
     // Update tween
     TWEEN.update(time);
