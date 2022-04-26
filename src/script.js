@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import * as dat from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
+import GUI from 'lil-gui';
 
 import House from './house';
 import Camera from './camera';
@@ -10,6 +11,8 @@ import Camera from './camera';
 class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
+
+    this.gui = new GUI();
 
     this.sizes = {
       width: window.innerWidth,
@@ -20,16 +23,18 @@ class NateHub {
     this.focusableObjects = [];
 
     this.setPoints();
+
+    this.cameraPosition = this.getHashPosition();
+    this.camera = Camera.make(this);
+
     this.setupScene();
+
+    this.scene.add(this.camera);
 
     this.mouse = new THREE.Vector2();
     this.mouseRaycaster = new THREE.Raycaster();
     this.mouseDown = false;
     this.interactiveDistance = 50;
-
-    this.cameraPosition = this.getHashPosition();
-    this.camera = Camera.make(this);
-    this.scene.add(this.camera);
 
     this.controls = Camera.controls(this);
 
@@ -131,8 +136,8 @@ class NateHub {
   setPoints() {
     this.pointsOfInterest = {
       start: {
-        target: new THREE.Vector3(8, 29, 8),
-        position: new THREE.Vector3(35, 38, -3),
+        target: new THREE.Vector3(0, 0, 0),
+        position: new THREE.Vector3(30, 20, -10),
       },
     };
   }

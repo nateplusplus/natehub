@@ -7,10 +7,14 @@ export default class Camera {
       45,
       (nateHub.sizes.width / nateHub.sizes.height),
       0.1,
-      4500
+      4500,
     );
 
-    camera.position.set(nateHub.cameraPosition.x, nateHub.cameraPosition.y, nateHub.cameraPosition.z);
+    camera.position.set(
+      nateHub.cameraPosition.x,
+      nateHub.cameraPosition.y,
+      nateHub.cameraPosition.z,
+    );
 
     return camera;
   }
