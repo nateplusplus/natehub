@@ -22,9 +22,6 @@ class NateHub {
     this.interactiveElements = [];
     this.focusableObjects = [];
 
-    this.setPoints();
-
-    this.cameraPosition = this.getHashPosition();
     this.camera = Camera.make(this);
 
     this.setupScene();
@@ -36,8 +33,6 @@ class NateHub {
     this.mouseDown = false;
     this.interactiveDistance = 50;
 
-    this.controls = Camera.controls(this);
-
     this.bindEvents();
 
     this.clock = new THREE.Clock();
@@ -45,18 +40,6 @@ class NateHub {
   }
 
   bindEvents() {
-    const toggle = document.querySelector('.site-nav__toggle');
-    toggle.addEventListener('click', (event) => {
-      event.preventDefault();
-
-      const menu = document.querySelector('.site-nav__list');
-
-      if (menu.getBoundingClientRect().left >= 0) {
-        this.canvas.setAttribute('tabindex', -1);
-        this.canvas.focus();
-      }
-    });
-
     window.addEventListener('mousemove', (event) => {
       this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
       this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
@@ -76,43 +59,9 @@ class NateHub {
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     });
 
-    window.addEventListener('hashchange', (event) => {
-      event.preventDefault();
-
-      const targetTween = new TWEEN.Tween(this.controls.target.position);
-      targetTween.to(this.getHashTarget(), 1400);
-      targetTween.easing(TWEEN.Easing.Quadratic.InOut);
-      targetTween.start();
-
-      this.cameraPosition = this.getHashPosition();
-
-      const positionTween = new TWEEN.Tween(this.camera.position).to(this.cameraPosition, 1400);
-      positionTween.easing(TWEEN.Easing.Quadratic.InOut);
-      positionTween.start();
-    });
-
-    this.canvas.addEventListener('mousedown', (event) => {
-      this.mouseDown = event;
-    });
-
-    this.canvas.addEventListener('mousemove', (event) => {
-      if (this.mouseDown) {
-        const differenceX = event.clientX - this.mouseDown.clientX;
-        const differenceY = event.clientY - this.mouseDown.clientY;
-
-        if (Math.abs(differenceX) > 1 || Math.abs(differenceY) > 1) {
-          this.mouseMove = event;
-        }
-      }
-    });
-
-    this.canvas.addEventListener('mousemove', () => {
-      const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
-      if (intersects.length > 0 && intersects[0].distance < this.interactiveDistance && intersects[0].object.name !== '') {
-        this.canvas.style.cursor = 'pointer';
-      } else if (this.canvas.style.cursor !== 'auto') {
-        this.canvas.style.cursor = 'auto';
-      }
+    window.addEventListener('wheel', (event) => {
+      this.camera.position.y += event.deltaY / 1000;
+      this.camera.position.clampScalar(-10, 10);
     });
   }
 
@@ -133,57 +82,8 @@ class NateHub {
     this.house = new House(this);
   }
 
-  setPoints() {
-    this.pointsOfInterest = {
-      start: {
-        target: new THREE.Vector3(0, 0, 0),
-        position: new THREE.Vector3(30, 20, -10),
-      },
-    };
-  }
-
-  getHashTarget() {
-    let targetPosition;
-    const { hash } = window.location;
-    const pointsOfInterestCopy = { ...this.pointsOfInterest };
-
-    if (hash.length > 1) {
-      const targetKey = hash.replace('#', '');
-      if (targetKey in pointsOfInterestCopy) {
-        targetPosition = pointsOfInterestCopy[targetKey].target;
-      }
-    }
-
-    if (!targetPosition) {
-      targetPosition = pointsOfInterestCopy.start.target;
-    }
-
-    return targetPosition;
-  }
-
-  getHashPosition() {
-    let position;
-    const { hash } = window.location;
-
-    if (hash.length > 1) {
-      const target = hash.replace('#', '');
-      if (target in this.pointsOfInterest) {
-        position = this.pointsOfInterest[target].position;
-      }
-    }
-
-    if (!position) {
-      position = this.pointsOfInterest.start.position;
-    }
-
-    return position;
-  }
-
   tick(time) {
     // const elapsedTime = this.clock.getElapsedTime();
-
-    // Update controls
-    this.controls.update();
 
     // this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 

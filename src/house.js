@@ -4,25 +4,33 @@ export default class House {
   constructor(nateHub) {
     this.nateHub = nateHub;
 
-    const platformGeometry = new THREE.CylinderGeometry(15, 15, 2, 36);
-    const natehubMaterial = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(0x219ebc),
+    this.natehubMaterial = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#000000'),
     });
-    const platform = new THREE.Mesh(platformGeometry, natehubMaterial);
-    this.nateHub.scene.add(platform);
 
-    const stairGeometry = new THREE.BoxBufferGeometry(4, 1, 2);
-    const stair = new THREE.Mesh(stairGeometry, natehubMaterial);
-    stair.position.set(5, -2, -15);
-
-    for(let i = 0; i < 12; i++) {
-      const stairClone = stair.clone();
-      stairClone.position.set(Math.cos(i * (Math.PI / 10)) * -4, (-2 * i), -15 + (-2 * i));
-      stairClone.rotation.y = (Math.PI / 28) * -i;
-      this.nateHub.scene.add(stairClone);
-    }
+    this.office();
+    // this.stairs();
 
     this.light();
+  }
+
+  office() {
+    const referenceGeometry = new THREE.BoxBufferGeometry(4, 1, 2);
+    const reference = new THREE.Mesh(referenceGeometry, this.natehubMaterial);
+    reference.name = 'ref';
+    this.nateHub.scene.add(reference);
+  }
+
+  stairs() {
+    const stairGeometry = new THREE.BoxBufferGeometry(4, 1, 2);
+    const stair = new THREE.Mesh(stairGeometry, this.natehubMaterial);
+    stair.position.set(5, -2, -15);
+
+    for (let i = 0; i < 12; i += 1) {
+      const stairClone = stair.clone();
+      stairClone.position.set(stair.position.x + (i * 4), stair.position.y, stair.position.z);
+      this.nateHub.scene.add(stairClone);
+    }
   }
 
   light() {
@@ -30,9 +38,9 @@ export default class House {
     directionalLight.position.set(-70, 50, -70);
     this.nateHub.scene.add(directionalLight);
 
-    // this.nateHub.gui.add(directionalLight.position, 'x', -100, 100, 0.01);
-    // this.nateHub.gui.add(directionalLight.position, 'y', -100, 100, 0.01);
-    // this.nateHub.gui.add(directionalLight.position, 'z', -100, 100, 0.01);
-    // this.nateHub.gui.add(directionalLight, 'intensity', -100, 100, 0.01);
+    this.nateHub.gui.add(directionalLight.position, 'x', -100, 100, 0.01);
+    this.nateHub.gui.add(directionalLight.position, 'y', -100, 100, 0.01);
+    this.nateHub.gui.add(directionalLight.position, 'z', -100, 100, 0.01);
+    this.nateHub.gui.add(directionalLight, 'intensity', -100, 100, 0.01);
   }
 }

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export default class Camera {
   static make(nateHub) {
@@ -7,30 +6,12 @@ export default class Camera {
       45,
       (nateHub.sizes.width / nateHub.sizes.height),
       0.1,
-      4500,
+      2000,
     );
 
-    camera.position.set(
-      nateHub.cameraPosition.x,
-      nateHub.cameraPosition.y,
-      nateHub.cameraPosition.z,
-    );
+    camera.position.set(5, 0, 0);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     return camera;
-  }
-
-  static controls(nateHub) {
-    const controls = new OrbitControls(nateHub.camera, nateHub.canvas);
-    controls.enableDamping = true;
-    controls.minDistance = 5;
-    controls.maxDistance = 1000;
-
-    const cameraTarget = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1, 2, 2, 2));
-    const targetStart = nateHub.getHashTarget();
-    cameraTarget.position.set(targetStart.x, targetStart.y, targetStart.z);
-
-    controls.target = cameraTarget.position;
-
-    return controls;
   }
 }

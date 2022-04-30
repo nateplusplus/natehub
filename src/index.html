@@ -1,76 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>NateHub</title>
+	</head>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NateHub</title>
-</head>
-
-<body>
-	<canvas class="webgl" tabindex="-1"></canvas>
-	<nav id="site-nav" class="menu site-nav" tabindex="1">
-		<div class="intro">
-			<button class="site-nav__toggle" title="close menu"></button>
-		</div>
-		<ul class="site-nav__list">
-			<li>
-				<a href="#">Home</a>
-			</li>
-			<li>
-				<a href="#about">About</a>
-			</li>
-			<!-- <li>
-				<a href="#contact">Contact</a>
-			</li>
-			<li>
-				<a href="#artwork">Artwork</a>
-			</li> -->
-		</ul>
-	</nav>
-	<main>
-		<natehub-modal class="natehub-modal--about" tabindex="-1" aria-hidden="true">
-			<button class="modal__close" aria-label="Close">&times;</button>
-			<div class="modal-content">
-				<div>
-					<h2>Who is Nathan Blair?</h2>
-					<p>I'm a web developer at <a href="https://www.indeed.com" target="_blank">Indeed</a> and a watercolor painter,
-						living in Austin, Texas.</p>
-					<p>Before learning to code, I  was a freelance Cinematographer in New York City for seven years. After graduating
-						from S.C.A.D, I went from scraping the bottom of Craigslist for the oddest of odd jobs to being on set with
-						celebrities like Kate McKinnon and Stephen Baldwin.</p>
-					<p>Years later, I was gradually drawn toward web development while building custom WordPress themes for actors.</p>
-					<p>When I moved to Austin in 2015, I fully committed to the tech industry. I worked for the civic engagement
-						tech startup, <a href="https://givepulse.com" target="_blank">Givepulse</a>, for two years and helped
-						them to double their active users. I did contract work for a large energy consultancy named 5, building
-						custom analytics software that shaved hours off their weekly workload. I also took on freelance consulting
-						work with renowned Austin architect and UT professor, Larry Speck, helping him to redesign his website for
-						modern best practices.</p>
-					<p>At Indeed, I've worked hard to drive the Marketing Technology team toward our goal of a more unified web
-						experience across our landing pages and microsites, while also helping Marketers more easily build and
-						maintain web pages. My proudest accomplishments so far have been helping to drive the blog site <a href="https://www.indeed.com/lead" target="_blank">Lead
-						with Indeed</a> to a successful launch and developing the foundations for our modular page-building framework.</p>
-				</div>
-			</div>
-		</natehub-modal>
-		<natehub-modal class="natehub-modal--help" tabindex="-1" aria-hidden="true">
-			<button class="modal__close" aria-label="Close">&times;</button>
-			<div class="modal-content">
-				<div>
-					<h2>Navigation</h2>
-					<ol>
-						<li>Scroll or pinch-zoom to zoom in and out.</li>
-						<li>Drag to orbit around.</li>
-						<li>Click or tap anywhere to move in that direction.</li>
-						<li>Some objects are clickable. Explore!</li>
-					</ol>
-				</div>
-			</div>
-		</natehub-modal>
-	</main>
-	<footer>
-		<button id="help" aria-label="Help">?</button>
-	</footer>
-</body>
-
+	<body>
+		<canvas class="webgl" tabindex="-1"></canvas>
+	</body>
 </html>
