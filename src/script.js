@@ -12,7 +12,7 @@ class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
 
-    this.gui = new GUI();
+    // this.gui = new GUI();
 
     this.breakpoints = {
       md: 768,
