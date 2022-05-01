@@ -23,6 +23,16 @@ export default class House {
         this.nateHub.scene.add(gltf.scene);
       },
     );
+
+    this.nateHub.gltfLoader.load(
+      'window.gltf',
+      (gltf) => {
+        gltf.scene.scale.set(0.8, 0.8, 0.8);
+        gltf.scene.position.set(-2, -1.8, 0.25);
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        this.nateHub.scene.add(gltf.scene);
+      },
+    );
   }
 
   light() {

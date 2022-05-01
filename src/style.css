@@ -18,3 +18,12 @@ body {
     left: 0;
     outline: none;
 }
+
+.background {
+    background: url(../static/coding-screen.png) center/cover no-repeat;
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top: 0;
+    right: 160px;
+}

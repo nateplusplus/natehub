@@ -12,7 +12,12 @@ class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
 
-    // this.gui = new GUI();
+    this.gui = new GUI();
+
+    this.breakpoints = {
+      md: 768,
+      lg: 1440,
+    };
 
     this.sizes = {
       width: window.innerWidth,
@@ -22,7 +27,7 @@ class NateHub {
     this.interactiveElements = [];
     this.focusableObjects = [];
 
-    this.camera = Camera.make(this);
+    this.cameraController = new Camera(this);
 
     this.setupScene();
 
@@ -39,6 +44,18 @@ class NateHub {
     this.tick();
   }
 
+  getBreakpoint() {
+    const windowWidth = window.innerWidth;
+    let breakpoint = 'xsm';
+    Object.keys(this.breakpoints).forEach(key => {
+      if (this.breakpoints[key] <= windowWidth) {
+        breakpoint = key;
+      }
+    });
+
+    return breakpoint;
+  }
+
   bindEvents() {
     window.addEventListener('mousemove', (event) => {
       this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
@@ -53,6 +70,7 @@ class NateHub {
       // Update camera
       this.camera.aspect = this.sizes.width / this.sizes.height;
       this.camera.updateProjectionMatrix();
+      this.cameraController.setPosition();
 
       // Update renderer
       this.renderer.setSize(this.sizes.width, this.sizes.height);
