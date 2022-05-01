@@ -9,7 +9,7 @@ export default class Camera {
       2000,
     );
 
-    camera.position.set(5, 0, 0);
+    camera.position.set(15, 0, 0);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     return camera;

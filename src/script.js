@@ -12,7 +12,7 @@ class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
 
-    this.gui = new GUI();
+    // this.gui = new GUI();
 
     this.sizes = {
       width: window.innerWidth,
@@ -60,8 +60,8 @@ class NateHub {
     });
 
     window.addEventListener('wheel', (event) => {
-      this.camera.position.y += event.deltaY / 1000;
-      this.camera.position.clampScalar(-10, 10);
+      const position = this.camera.position.y - (event.deltaY / 600);
+      this.camera.position.y = Math.max(Math.min(position, 0), -10);
     });
   }
 
