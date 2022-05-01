@@ -15,9 +15,8 @@ export default class Camera {
   }
 
   setPosition() {
-    if (this.nateHub.getBreakpoint() === 'md') {
-      this.nateHub.camera.position.set(8, 0, 0);
-    } else {
+    this.nateHub.camera.position.set(8, 0, 0);
+    if (this.nateHub.getScreenAspectRatio() < 1) {
       this.nateHub.camera.position.set(15, 0, 0);
     }
   }

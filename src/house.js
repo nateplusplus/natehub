@@ -25,6 +25,47 @@ export default class House {
     );
 
     this.nateHub.gltfLoader.load(
+      'chair.gltf',
+      (gltf) => {
+        gltf.scene.rotation.y = Math.PI * 0.98;
+        this.nateHub.scene.add(gltf.scene);
+        gltf.scene.scale.set(1.5, 1.5, 1.5);
+        gltf.scene.position.set(-0.575, -3.13, -2.05);
+      },
+    );
+
+    this.nateHub.gltfLoader.load(
+      'name.gltf',
+      (gltf) => {
+        gltf.scene.scale.set(2, 2, 2);
+        gltf.scene.rotation.y = Math.PI * 0.002;
+        gltf.scene.position.set(-0.15, 2.36, 2.15);
+        this.nateHub.scene.add(gltf.scene);
+      },
+    );
+
+    this.nateHub.gltfLoader.load(
+      'monitor.gltf',
+      (gltf) => {
+        gltf.scene.rotation.y = Math.PI * -0.5;
+        gltf.scene.position.set(-0.575, -0.82, -1.35);
+        this.nateHub.scene.add(gltf.scene);
+
+        const screenTexture = this.nateHub.textureLoader.load('i-help-people-get-jobs-bg.png');
+        const screenMaterial = new THREE.MeshBasicMaterial();
+        screenMaterial.map = screenTexture;
+        const screen = new THREE.Mesh(
+          new THREE.PlaneBufferGeometry(2.35, 1.2),
+          screenMaterial,
+        );
+        screen.rotation.y = Math.PI * 0.5;
+        screen.position.set(-0.654, 1.116, -1.441);
+
+        this.nateHub.scene.add(screen);
+      },
+    );
+
+    this.nateHub.gltfLoader.load(
       'window.gltf',
       (gltf) => {
         gltf.scene.scale.set(0.8, 0.8, 0.8);
@@ -55,11 +96,15 @@ export default class House {
       },
     );
 
-    const geometry = new THREE.CylinderGeometry(10, 10, 0.75, 32);
-    const material = new THREE.MeshBasicMaterial({color: 0xffff00});
-    const cylinder = new THREE.Mesh(geometry, material);
-    cylinder.position.set(-2, -3, 0);
-    this.nateHub.scene.add(cylinder);
+    const platformGeometry = new THREE.CylinderGeometry(5.6, 5.6, 0.5, 60);
+    const platformMaterial = new THREE.MeshStandardMaterial({
+      color: 0xd0d0d0,
+      roughness: 100,
+      flatShading: false,
+    });
+    const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+    platform.position.set(-2, -2.74, 0);
+    this.nateHub.scene.add(platform);
   }
 
   light() {

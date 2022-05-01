@@ -16,7 +16,8 @@ class NateHub {
 
     this.breakpoints = {
       md: 768,
-      lg: 1440,
+      lg: 1024,
+      xlg: 1440,
     };
 
     this.sizes = {
@@ -56,6 +57,12 @@ class NateHub {
     return breakpoint;
   }
 
+  getScreenAspectRatio() {
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    return windowHeight / windowWidth;
+  }
+
   bindEvents() {
     window.addEventListener('mousemove', (event) => {
       this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
@@ -79,7 +86,7 @@ class NateHub {
 
     window.addEventListener('wheel', (event) => {
       const position = this.camera.position.y - (event.deltaY / 600);
-      this.camera.position.y = Math.max(Math.min(position, 0), -10);
+      this.camera.position.y = Math.max(Math.min(position, 0), -11);
     });
   }
 
