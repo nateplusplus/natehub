@@ -48,7 +48,7 @@ class NateHub {
   getBreakpoint() {
     const windowWidth = window.innerWidth;
     let breakpoint = 'xsm';
-    Object.keys(this.breakpoints).forEach(key => {
+    Object.keys(this.breakpoints).forEach((key) => {
       if (this.breakpoints[key] <= windowWidth) {
         breakpoint = key;
       }
@@ -84,10 +84,36 @@ class NateHub {
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     });
 
-    window.addEventListener('wheel', (event) => {
-      const position = this.camera.position.y - (event.deltaY / 600);
-      this.camera.position.y = Math.max(Math.min(position, 0), -11);
-    });
+    window.addEventListener('wheel', this.handleWheel.bind(this));
+
+    if ('ontouchstart' in window) {
+      window.addEventListener('touchstart', this.handleTouchStart.bind(this));
+      window.addEventListener('touchmove', this.handleTouchMove.bind(this));
+      // window.addEventListener('touchend', this.handleTouchStart.bind(this));
+    }
+  }
+
+  handleTouchStart(event) {
+    // this.touchstartX = event.screenX;
+    this.touchstartY = event.screenY;
+  }
+
+  // handleTouchEnd(event) {
+  //   // this.touchendX = event.screenX;
+  //   this.touchendY = event.screenY;
+  // }
+
+  handleTouchMove(event) {
+    console.log(event);
+  }
+
+  handleWheel(event) {
+    this.scroll(event.deltaY);
+  }
+
+  scroll(deltaY) {
+    const position = this.camera.position.y - (deltaY / 600);
+    this.camera.position.y = Math.max(Math.min(position, 0), -11);
   }
 
   setupScene() {
