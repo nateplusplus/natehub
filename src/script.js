@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import * as dat from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
 import GUI from 'lil-gui';
+import Hammer from 'hammerjs';
 
 import House from './house';
 import Camera from './camera';
@@ -11,6 +12,7 @@ import Camera from './camera';
 class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
+    this.lastDeltaY = 0;
 
     // this.gui = new GUI();
 
@@ -86,25 +88,21 @@ class NateHub {
 
     window.addEventListener('wheel', this.handleWheel.bind(this));
 
-    if ('ontouchstart' in window) {
-      window.addEventListener('touchstart', this.handleTouchStart.bind(this));
-      window.addEventListener('touchmove', this.handleTouchMove.bind(this));
-      // window.addEventListener('touchend', this.handleTouchStart.bind(this));
+    const hammertime = new Hammer(this.canvas);
+    hammertime.get('pan').set({ direction: Hammer.DIRECTION_VERTICAL });
+    hammertime.on('pan', this.handlePan.bind(this));
+  }
+
+  handlePan(event) {
+    const newEvent = {};
+    newEvent.deltaY = (event.deltaY - this.lastDeltaY);
+    if (newEvent.deltaY !== 0) {
+      newEvent.deltaY *= -1;
     }
-  }
 
-  handleTouchStart(event) {
-    // this.touchstartX = event.screenX;
-    this.touchstartY = event.screenY;
-  }
+    this.handleWheel(newEvent);
 
-  // handleTouchEnd(event) {
-  //   // this.touchendX = event.screenX;
-  //   this.touchendY = event.screenY;
-  // }
-
-  handleTouchMove(event) {
-    console.log(event);
+    this.lastDeltaY = event.deltaY;
   }
 
   handleWheel(event) {

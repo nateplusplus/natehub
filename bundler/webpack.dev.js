@@ -11,8 +11,6 @@ module.exports = merge(
       {
         port: 8080,
         open: true,
-        https: false,
-        allowedHosts: 'all',
         hot: true,
         watchFiles: ['src/**', 'static/**'],
         static: {
