@@ -45,6 +45,16 @@ export default class House {
     );
 
     this.nateHub.gltfLoader.load(
+      'pushin-logo.gltf',
+      (gltf) => {
+        gltf.scene.scale.set(0.2, 0.2, 0.2);
+        gltf.scene.rotation.y = Math.PI * 0.6;
+        gltf.scene.position.set(-0.5, -0.8, 1.8);
+        this.nateHub.scene.add(gltf.scene);
+      },
+    );
+
+    this.nateHub.gltfLoader.load(
       'monitor.gltf',
       (gltf) => {
         gltf.scene.rotation.y = Math.PI * -0.5;

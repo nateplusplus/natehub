@@ -90,27 +90,43 @@ class NateHub {
 
     const hammertime = new Hammer(this.canvas);
     hammertime.get('pan').set({ direction: Hammer.DIRECTION_VERTICAL });
+    hammertime.on('panstart', this.handlePanStart.bind(this));
     hammertime.on('pan', this.handlePan.bind(this));
+    hammertime.on('panend', this.handlePanEnd.bind(this));
+  }
+
+  handlePanStart(event) {
+    this.lastDeltaY = event.deltaY * -1;
   }
 
   handlePan(event) {
-    const newEvent = {};
-    newEvent.deltaY = (event.deltaY - this.lastDeltaY);
-    if (newEvent.deltaY !== 0) {
-      newEvent.deltaY *= -1;
+    let deltaY = (event.deltaY - this.lastDeltaY);
+    if (deltaY !== 0) {
+      deltaY *= -1;
     }
 
-    this.handleWheel(newEvent);
+    this.scroll(deltaY / 50);
 
     this.lastDeltaY = event.deltaY;
   }
 
+  handlePanEnd(event) {
+    let deltaY = (event.deltaY - this.lastDeltaY);
+    if (deltaY !== 0) {
+      deltaY *= -1;
+    }
+
+    // const panTween = new TWEEN.Tween(this.cameraTarget.position).to(this.getHashTarget(), 1400);
+    // panTween.easing(TWEEN.Easing.Quadratic.InOut);
+    // panTween.start();
+  }
+
   handleWheel(event) {
-    this.scroll(event.deltaY);
+    this.scroll(event.deltaY / 600);
   }
 
   scroll(deltaY) {
-    const position = this.camera.position.y - (deltaY / 600);
+    const position = this.camera.position.y - deltaY;
     this.camera.position.y = Math.max(Math.min(position, 0), -11);
   }
 
