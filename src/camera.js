@@ -15,7 +15,7 @@ export default class Camera {
   }
 
   setPosition() {
-    this.nateHub.camera.position.set(13, 0, 0);
+    this.nateHub.camera.position.set(13.75, 0, 0);
     if (this.nateHub.getScreenAspectRatio() < 1) {
       this.nateHub.camera.position.set(15, 0, 0);
     }

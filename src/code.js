@@ -1,15 +1,10 @@
 import * as THREE from 'three';
 
-export default class House {
+export default class Code {
   constructor(nateHub) {
     this.nateHub = nateHub;
 
-    this.natehubMaterial = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#000000'),
-    });
-
     this.office();
-    this.light();
   }
 
   office() {
@@ -115,14 +110,5 @@ export default class House {
     const platform = new THREE.Mesh(platformGeometry, platformMaterial);
     platform.position.set(-2, -2.74, 0);
     this.nateHub.scene.add(platform);
-  }
-
-  light() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1); // soft white light
-    this.nateHub.scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.15);
-    directionalLight.position.set(16, 36, -50);
-    this.nateHub.scene.add(directionalLight);
   }
 }

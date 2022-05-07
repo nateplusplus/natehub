@@ -6,7 +6,8 @@ import * as TWEEN from '@tweenjs/tween.js';
 import GUI from 'lil-gui';
 import Hammer from 'hammerjs';
 
-import House from './house';
+import Code from './code';
+import Artwork from './artwork';
 import Camera from './camera';
 
 class NateHub {
@@ -31,6 +32,13 @@ class NateHub {
     this.focusableObjects = [];
 
     this.cameraController = new Camera(this);
+
+    this.materials = {
+      flatWhite: new THREE.MeshStandardMaterial({
+        color: new THREE.Color('#CCCCCC'),
+        roughness: 0.4,
+      }),
+    };
 
     this.setupScene();
 
@@ -131,7 +139,7 @@ class NateHub {
   }
 
   handleWheel(event) {
-    this.scroll(event.deltaY / 600);
+    this.scroll(event.deltaY / 300);
   }
 
   scroll(deltaY) {
@@ -153,7 +161,19 @@ class NateHub {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    this.house = new House(this);
+    this.code = new Code(this);
+    this.artwork = new Artwork(this);
+
+    this.light();
+  }
+
+  light() {
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1); // soft white light
+    this.scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.15);
+    directionalLight.position.set(16, 36, -50);
+    this.scene.add(directionalLight);
   }
 
   tick(time) {
