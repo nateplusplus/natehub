@@ -12,7 +12,7 @@ import Camera from './camera';
 class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
-    this.lastDeltaY = 0;
+    this.lastDeltaY = [0];
 
     // this.gui = new GUI();
 
@@ -96,29 +96,38 @@ class NateHub {
   }
 
   handlePanStart(event) {
-    this.lastDeltaY = event.deltaY * -1;
+    this.lastDeltaY = [event.deltaY * -1, this.lastDeltaY[0]];
   }
 
   handlePan(event) {
-    let deltaY = (event.deltaY - this.lastDeltaY);
+    let deltaY = (event.deltaY - this.lastDeltaY[0]);
     if (deltaY !== 0) {
       deltaY *= -1;
     }
 
-    this.scroll(deltaY / 50);
-
-    this.lastDeltaY = event.deltaY;
+    if (event.deltaY !== this.lastDeltaY[0]) {
+      this.lastDeltaY = [event.deltaY, this.lastDeltaY[0]];
+      this.scroll(deltaY / 50);
+    }
   }
 
   handlePanEnd(event) {
-    let deltaY = (event.deltaY - this.lastDeltaY);
-    if (deltaY !== 0) {
-      deltaY *= -1;
-    }
+    const absVelocity = Math.abs(event.velocityY);
+    const endY = Math.min(this.camera.position.y + ((this.lastDeltaY[1] * absVelocity) / 150), 0);
 
-    // const panTween = new TWEEN.Tween(this.cameraTarget.position).to(this.getHashTarget(), 1400);
-    // panTween.easing(TWEEN.Easing.Quadratic.InOut);
-    // panTween.start();
+    const finalCameraPosition = new THREE.Vector3(
+      this.camera.position.x,
+      endY,
+      this.camera.position.z,
+    );
+
+    const time = absVelocity * 200;
+
+    const panTween = new TWEEN.Tween(this.camera.position)
+      .to(finalCameraPosition, time);
+
+    panTween.easing(TWEEN.Easing.Quadratic.Out);
+    panTween.start();
   }
 
   handleWheel(event) {
