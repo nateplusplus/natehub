@@ -49,18 +49,28 @@ export default class Artwork {
     matte.position.set(this.wallX, y, z);
     this.nateHub.scene.add(matte);
 
-    this.nateHub.textureLoader.load('artwork/tulip.png', (backgroundTexture) => {
+    this.nateHub.textureLoader.load('artwork/summit.png', (backgroundTexture) => {
       const aspect = backgroundTexture.image.height / backgroundTexture.image.width;
-      let scale = matte.geometry.parameters.width / aspect;
+      const bbox = new THREE.Box3().setFromObject(matte);
+      const matteSize = bbox.getSize(new THREE.Vector3());
+      const matteOffset = 0.2;
+
+      let newSize = {
+        y: (matteSize.z - matteOffset) * aspect,
+        z: matteSize.z - matteOffset,
+      };
       if (aspect >= 1) {
-        scale = matte.geometry.parameters.height / aspect;
+        newSize = {
+          y: matteSize.y - matteOffset,
+          z: (matteSize.y - matteOffset) / aspect,
+        };
       }
 
       const paintingMaterial = new THREE.MeshBasicMaterial();
       paintingMaterial.map = backgroundTexture;
 
       const painting = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(1, 1),
+        new THREE.PlaneBufferGeometry(newSize.z, newSize.y),
         paintingMaterial,
       );
       painting.rotation.y = Math.PI * 0.5;
@@ -69,7 +79,6 @@ export default class Artwork {
         matte.position.y,
         matte.position.z,
       );
-      painting.scale.set(1, scale, scale);
 
       this.nateHub.scene.add(painting);
     });
