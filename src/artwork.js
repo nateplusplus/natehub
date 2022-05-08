@@ -18,18 +18,25 @@ export default class Artwork {
       },
     );
 
+    const frameX = 0.2;
+
     const landscapeFrame = new THREE.Mesh(
-      new BoxBufferGeometry(0.15, 1.5, 2.25),
+      new BoxBufferGeometry(frameX, 1.5, 2.25),
       this.nateHub.materials.flatWhite,
     );
 
     const verticalFrame = new THREE.Mesh(
-      new BoxBufferGeometry(0.15, 2.25, 1.5),
+      new BoxBufferGeometry(frameX, 2.25, 1.5),
       this.nateHub.materials.flatWhite,
     );
 
     const squareFrame = new THREE.Mesh(
-      new BoxBufferGeometry(0.15, 1, 1),
+      new BoxBufferGeometry(frameX, 1, 1),
+      this.nateHub.materials.flatWhite,
+    );
+
+    const largeSquareFrame = new THREE.Mesh(
+      new BoxBufferGeometry(frameX, 2.25, 2),
       this.nateHub.materials.flatWhite,
     );
 
@@ -60,5 +67,17 @@ export default class Artwork {
     const frame7 = squareFrame.clone();
     frame7.position.set(this.wallX, -8.13, 0.73);
     this.nateHub.scene.add(frame7);
+
+    const frame8 = largeSquareFrame.clone();
+    frame8.position.set(this.wallX, -10, 1.2);
+    this.nateHub.scene.add(frame8);
+
+    const frame9 = squareFrame.clone();
+    frame9.position.set(this.wallX, -11.88, 1.72);
+    this.nateHub.scene.add(frame9);
+
+    const frame10 = verticalFrame.clone();
+    frame10.position.set(this.wallX, -11.26, 3.17);
+    this.nateHub.scene.add(frame10);
   }
 }
