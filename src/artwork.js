@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { BoxBufferGeometry } from 'three';
 
 export default class Artwork {
   constructor(nateHub) {
@@ -18,66 +17,82 @@ export default class Artwork {
       },
     );
 
+    this.frameTemplates();
+
+    this.makeFrame(-10, -2, 'vertical');
+    this.makeFrame(-9.38, -0.5, 'square');
+    this.makeFrame(-10.63, -0.5, 'square');
+    this.makeFrame(-9.38, -3.5, 'square');
+    this.makeFrame(-7.88, -2.9, 'landscape');
+    this.makeFrame(-7.5, -0.77, 'vertical');
+    this.makeFrame(-8.13, 0.73, 'square');
+    this.makeFrame(-10, 1.2, 'largeSquare');
+    this.makeFrame(-11.88, 1.72, 'square');
+    this.makeFrame(-11.26, 3.17, 'vertical');
+  }
+
+  frameTemplates() {
+    this.makeTemplates(1.5, 2.25, 'landscape');
+    this.makeTemplates(2.25, 1.5, 'vertical');
+    this.makeTemplates(1, 1, 'square');
+    this.makeTemplates(2.25, 2, 'largeSquare');
+  }
+
+  makeFrame(y, z, type) {
+    const frameType = `${type}Frame`;
+    const frame = this[frameType].clone();
+    frame.position.set(this.wallX, y, z);
+    this.nateHub.scene.add(frame);
+
+    const matteType = `${type}Matte`;
+    const matte = this[matteType].clone();
+    matte.position.set(this.wallX, y, z);
+    this.nateHub.scene.add(matte);
+
+    this.nateHub.textureLoader.load('artwork/tulip.png', (backgroundTexture) => {
+      const aspect = backgroundTexture.image.height / backgroundTexture.image.width;
+      let scale = matte.geometry.parameters.width / aspect;
+      if (aspect >= 1) {
+        scale = matte.geometry.parameters.height / aspect;
+      }
+
+      const paintingMaterial = new THREE.MeshBasicMaterial();
+      paintingMaterial.map = backgroundTexture;
+
+      const painting = new THREE.Mesh(
+        new THREE.PlaneBufferGeometry(1, 1),
+        paintingMaterial,
+      );
+      painting.rotation.y = Math.PI * 0.5;
+      painting.position.set(
+        matte.position.x + 0.1,
+        matte.position.y,
+        matte.position.z,
+      );
+      painting.scale.set(1, scale, scale);
+
+      this.nateHub.scene.add(painting);
+    });
+  }
+
+  makeTemplates(y, z, type) {
     const frameX = 0.2;
 
-    const landscapeFrame = new THREE.Mesh(
-      new BoxBufferGeometry(frameX, 1.5, 2.25),
+    const matteMaterial = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#DDDDDD'),
+      roughness: 0.4,
+    });
+
+    const frameType = `${type}Frame`;
+    this[frameType] = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(frameX, y, z),
       this.nateHub.materials.flatWhite,
     );
 
-    const verticalFrame = new THREE.Mesh(
-      new BoxBufferGeometry(frameX, 2.25, 1.5),
-      this.nateHub.materials.flatWhite,
-    );
-
-    const squareFrame = new THREE.Mesh(
-      new BoxBufferGeometry(frameX, 1, 1),
-      this.nateHub.materials.flatWhite,
-    );
-
-    const largeSquareFrame = new THREE.Mesh(
-      new BoxBufferGeometry(frameX, 2.25, 2),
-      this.nateHub.materials.flatWhite,
-    );
-
-    const frame1 = verticalFrame.clone();
-    frame1.position.set(this.wallX, -10, -2);
-    this.nateHub.scene.add(frame1);
-
-    const frame2 = squareFrame.clone();
-    frame2.position.set(this.wallX, -9.38, -0.5);
-    this.nateHub.scene.add(frame2);
-
-    const frame3 = squareFrame.clone();
-    frame3.position.set(this.wallX, -10.63, -0.5);
-    this.nateHub.scene.add(frame3);
-
-    const frame4 = squareFrame.clone();
-    frame4.position.set(this.wallX, -9.38, -3.5);
-    this.nateHub.scene.add(frame4);
-
-    const frame5 = landscapeFrame.clone();
-    frame5.position.set(this.wallX, -7.88, -2.9);
-    this.nateHub.scene.add(frame5);
-
-    const frame6 = verticalFrame.clone();
-    frame6.position.set(this.wallX, -7.5, -0.77);
-    this.nateHub.scene.add(frame6);
-
-    const frame7 = squareFrame.clone();
-    frame7.position.set(this.wallX, -8.13, 0.73);
-    this.nateHub.scene.add(frame7);
-
-    const frame8 = largeSquareFrame.clone();
-    frame8.position.set(this.wallX, -10, 1.2);
-    this.nateHub.scene.add(frame8);
-
-    const frame9 = squareFrame.clone();
-    frame9.position.set(this.wallX, -11.88, 1.72);
-    this.nateHub.scene.add(frame9);
-
-    const frame10 = verticalFrame.clone();
-    frame10.position.set(this.wallX, -11.26, 3.17);
-    this.nateHub.scene.add(frame10);
+    const matteType = `${type}Matte`;
+    this[matteType] = this[frameType].clone();
+    this[matteType].material = matteMaterial;
+    this[matteType].scale.y -= 0.1;
+    this[matteType].scale.z -= 0.1;
   }
 }
