@@ -19,16 +19,16 @@ export default class Artwork {
 
     this.frameTemplates();
 
-    this.makeFrame(-10, -2, 'vertical');
-    this.makeFrame(-9.38, -0.5, 'square');
-    this.makeFrame(-10.63, -0.5, 'square');
-    this.makeFrame(-9.38, -3.5, 'square');
-    this.makeFrame(-7.88, -2.9, 'landscape');
-    this.makeFrame(-7.5, -0.77, 'vertical');
-    this.makeFrame(-8.13, 0.73, 'square');
-    this.makeFrame(-10, 1.2, 'largeSquare');
-    this.makeFrame(-11.88, 1.72, 'square');
-    this.makeFrame(-11.26, 3.17, 'vertical');
+    this.makeFrame(-10, -2, 'vertical', 'garden-creature');
+    this.makeFrame(-9.38, -0.5, 'square', 'gold-sun');
+    this.makeFrame(-10.63, -0.5, 'square', 'coqui-flamboyan');
+    this.makeFrame(-9.38, -3.5, 'square', 'treehouse');
+    this.makeFrame(-7.88, -2.9, 'landscape', 'treasure');
+    this.makeFrame(-7.5, -0.77, 'vertical', 'tulip');
+    this.makeFrame(-8.13, 0.73, 'square', 'thunder');
+    this.makeFrame(-10, 1.2, 'largeSquare', 'summit');
+    this.makeFrame(-12.07, 1.08, 'landscape', 'casa');
+    this.makeFrame(-11.26, 3.15, 'vertical', 'owl-city');
   }
 
   frameTemplates() {
@@ -38,7 +38,7 @@ export default class Artwork {
     this.makeTemplates(2.25, 2, 'largeSquare');
   }
 
-  makeFrame(y, z, type) {
+  makeFrame(y, z, type, image) {
     const frameType = `${type}Frame`;
     const frame = this[frameType].clone();
     frame.position.set(this.wallX, y, z);
@@ -49,7 +49,9 @@ export default class Artwork {
     matte.position.set(this.wallX, y, z);
     this.nateHub.scene.add(matte);
 
-    this.nateHub.textureLoader.load('artwork/summit.png', (backgroundTexture) => {
+    const imagePath = `artwork/${image}.png`;
+
+    this.nateHub.textureLoader.load(imagePath, (backgroundTexture) => {
       const aspect = backgroundTexture.image.height / backgroundTexture.image.width;
       const bbox = new THREE.Box3().setFromObject(matte);
       const matteSize = bbox.getSize(new THREE.Vector3());
