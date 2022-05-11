@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Mesh } from 'three';
 
 export default class Code {
   constructor(nateHub) {
@@ -46,6 +47,27 @@ export default class Code {
         gltf.scene.rotation.y = Math.PI * 0.6;
         gltf.scene.position.set(-0.5, -0.8, 1.8);
         this.nateHub.scene.add(gltf.scene);
+
+        const box = new THREE.Mesh(
+          new THREE.BoxBufferGeometry(0.1, 0.1, 0.1),
+          new THREE.MeshStandardMaterial({
+            color: new THREE.Color('#00FF00'),
+          }),
+        );
+
+        const bbox = new THREE.Box3().setFromObject(gltf.scene);
+        const sizes = bbox.getSize(new THREE.Vector3());
+
+        // console.log(gltf.scene.position, sizes);
+
+        this.nateHub.points.push({
+          position: new THREE.Vector3(
+            gltf.scene.position.x,
+            gltf.scene.position.y + sizes.y,
+            gltf.scene.position.z - (sizes.z * 0.5),
+          ),
+          element: document.querySelector('.pushin'),
+        });
       },
     );
 

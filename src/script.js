@@ -14,6 +14,7 @@ class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
     this.lastDeltaY = [0];
+    this.points = [];
 
     // this.gui = new GUI();
 
@@ -183,6 +184,17 @@ class NateHub {
 
     // Update tween
     TWEEN.update(time);
+
+    this.points.forEach((point) => {
+      const screenPosition = point.position.clone();
+      screenPosition.project(this.camera);
+
+      const translateX = screenPosition.z * this.sizes.width * 0.5;
+      point.element.style.transform = `translateX(${translateX}px)`;
+
+      const translateY = screenPosition.y * this.sizes.width * 0.5;
+      point.element.style.transform = `translateY(${translateY}px)`;
+    });
 
     // Render
     this.renderer.render(this.scene, this.camera);

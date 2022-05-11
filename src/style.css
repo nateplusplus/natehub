@@ -17,3 +17,18 @@ body {
     left: 0;
     outline: none;
 }
+
+.dialog {
+    position: absolute;
+    width: 270px;
+    background: #EFEFEF;
+    border: 1px solid #AFAFAF;
+    border-radius: 8px;
+    box-shadow: -2px 5px 19px 1px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    padding: 20px 15px;
+}
+
+.dialog p {
+    margin-bottom: 1em;
+}
