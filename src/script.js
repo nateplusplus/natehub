@@ -189,10 +189,13 @@ class NateHub {
       const screenPosition = point.position.clone();
       screenPosition.project(this.camera);
 
-      const translateX = screenPosition.z * this.sizes.width * 0.5;
-      point.element.style.transform = `translateX(${translateX}px)`;
+      const screenX = (this.sizes.width * 0.5) - (screenPosition.z * this.sizes.width * 0.5);
+      point.element.style.left = `${screenX}px`;
 
-      const translateY = screenPosition.y * this.sizes.width * 0.5;
+      const screenY = (this.sizes.height * 0.5) - (screenPosition.y * this.sizes.height * 0.5);
+      point.element.style.bottom = `${screenY}px`;
+
+      const translateY = -screenPosition.y * this.sizes.width * 0.4;
       point.element.style.transform = `translateY(${translateY}px)`;
     });
 
