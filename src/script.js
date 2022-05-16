@@ -78,6 +78,13 @@ class NateHub {
     window.addEventListener('mousemove', (event) => {
       this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
       this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
+
+      const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
+      if (intersects.length > 0 && intersects[0].object.name !== '') {
+        this.canvas.style.cursor = 'pointer';
+      } else if (this.canvas.style.cursor !== 'auto') {
+        this.canvas.style.cursor = 'auto';
+      }
     });
 
     window.addEventListener('resize', () => {
@@ -102,6 +109,29 @@ class NateHub {
     hammertime.on('panstart', this.handlePanStart.bind(this));
     hammertime.on('pan', this.handlePan.bind(this));
     hammertime.on('panend', this.handlePanEnd.bind(this));
+    hammertime.on('tap', this.handleClick.bind(this));
+  }
+
+  handleClick(event) {
+    this.mouse.x = (event.center.x / this.sizes.width) * 2 - 1;
+    this.mouse.y = -(event.center.y / this.sizes.height) * 2 + 1;
+
+    const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
+
+    this.points.forEach((point) => {
+      point.element.classList.add('d-none');
+      if (intersects.length > 0) {
+        let name = intersects[0].object?.parent?.name;
+
+        if (!name || name === '') {
+          name = intersects[0].object.name;
+        }
+
+        if (point.element.classList.contains(name)) {
+          point.element.classList.remove('d-none');
+        }
+      }
+    });
   }
 
   handlePanStart(event) {
@@ -180,7 +210,7 @@ class NateHub {
   tick(time) {
     // const elapsedTime = this.clock.getElapsedTime();
 
-    // this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
+    this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
     // Update tween
     TWEEN.update(time);
@@ -189,14 +219,10 @@ class NateHub {
       const screenPosition = point.position.clone();
       screenPosition.project(this.camera);
 
-      const screenX = (this.sizes.width * 0.5) - (screenPosition.z * this.sizes.width * 0.5);
-      point.element.style.left = `${screenX}px`;
+      const screenX = screenPosition.x * this.sizes.width * 0.5;
+      const screenY = -screenPosition.y * this.sizes.height * 0.5;
 
-      const screenY = (this.sizes.height * 0.5) - (screenPosition.y * this.sizes.height * 0.5);
-      point.element.style.bottom = `${screenY}px`;
-
-      const translateY = -screenPosition.y * this.sizes.width * 0.4;
-      point.element.style.transform = `translateY(${translateY}px)`;
+      point.element.style.transform = `translateX(${screenX}px) translateY(${screenY}px)`;
     });
 
     // Render

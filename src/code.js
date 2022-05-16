@@ -46,28 +46,23 @@ export default class Code {
         gltf.scene.scale.set(0.2, 0.2, 0.2);
         gltf.scene.rotation.y = Math.PI * 0.6;
         gltf.scene.position.set(-0.5, -0.8, 1.8);
-        this.nateHub.scene.add(gltf.scene);
+        gltf.scene.name = 'pushin';
 
-        const box = new THREE.Mesh(
-          new THREE.BoxBufferGeometry(0.1, 0.1, 0.1),
-          new THREE.MeshStandardMaterial({
-            color: new THREE.Color('#00FF00'),
-          }),
-        );
+        this.nateHub.scene.add(gltf.scene);
 
         const bbox = new THREE.Box3().setFromObject(gltf.scene);
         const sizes = bbox.getSize(new THREE.Vector3());
-
-        // console.log(gltf.scene.position, sizes);
 
         this.nateHub.points.push({
           position: new THREE.Vector3(
             gltf.scene.position.x,
             gltf.scene.position.y + sizes.y,
-            gltf.scene.position.z - (sizes.z * 0.5),
+            gltf.scene.position.z,
           ),
-          element: document.querySelector('.pushin'),
+          element: document.querySelector(`.${gltf.scene.name}`),
         });
+
+        this.nateHub.interactiveElements.push(gltf.scene);
       },
     );
 
@@ -87,6 +82,21 @@ export default class Code {
         );
         screen.rotation.y = Math.PI * 0.5;
         screen.position.set(-0.654, 1.116, -1.441);
+        screen.name = 'indeed';
+
+        this.nateHub.interactiveElements.push(screen);
+
+        const bbox = new THREE.Box3().setFromObject(gltf.scene);
+        const sizes = bbox.getSize(new THREE.Vector3());
+
+        this.nateHub.points.push({
+          position: new THREE.Vector3(
+            gltf.scene.position.x,
+            gltf.scene.position.y + sizes.y,
+            gltf.scene.position.z,
+          ),
+          element: document.querySelector(`.${screen.name}`),
+        });
 
         this.nateHub.scene.add(screen);
       },
