@@ -1,6 +1,11 @@
 import './style.css';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
+
 // import * as dat from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
 import GUI from 'lil-gui';
@@ -100,6 +105,8 @@ class NateHub {
       // Update renderer
       this.renderer.setSize(this.sizes.width, this.sizes.height);
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      this.composer.setSize(this.sizes.width, this.sizes.height);
     });
 
     window.addEventListener('wheel', this.handleWheel.bind(this));
@@ -113,23 +120,26 @@ class NateHub {
   }
 
   handleClick(event) {
+    let clicked;
     this.mouse.x = (event.center.x / this.sizes.width) * 2 - 1;
     this.mouse.y = -(event.center.y / this.sizes.height) * 2 + 1;
 
     const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
 
+    this.outlinePass.selectedObjects = [];
+
+    if (intersects.length > 0) {
+      clicked = intersects[0].object?.parent;
+      if (!clicked || clicked.name === '') {
+        clicked = intersects[0].object;
+      }
+      this.outlinePass.selectedObjects.push(clicked);
+    }
+
     this.points.forEach((point) => {
       point.element.classList.add('d-none');
-      if (intersects.length > 0) {
-        let name = intersects[0].object?.parent?.name;
-
-        if (!name || name === '') {
-          name = intersects[0].object.name;
-        }
-
-        if (point.element.classList.contains(name)) {
-          point.element.classList.remove('d-none');
-        }
+      if (intersects.length > 0 && point.element.classList.contains(clicked.name)) {
+        point.element.classList.remove('d-none');
       }
     });
   }
@@ -196,6 +206,7 @@ class NateHub {
     this.artwork = new Artwork(this);
 
     this.light();
+    this.effects();
   }
 
   light() {
@@ -205,6 +216,24 @@ class NateHub {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.15);
     directionalLight.position.set(16, 36, -50);
     this.scene.add(directionalLight);
+  }
+
+  effects() {
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.setSize(this.sizes.width, this.sizes.height);
+    this.composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+
+    this.outlinePass = new OutlinePass(
+      new THREE.Vector2(this.sizes.width, this.sizes.height),
+      this.scene,
+      this.camera,
+    );
+    this.outlinePass.edgeStrength = 6;
+    this.outlinePass.visibleEdgeColor = new THREE.Color('#36C9C6');
+    this.composer.addPass(this.outlinePass);
   }
 
   tick(time) {
@@ -226,7 +255,8 @@ class NateHub {
     });
 
     // Render
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
+    this.composer.render();
 
     // Call tick again on the next frame
     window.requestAnimationFrame(this.tick.bind(this));
