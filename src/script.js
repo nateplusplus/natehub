@@ -20,6 +20,8 @@ class NateHub {
     this.canvas = document.querySelector('canvas.webgl');
     this.lastDeltaY = [0];
     this.points = [];
+    this.hovered = null;
+    this.clicked = null;
 
     // this.gui = new GUI();
 
@@ -84,12 +86,23 @@ class NateHub {
       this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
       this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
 
-      const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
-      if (intersects.length > 0 && intersects[0].object.name !== '') {
+      const hovered = this.getIntersectObject();
+
+      if (hovered) {
         this.canvas.style.cursor = 'pointer';
+
+        if (this.hovered !== hovered && this.clicked !== hovered) {
+          this.outlinePass.selectedObjects.push(hovered);
+        }
       } else if (this.canvas.style.cursor !== 'auto') {
         this.canvas.style.cursor = 'auto';
+
+        if (!this.clicked) {
+          this.outlinePass.selectedObjects = [];
+        }
       }
+
+      this.hovered = hovered;
     });
 
     window.addEventListener('resize', () => {
@@ -119,26 +132,34 @@ class NateHub {
     hammertime.on('tap', this.handleClick.bind(this));
   }
 
+  getIntersectObject() {
+    const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
+    let object;
+
+    if (intersects.length > 0) {
+      object = intersects[0].object?.parent;
+      if (!object || object.name === '') {
+        object = intersects[0].object;
+      }
+    }
+
+    return object;
+  }
+
   handleClick(event) {
-    let clicked;
     this.mouse.x = (event.center.x / this.sizes.width) * 2 - 1;
     this.mouse.y = -(event.center.y / this.sizes.height) * 2 + 1;
 
-    const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
+    this.clicked = this.getIntersectObject();
 
     this.outlinePass.selectedObjects = [];
-
-    if (intersects.length > 0) {
-      clicked = intersects[0].object?.parent;
-      if (!clicked || clicked.name === '') {
-        clicked = intersects[0].object;
-      }
-      this.outlinePass.selectedObjects.push(clicked);
+    if (this.clicked) {
+      this.outlinePass.selectedObjects.push(this.clicked);
     }
 
     this.points.forEach((point) => {
       point.element.classList.add('d-none');
-      if (intersects.length > 0 && point.element.classList.contains(clicked.name)) {
+      if (this.clicked && point.element.classList.contains(this.clicked.name)) {
         point.element.classList.remove('d-none');
       }
     });
@@ -158,6 +179,14 @@ class NateHub {
       this.lastDeltaY = [event.deltaY, this.lastDeltaY[0]];
       this.scroll(deltaY / 50);
     }
+
+    if (!this.hovered) {
+      this.interactiveElements.forEach((object) => {
+        this.outlinePass.selectedObjects.push(object);
+      });
+    }
+
+    this.hovered = this.interactiveElements;
   }
 
   handlePanEnd(event) {
@@ -177,6 +206,12 @@ class NateHub {
 
     panTween.easing(TWEEN.Easing.Quadratic.Out);
     panTween.start();
+
+    this.outlinePass.selectedObjects = [];
+    if (this.clicked) {
+      this.outlinePass.selectedObjects.push(this.clicked);
+    }
+    this.hovered = null;
   }
 
   handleWheel(event) {
