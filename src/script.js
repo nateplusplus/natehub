@@ -1,9 +1,8 @@
 import './style.css';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
 
 // import * as dat from 'lil-gui';
@@ -22,6 +21,12 @@ class NateHub {
     this.points = [];
     this.hovered = null;
     this.clicked = null;
+    this.interactiveElements = [];
+    this.focusableObjects = [];
+
+    this.mouse = new THREE.Vector2();
+    this.mouseRaycaster = new THREE.Raycaster();
+    this.clock = new THREE.Clock();
 
     // this.gui = new GUI();
 
@@ -36,11 +41,6 @@ class NateHub {
       height: window.innerHeight,
     };
 
-    this.interactiveElements = [];
-    this.focusableObjects = [];
-
-    this.cameraController = new Camera(this);
-
     this.materials = {
       flatWhite: new THREE.MeshStandardMaterial({
         color: new THREE.Color('#CCCCCC'),
@@ -49,22 +49,12 @@ class NateHub {
     };
 
     this.setupScene();
-
-    this.scene.add(this.camera);
-
-    this.mouse = new THREE.Vector2();
-    this.mouseRaycaster = new THREE.Raycaster();
-    this.mouseDown = false;
-    this.interactiveDistance = 50;
-
     this.bindEvents();
-
-    this.clock = new THREE.Clock();
     this.tick();
   }
 
   getBreakpoint() {
-    const windowWidth = window.innerWidth;
+    const windowWidth = this.sizes.width;
     let breakpoint = 'xsm';
     Object.keys(this.breakpoints).forEach((key) => {
       if (this.breakpoints[key] <= windowWidth) {
@@ -76,8 +66,8 @@ class NateHub {
   }
 
   getScreenAspectRatio() {
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
+    const windowWidth = this.sizes.width;
+    const windowHeight = this.sizes.height;
     return windowHeight / windowWidth;
   }
 
@@ -224,6 +214,7 @@ class NateHub {
   }
 
   setupScene() {
+    this.cameraController = new Camera(this);
     this.scene = new THREE.Scene();
     this.textureLoader = new THREE.TextureLoader();
     this.loadingManager = new THREE.LoadingManager();
@@ -242,6 +233,8 @@ class NateHub {
 
     this.light();
     this.effects();
+
+    this.scene.add(this.camera);
   }
 
   light() {
