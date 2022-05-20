@@ -63,8 +63,6 @@ export default class Code {
         });
 
         this.nateHub.interactiveElements.push(gltf.scene);
-
-        this.nateHub.outline(gltf.scene);
       },
     );
 
@@ -86,11 +84,10 @@ export default class Code {
         screen.position.set(-0.654, 1.116, -1.441);
         screen.name = 'indeed';
 
-        this.nateHub.interactiveElements.push(screen);
-
         const bbox = new THREE.Box3().setFromObject(gltf.scene);
         const sizes = bbox.getSize(new THREE.Vector3());
 
+        this.nateHub.interactiveElements.push(screen);
         this.nateHub.points.push({
           position: new THREE.Vector3(
             gltf.scene.position.x,
@@ -101,8 +98,6 @@ export default class Code {
         });
 
         this.nateHub.scene.add(screen);
-
-        this.nateHub.outline(screen);
       },
     );
 
