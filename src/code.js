@@ -63,6 +63,8 @@ export default class Code {
         });
 
         this.nateHub.interactiveElements.push(gltf.scene);
+
+        this.nateHub.outline(gltf.scene);
       },
     );
 
@@ -99,6 +101,8 @@ export default class Code {
         });
 
         this.nateHub.scene.add(screen);
+
+        this.nateHub.outline(screen);
       },
     );
 

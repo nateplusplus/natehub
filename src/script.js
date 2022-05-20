@@ -82,13 +82,13 @@ class NateHub {
         this.canvas.style.cursor = 'pointer';
 
         if (this.hovered !== hovered && this.clicked !== hovered) {
-          this.outlinePass.selectedObjects.push(hovered);
+          this.selectedObjects.push(hovered);
         }
       } else if (this.canvas.style.cursor !== 'auto') {
         this.canvas.style.cursor = 'auto';
 
         if (!this.clicked) {
-          this.outlinePass.selectedObjects = [];
+          this.selectedObjects = [];
         }
       }
 
@@ -142,9 +142,9 @@ class NateHub {
 
     this.clicked = this.getIntersectObject();
 
-    this.outlinePass.selectedObjects = [];
+    this.selectedObjects = [];
     if (this.clicked) {
-      this.outlinePass.selectedObjects.push(this.clicked);
+      this.selectedObjects.push(this.clicked);
     }
 
     this.points.forEach((point) => {
@@ -172,7 +172,7 @@ class NateHub {
 
     if (!this.hovered) {
       this.interactiveElements.forEach((object) => {
-        this.outlinePass.selectedObjects.push(object);
+        this.selectedObjects.push(object);
       });
     }
 
@@ -197,9 +197,9 @@ class NateHub {
     panTween.easing(TWEEN.Easing.Quadratic.Out);
     panTween.start();
 
-    this.outlinePass.selectedObjects = [];
+    this.selectedObjects = [];
     if (this.clicked) {
-      this.outlinePass.selectedObjects.push(this.clicked);
+      this.selectedObjects.push(this.clicked);
     }
     this.hovered = null;
   }
@@ -246,6 +246,82 @@ class NateHub {
     this.scene.add(directionalLight);
   }
 
+  outline(mesh) {
+    const bbox = new THREE.Box3().setFromObject(mesh);
+
+    const bboxCenter = new THREE.Vector3();
+    bbox.getCenter(bboxCenter);
+
+    const high = {
+      z: bbox.max.z + 0.25,
+      y: bbox.max.y + 0.25,
+    };
+
+    const low = {
+      z: bbox.min.z - 0.25,
+      y: bbox.min.y - 0.25,
+    };
+
+    const thickeness = 0.15;
+
+    const bboxShape = new THREE.Shape();
+    // start at top-right and draw clockwise
+    bboxShape.moveTo(high.z, high.y);
+
+    bboxShape.lineTo(high.z, low.y);
+    bboxShape.lineTo(low.z, low.y);
+    bboxShape.lineTo(low.z, high.y);
+    bboxShape.lineTo(high.z, high.y);
+
+    const bboxHole = new THREE.Path();
+    bboxHole.moveTo(high.z - thickeness, high.y - thickeness);
+
+    bboxHole.lineTo(high.z - thickeness, low.y + thickeness);
+    bboxHole.lineTo(low.z + thickeness, low.y + thickeness);
+    bboxHole.lineTo(low.z + thickeness, high.y - thickeness);
+    bboxHole.lineTo(high.z - thickeness, high.y - thickeness);
+
+    bboxShape.holes.push(bboxHole);
+
+    const extrudeSettings = {
+      steps: 1,
+      depth: 0.25,
+      bevelEnabled: false,
+    };
+
+    const bboxGeometry = new THREE.ExtrudeBufferGeometry(bboxShape, extrudeSettings);
+    bboxGeometry.center();
+
+    const overlayMaterial = new THREE.MeshBasicMaterial();
+    overlayMaterial.side = THREE.DoubleSide;
+    overlayMaterial.transparent = true;
+    overlayMaterial.opacity = 0.25;
+    overlayMaterial.color = new THREE.Color('#5B90CD');
+
+    const outline = new THREE.Mesh(
+      bboxGeometry,
+      overlayMaterial,
+    );
+
+    outline.rotation.y = Math.PI * 0.5;
+
+    outline.position.set(
+      bboxCenter.x,
+      bboxCenter.y,
+      bboxCenter.z,
+    );
+
+    outline.scale.set(0.2, 0.2, 0.2);
+
+    const scaleTween = new TWEEN.Tween(outline.scale)
+      .to(new THREE.Vector3(1, 1, 1), 300);
+
+    scaleTween.easing(TWEEN.Easing.Quadratic.Out);
+    scaleTween.start();
+
+    this.scene.add(outline);
+  }
+
   effects() {
     this.composer = new EffectComposer(this.renderer);
     this.composer.setSize(this.sizes.width, this.sizes.height);
@@ -254,14 +330,14 @@ class NateHub {
     const renderPass = new RenderPass(this.scene, this.camera);
     this.composer.addPass(renderPass);
 
-    this.outlinePass = new OutlinePass(
-      new THREE.Vector2(this.sizes.width, this.sizes.height),
-      this.scene,
-      this.camera,
-    );
-    this.outlinePass.edgeStrength = 6;
-    this.outlinePass.visibleEdgeColor = new THREE.Color('#36C9C6');
-    this.composer.addPass(this.outlinePass);
+    // this.outlinePass = new OutlinePass(
+    //   new THREE.Vector2(this.sizes.width, this.sizes.height),
+    //   this.scene,
+    //   this.camera,
+    // );
+    // this.outlinePass.edgeStrength = 3;
+    // this.outlinePass.visibleEdgeColor = new THREE.Color('#36C9C6');
+    // this.composer.addPass(this.outlinePass);
   }
 
   tick(time) {
