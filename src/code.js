@@ -67,6 +67,65 @@ export default class Code {
     );
 
     this.nateHub.gltfLoader.load(
+      'logo-ig.gltf',
+      (gltf) => {
+        gltf.scene.name = 'ig-nateplusplus';
+        gltf.scene.scale.set(0.7, 0.7, 0.7);
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-0.575, 0.6, 2.15);
+
+        // const igTexture = this.nateHub.textureLoader.load('ig-gradient.png');
+        // const igMaterial = new THREE.MeshBasicMaterial();
+        // igMaterial.map = igTexture;
+        // gltf.scene.children.forEach((mesh) => {
+        //   mesh.material = igMaterial;
+        // });
+
+        this.nateHub.scene.add(gltf.scene);
+
+        const bbox = new THREE.Box3().setFromObject(gltf.scene);
+        const sizes = bbox.getSize(new THREE.Vector3());
+
+        this.nateHub.points.push({
+          position: new THREE.Vector3(
+            gltf.scene.position.x,
+            gltf.scene.position.y + sizes.y,
+            gltf.scene.position.z,
+          ),
+          element: document.querySelector(`.${gltf.scene.name}`),
+        });
+
+        this.nateHub.interactiveElements.push(gltf.scene);
+      },
+    );
+
+    this.nateHub.gltfLoader.load(
+      'logo-linkedin.gltf',
+      (gltf) => {
+        gltf.scene.name = 'linkedin';
+        gltf.scene.scale.set(0.8, 0.8, 0.8);
+        // gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-0.575, 1.83, 1.5);
+
+        this.nateHub.scene.add(gltf.scene);
+
+        const bbox = new THREE.Box3().setFromObject(gltf.scene);
+        const sizes = bbox.getSize(new THREE.Vector3());
+
+        this.nateHub.points.push({
+          position: new THREE.Vector3(
+            gltf.scene.position.x,
+            gltf.scene.position.y + sizes.y,
+            gltf.scene.position.z,
+          ),
+          element: document.querySelector(`.${gltf.scene.name}`),
+        });
+
+        this.nateHub.interactiveElements.push(gltf.scene);
+      },
+    );
+
+    this.nateHub.gltfLoader.load(
       'monitor.gltf',
       (gltf) => {
         gltf.scene.rotation.y = Math.PI * -0.5;
