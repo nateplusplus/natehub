@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
 // import * as dat from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
@@ -219,6 +220,7 @@ class NateHub {
     this.textureLoader = new THREE.TextureLoader();
     this.loadingManager = new THREE.LoadingManager();
     this.gltfLoader = new GLTFLoader();
+    this.fontLoader = new FontLoader();
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
