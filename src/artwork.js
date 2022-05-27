@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
 export default class Artwork {
   constructor(nateHub) {
@@ -112,6 +113,27 @@ export default class Artwork {
   }
 
   stairs() {
+    this.nateHub.fontLoader.load('fonts/helvetiker_bold.typeface.json', (font) => {
+      const textGeometry = new TextGeometry('artwork', {
+        font,
+        size: 0.5,
+        height: 0.2,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.02,
+        bevelOffset: 0,
+        bevelSegments: 5,
+      });
+
+      const textMesh = new THREE.Mesh(textGeometry, this.nateHub.materials.flatWhite);
+      textMesh.rotation.y = Math.PI * 0.5;
+      textMesh.rotation.x = Math.PI * 0.05;
+      textMesh.position.set(this.wallX, -7, 3);
+
+      this.nateHub.scene.add(textMesh);
+    });
+
     this.nateHub.gltfLoader.load(
       'stairs.gltf',
       (gltf) => {
