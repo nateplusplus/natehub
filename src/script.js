@@ -277,6 +277,8 @@ class NateHub {
       point.element.style.transform = `translateX(${screenX}px) translateY(${screenY}px)`;
     });
 
+    this.code.update();
+
     // Render
     this.composer.render();
 

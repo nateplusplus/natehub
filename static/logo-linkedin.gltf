@@ -37,12 +37,12 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Material",
+            "name" : "LinkedIn Blue",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
-                    0.800000011920929,
-                    0.800000011920929,
-                    0.800000011920929,
+                    0.0015861649299040437,
+                    0.001237755292095244,
+                    0.8000000715255737,
                     1
                 ],
                 "metallicFactor" : 0,
