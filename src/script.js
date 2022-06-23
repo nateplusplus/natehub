@@ -4,16 +4,15 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 
 // import * as dat from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
-import GUI from 'lil-gui';
-import Hammer from 'hammerjs';
+// import GUI from 'lil-gui';
+// import Hammer from 'hammerjs';
 
-import Code from './code';
-import Artwork from './artwork';
 import Camera from './camera';
-import Outlines from './outlines';
 
 class NateHub {
   constructor() {
@@ -73,29 +72,6 @@ class NateHub {
   }
 
   bindEvents() {
-    window.addEventListener('mousemove', (event) => {
-      this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
-      this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
-
-      const hovered = this.getIntersectObject();
-
-      if (hovered) {
-        this.canvas.style.cursor = 'pointer';
-
-        if (this.hovered !== hovered && this.clicked !== hovered) {
-          this.outlines.selectedObjects.push(hovered);
-        }
-      } else if (this.canvas.style.cursor !== 'auto') {
-        this.canvas.style.cursor = 'auto';
-
-        if (!this.clicked) {
-          this.outlines.selectedObjects = [];
-        }
-      }
-
-      this.hovered = hovered;
-    });
-
     window.addEventListener('resize', () => {
       // Update sizes
       this.sizes.width = window.innerWidth;
@@ -112,110 +88,9 @@ class NateHub {
 
       this.composer.setSize(this.sizes.width, this.sizes.height);
     });
-
-    window.addEventListener('wheel', this.handleWheel.bind(this));
-
-    const hammertime = new Hammer(this.canvas);
-    hammertime.get('pan').set({ direction: Hammer.DIRECTION_VERTICAL });
-    hammertime.on('panstart', this.handlePanStart.bind(this));
-    hammertime.on('pan', this.handlePan.bind(this));
-    hammertime.on('panend', this.handlePanEnd.bind(this));
-    hammertime.on('tap', this.handleClick.bind(this));
-  }
-
-  getIntersectObject() {
-    const intersects = this.mouseRaycaster.intersectObjects(this.interactiveElements);
-    let object;
-
-    if (intersects.length > 0) {
-      object = intersects[0].object?.parent;
-      if (!object || object.name === '') {
-        object = intersects[0].object;
-      }
-    }
-
-    return object;
-  }
-
-  handleClick(event) {
-    this.mouse.x = (event.center.x / this.sizes.width) * 2 - 1;
-    this.mouse.y = -(event.center.y / this.sizes.height) * 2 + 1;
-
-    this.clicked = this.getIntersectObject();
-
-    this.outlines.selectedObjects = [];
-    if (this.clicked) {
-      this.outlines.selectedObjects.push(this.clicked);
-    }
-
-    this.points.forEach((point) => {
-      point.element.classList.add('d-none');
-      if (this.clicked && point.element.classList.contains(this.clicked.name)) {
-        point.element.classList.remove('d-none');
-      }
-    });
-  }
-
-  handlePanStart(event) {
-    this.lastDeltaY = [event.deltaY * -1, this.lastDeltaY[0]];
-  }
-
-  handlePan(event) {
-    let deltaY = (event.deltaY - this.lastDeltaY[0]);
-    if (deltaY !== 0) {
-      deltaY *= -1;
-    }
-
-    if (event.deltaY !== this.lastDeltaY[0]) {
-      this.lastDeltaY = [event.deltaY, this.lastDeltaY[0]];
-      this.scroll(deltaY / 50);
-    }
-
-    if (!this.hovered) {
-      this.interactiveElements.forEach((object) => {
-        this.outlines.selectedObjects.push(object);
-      });
-    }
-
-    this.hovered = this.interactiveElements;
-  }
-
-  handlePanEnd(event) {
-    const absVelocity = Math.abs(event.velocityY);
-    const endY = Math.min(this.camera.position.y + ((this.lastDeltaY[1] * absVelocity) / 150), 0);
-
-    const finalCameraPosition = new THREE.Vector3(
-      this.camera.position.x,
-      endY,
-      this.camera.position.z,
-    );
-
-    const time = absVelocity * 200;
-
-    const panTween = new TWEEN.Tween(this.camera.position)
-      .to(finalCameraPosition, time);
-
-    panTween.easing(TWEEN.Easing.Quadratic.Out);
-    panTween.start();
-
-    this.outlines.selectedObjects = [];
-    if (this.clicked) {
-      this.outlines.selectedObjects.push(this.clicked);
-    }
-    this.hovered = null;
-  }
-
-  handleWheel(event) {
-    this.scroll(event.deltaY / 300);
-  }
-
-  scroll(deltaY) {
-    const position = this.camera.position.y - deltaY;
-    this.camera.position.y = Math.max(Math.min(position, 0), -11);
   }
 
   setupScene() {
-    this.cameraController = new Camera(this);
     this.scene = new THREE.Scene();
     this.textureLoader = new THREE.TextureLoader();
     this.loadingManager = new THREE.LoadingManager();
@@ -230,54 +105,62 @@ class NateHub {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    this.code = new Code(this);
-    this.artwork = new Artwork(this);
+    this.cube = this.gltfLoader.load(
+      'natecube.gltf',
+      (gltf) => {
+        const bbox = new THREE.Box3().setFromObject(gltf.scene);
+        const modelSize = bbox.getSize(new THREE.Vector3());
+        gltf.scene.position.y = modelSize.y * -0.5;
+        this.scene.add(gltf.scene);
+      },
+    );
+
+    this.cameraController = new Camera(this);
 
     this.light();
     this.effects();
-
-    this.scene.add(this.camera);
   }
 
   light() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1); // soft white light
+    const ambientLight = new THREE.AmbientLight(0xcccccc, 0.01); // soft white light
     this.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.15);
-    directionalLight.position.set(16, 36, -50);
-    this.scene.add(directionalLight);
+    const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    backLight.position.set(15, -36, 40);
+    this.scene.add(backLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    keyLight.position.set(-36, 36, -40);
+    this.scene.add(keyLight);
   }
 
   effects() {
-    this.composer = new EffectComposer(this.renderer);
+    const renderTarget = new THREE.WebGLRenderTarget(
+      800,
+      600,
+      {
+        samples: this.renderer.getPixelRatio() === 1 ? 2 : 0,
+      },
+    );
+
+    this.composer = new EffectComposer(this.renderer, renderTarget);
     this.composer.setSize(this.sizes.width, this.sizes.height);
     this.composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const renderPass = new RenderPass(this.scene, this.camera);
     this.composer.addPass(renderPass);
 
-    this.outlines = new Outlines(this.scene);
+    const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+    this.composer.addPass(gammaCorrectionPass);
   }
 
   tick(time) {
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
-    this.outlines.update();
+    this.controls.update();
 
     // Update tween
     TWEEN.update(time);
-
-    this.points.forEach((point) => {
-      const screenPosition = point.position.clone();
-      screenPosition.project(this.camera);
-
-      const screenX = screenPosition.x * this.sizes.width * 0.5;
-      const screenY = -screenPosition.y * this.sizes.height * 0.5;
-
-      point.element.style.transform = `translateX(${screenX}px) translateY(${screenY}px)`;
-    });
-
-    this.code.update();
 
     // Render
     this.composer.render();

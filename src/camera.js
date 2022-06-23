@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export default class Camera {
   constructor(nateHub) {
@@ -11,13 +12,15 @@ export default class Camera {
     );
 
     this.setPosition();
-    this.nateHub.camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    this.nateHub.controls = new OrbitControls(this.nateHub.camera, this.nateHub.canvas);
+    this.nateHub.controls.target = new THREE.Vector3(0, 0, 0);
+    this.nateHub.controls.update();
+
+    this.nateHub.scene.add(this.nateHub.camera);
   }
 
   setPosition() {
-    this.nateHub.camera.position.set(13.75, 0, 0);
-    // if (this.nateHub.getScreenAspectRatio() < 1) {
-    //   this.nateHub.camera.position.set(14, 0, 0);
-    // }
+    this.nateHub.camera.position.set(-10, 0, 20);
   }
 }
