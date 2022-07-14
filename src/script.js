@@ -109,6 +109,21 @@ class NateHub {
   light() {
     const ambientLight = new THREE.AmbientLight(0xcccccc, 0.01);
     this.scene.add(ambientLight);
+
+    const artworkLight = new THREE.PointLight(0xffffff, 0.5);
+    artworkLight.position.set(4, 6, 6);
+    this.scene.add(artworkLight);
+
+    const lightFolder = this.gui.addFolder('Lights');
+
+    lightFolder.add(artworkLight.position, 'x', -100, 100, 0.001);
+    lightFolder.add(artworkLight.position, 'y', -100, 100, 0.001);
+    lightFolder.add(artworkLight.position, 'z', -100, 100, 0.001);
+    lightFolder.add(artworkLight, 'intensity', -100, 100, 0.001);
+    lightFolder.add(artworkLight, 'distance', 0, 1000, 0.001);
+
+    const pointLightHelper = new THREE.PointLightHelper(artworkLight, 1);
+    this.scene.add(pointLightHelper);
   }
 
   loadMaterials() {
@@ -116,10 +131,20 @@ class NateHub {
     bakedTexture.flipY = false;
     bakedTexture.encoding = THREE.sRGBEncoding;
     this.materials = {
+      flatWhite: new THREE.MeshStandardMaterial(),
       baked: new THREE.MeshBasicMaterial({ map: bakedTexture }),
       test: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-      Cube001: new THREE.MeshBasicMaterial({ color: 0x001DE7 }),
+      Cube001: new THREE.MeshBasicMaterial({ color: 0x009AFF })
     };
+    this.materials['closed-delta'] = new THREE.MeshBasicMaterial({ color: 0x010407 });
+    this.materials['open-delta'] = new THREE.MeshBasicMaterial({ color: 0x219ebc });
+    this.materials['log-linkedin'] = new THREE.MeshBasicMaterial({ color: 0x000BD8 });
+    this.materials['logo-ig'] = new THREE.MeshBasicMaterial({
+      color: 0xed1850,
+      transparent: true,
+      opacity: 0.6,
+    });
+    this.materials['text-artwork001'] = new THREE.MeshStandardMaterial();
   }
 
   cube() {
