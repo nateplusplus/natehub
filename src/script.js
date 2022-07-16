@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
 
 import GUI from 'lil-gui';
 // import * as TWEEN from '@tweenjs/tween.js';
@@ -110,9 +111,31 @@ class NateHub {
     const ambientLight = new THREE.AmbientLight(0xcccccc, 0.01);
     this.scene.add(ambientLight);
 
-    const artworkLight = new THREE.PointLight(0xffffff, 0.9);
-    artworkLight.position.set(4, 5, 7);
+    const artworkLight = new THREE.SpotLight(0xffffff, 0.9);
+    artworkLight.position.set(4.6, 6.8, 7.8);
+    artworkLight.angle = Math.PI * 0.15;
+    artworkLight.intensity = 3;
+    artworkLight.distance = 7;
+    artworkLight.penumbra = 0.3;
     this.scene.add(artworkLight);
+
+    const targetObject = new THREE.Object3D();
+    targetObject.position.set(-5, -7, -1);
+    this.scene.add(targetObject);
+
+    artworkLight.target = targetObject;
+
+    const monitorLight = new THREE.SpotLight(0x81A2FF, 0.9);
+    monitorLight.position.set(1.05, -0.25, -1.6);
+    monitorLight.distance = 3.75;
+    monitorLight.penumbra = 0.3;
+    this.scene.add(monitorLight);
+
+    const monitorTarget = new THREE.Object3D();
+    monitorTarget.position.set(10, -0.5, -1.3);
+    this.scene.add(monitorTarget);
+
+    monitorLight.target = monitorTarget;
   }
 
   loadMaterials() {
@@ -138,6 +161,11 @@ class NateHub {
     this.materials['chair-wheel-2'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
     this.materials['chair-wheel-3'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
     this.materials['chair-wheel-4'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials['monitor-back'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials['monitor-screen'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+    // const indeed = this.textureLoader.load('i-help-people-get-jobs-bg.png');
+    this.materials['monitor-window'] = new THREE.MeshBasicMaterial({ color: 0x3063f2 });
   }
 
   cube() {
@@ -187,7 +215,11 @@ class NateHub {
 
               if (chair.name === 'chair-seat') {
                 child.material.color.set(0x747474);
+                child.material.roughness = 1;
               }
+            } else if (child.name === 'monitor-stand') {
+              child.material.color.set(0x000000);
+              child.material.roughness = 0.25;
             } else if (this.materials[child.name]) {
               child.material = this.materials[child.name];
             } else if (test.indexOf(child.name) > -1) {
@@ -205,6 +237,8 @@ class NateHub {
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
     this.controls.update();
+
+    this.monitorLightHelper.update();
 
     // Update tween
     // TWEEN.update(time);
