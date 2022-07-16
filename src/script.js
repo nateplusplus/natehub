@@ -110,20 +110,9 @@ class NateHub {
     const ambientLight = new THREE.AmbientLight(0xcccccc, 0.01);
     this.scene.add(ambientLight);
 
-    const artworkLight = new THREE.PointLight(0xffffff, 0.5);
-    artworkLight.position.set(4, 6, 6);
+    const artworkLight = new THREE.PointLight(0xffffff, 0.9);
+    artworkLight.position.set(4, 5, 7);
     this.scene.add(artworkLight);
-
-    const lightFolder = this.gui.addFolder('Lights');
-
-    lightFolder.add(artworkLight.position, 'x', -100, 100, 0.001);
-    lightFolder.add(artworkLight.position, 'y', -100, 100, 0.001);
-    lightFolder.add(artworkLight.position, 'z', -100, 100, 0.001);
-    lightFolder.add(artworkLight, 'intensity', -100, 100, 0.001);
-    lightFolder.add(artworkLight, 'distance', 0, 1000, 0.001);
-
-    const pointLightHelper = new THREE.PointLightHelper(artworkLight, 1);
-    this.scene.add(pointLightHelper);
   }
 
   loadMaterials() {
@@ -139,12 +128,16 @@ class NateHub {
     this.materials['closed-delta'] = new THREE.MeshBasicMaterial({ color: 0x010407 });
     this.materials['open-delta'] = new THREE.MeshBasicMaterial({ color: 0x219ebc });
     this.materials['log-linkedin'] = new THREE.MeshBasicMaterial({ color: 0x000BD8 });
+    this.materials['text-code'] = new THREE.MeshBasicMaterial({ color: 0x050108 });
     this.materials['logo-ig'] = new THREE.MeshBasicMaterial({
       color: 0xed1850,
       transparent: true,
       opacity: 0.6,
     });
-    this.materials['text-artwork001'] = new THREE.MeshStandardMaterial();
+    this.materials['chair-wheel-1'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials['chair-wheel-2'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials['chair-wheel-3'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials['chair-wheel-4'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
   }
 
   cube() {
@@ -177,9 +170,25 @@ class NateHub {
         gltf.scene.position.y = modelSize.y * -0.5;
         this.scene.add(gltf.scene);
 
+        const chair = [
+          'chair-base',
+          'chair-seat',
+          'chair-pole',
+        ];
+
         gltf.scene.traverse((child) => {
           if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            if (this.materials[child.name]) {
+            if (child.name === 'text-artwork001') {
+              child.material.color.set(0xedf6f9);
+            } else if (chair.indexOf(child.name) > -1) {
+              if (chair.name === 'chair-pole') {
+                child.material.metalness = 0.5;
+              }
+
+              if (chair.name === 'chair-seat') {
+                child.material.color.set(0x747474);
+              }
+            } else if (this.materials[child.name]) {
               child.material = this.materials[child.name];
             } else if (test.indexOf(child.name) > -1) {
               child.material = this.materials.test;
