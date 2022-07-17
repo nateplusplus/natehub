@@ -4,9 +4,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
+
 import GUI from 'lil-gui';
 // import * as TWEEN from '@tweenjs/tween.js';
-// import Hammer from 'hammerjs';
+import Hammer from 'hammerjs';
+
+import Monitor from './objects/monitor';
 
 class NateHub {
   constructor() {
@@ -15,6 +18,8 @@ class NateHub {
 
     this.mouse = new THREE.Vector2();
     this.mouseRaycaster = new THREE.Raycaster();
+
+    this.hammertime = new Hammer(this.canvas);
 
     this.gui = new GUI();
 
@@ -57,6 +62,31 @@ class NateHub {
 
   bindEvents() {
     window.addEventListener('resize', this.handleResize.bind(this));
+
+    this.hammertime.on('tap', this.handleTap.bind(this));
+  }
+
+  interactiveObjects() {
+    this.interactive = {
+      'monitor-display': this.monitor.handleClicked,
+    };
+  }
+
+  handleTap(event) {
+    this.mouse.x = (event.center.x / this.sizes.width) * 2 - 1;
+    this.mouse.y = -(event.center.y / this.sizes.height) * 2 + 1;
+
+    setTimeout(
+      () => {
+        const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
+        const clicked = intersects[0].object;
+
+        if (typeof this.interactive[clicked.name] !== 'undefined') {
+          this.interactive[clicked.name](clicked);
+        }
+      },
+      100,
+    );
   }
 
   handleResize() {
@@ -195,6 +225,8 @@ class NateHub {
         this.addMonitorScreen();
 
         this.placeArtwork(gltf.scene.children);
+
+        this.interactiveObjects();
       },
     );
   }
@@ -241,7 +273,10 @@ class NateHub {
     );
     this.monitorScreen.rotation.y = Math.PI * 0.5;
     this.monitorScreen.position.set(1.04, -0.3, -1.6);
+    this.monitorScreen.name = 'monitor-display';
     this.scene.add(this.monitorScreen);
+
+    this.monitor = new Monitor();
   }
 
   placeArtwork(children) {
