@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
 
 import GUI from 'lil-gui';
 // import * as TWEEN from '@tweenjs/tween.js';
@@ -142,7 +141,7 @@ class NateHub {
       flatWhite: new THREE.MeshStandardMaterial(),
       baked: new THREE.MeshBasicMaterial({ map: bakedTexture }),
       test: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-      Cube001: new THREE.MeshBasicMaterial({ color: 0x009AFF })
+      Cube001: new THREE.MeshBasicMaterial({ color: 0x009AFF }),
     };
     this.materials['closed-delta'] = new THREE.MeshBasicMaterial({ color: 0x010407 });
     this.materials['open-delta'] = new THREE.MeshBasicMaterial({ color: 0x219ebc });
@@ -163,7 +162,7 @@ class NateHub {
   }
 
   cube() {
-    const test = [
+    this.unbakedLayers = [
       'text-artwork001',
       'open-delta',
       'closed-delta',
@@ -192,49 +191,90 @@ class NateHub {
         gltf.scene.position.y = modelSize.y * -0.5;
         this.scene.add(gltf.scene);
 
-        const chair = [
-          'chair-base',
-          'chair-seat',
-          'chair-pole',
-        ];
+        gltf.scene.traverse(this.setLayerMaterial.bind(this));
 
-        gltf.scene.traverse((child) => {
-          if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            if (child.name === 'text-artwork001') {
-              child.material.color.set(0xedf6f9);
-            } else if (chair.indexOf(child.name) > -1) {
-              if (child.name === 'chair-pole') {
-                child.material.metalness = 0.5;
-                child.material.roughness = 0.25;
-              } else if (child.name === 'chair-seat') {
-                child.material.color.set(0x747474);
-                child.material.roughness = 0.66;
-              }
-            } else if (child.name === 'monitor-stand') {
-              child.material.color.set(0x000000);
-              child.material.roughness = 0.25;
-            } else if (this.materials[child.name]) {
-              child.material = this.materials[child.name];
-            } else if (test.indexOf(child.name) > -1) {
-              child.material = this.materials.test;
-            } else {
-              child.material = this.materials.baked;
-            }
-          }
-        });
+        this.addMonitorScreen();
 
-        const indeed = this.textureLoader.load('i-help-people-get-jobs-bg.png');
-        this.monitorScreen = new THREE.Mesh(
-          new THREE.PlaneBufferGeometry(2.33, 1.33),
-          new THREE.MeshBasicMaterial({
-            map: indeed,
-          }),
-        );
-        this.monitorScreen.rotation.y = Math.PI * 0.5;
-        this.monitorScreen.position.set(1.04, -0.3, -1.6);
-        this.scene.add(this.monitorScreen);
+        this.placeArtwork(gltf.scene.children);
       },
     );
+  }
+
+  setLayerMaterial(child) {
+    switch (child.name) {
+      case 'text-artwork001':
+        child.material.color.set(0xedf6f9);
+        break;
+      case 'chair-base':
+        child.material.color.set(0xFAFAFA);
+        child.material.roughness = 0;
+        break;
+      case 'chair-seat':
+        child.material.color.set(0x747474);
+        child.material.roughness = 0.66;
+        break;
+      case 'monitor-stand':
+        child.material.color.set(0x000000);
+        child.material.roughness = 0.25;
+        break;
+      case 'chair-pole':
+        child.material.metalness = 0.5;
+        child.material.roughness = 0.25;
+        break;
+      default:
+        if (this.materials[child.name]) {
+          child.material = this.materials[child.name];
+        } else if (this.unbakedLayers.indexOf(child.name) > -1) {
+          child.material = this.materials.test;
+        } else {
+          child.material = this.materials.baked;
+        }
+    }
+  }
+
+  addMonitorScreen() {
+    const indeed = this.textureLoader.load('i-help-people-get-jobs-bg.png');
+    this.monitorScreen = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry(2.33, 1.33),
+      new THREE.MeshBasicMaterial({
+        map: indeed,
+      }),
+    );
+    this.monitorScreen.rotation.y = Math.PI * 0.5;
+    this.monitorScreen.position.set(1.04, -0.3, -1.6);
+    this.scene.add(this.monitorScreen);
+  }
+
+  placeArtwork(children) {
+    const artwork = {
+      casa: this.textureLoader.load('artwork/casa.png'),
+    };
+    // console.log(artwork.casa.image);
+    // const aspect = artwork.casa.image.naturalHeight / artwork.casa.image.naturalWidth;
+    artwork.casa.wrapS = THREE.RepeatWrapping;
+    artwork.casa.wrapT = THREE.RepeatWrapping;
+    artwork.casa.repeat.set(1, 1);
+
+    const frames = children.filter((child) => child.name.startsWith('frame-'));
+
+    frames.forEach((frame) => {
+      const bbox = new THREE.Box3().setFromObject(frame);
+      const frameSize = bbox.getSize(new THREE.Vector3());
+
+      const canvas = new THREE.Mesh(
+        new THREE.PlaneBufferGeometry(frameSize.x * 0.9, frameSize.y * 0.9, 2, 2),
+        new THREE.MeshBasicMaterial({
+          map: artwork.casa,
+        }),
+      );
+
+      // console.log(frame.position.z)
+
+      const positionY = frame.position.y + frame.parent.position.y;
+      canvas.position.set(frame.position.x, positionY, 5.45);
+
+      this.scene.add(canvas);
+    });
   }
 
   tick(time) {
