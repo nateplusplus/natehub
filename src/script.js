@@ -138,14 +138,13 @@ class NateHub {
     bakedTexture.flipY = false;
     bakedTexture.encoding = THREE.sRGBEncoding;
     this.materials = {
-      flatWhite: new THREE.MeshStandardMaterial(),
       baked: new THREE.MeshBasicMaterial({ map: bakedTexture }),
       test: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-      Cube001: new THREE.MeshBasicMaterial({ color: 0x009AFF }),
     };
+    this.materials['led-strip'] = new THREE.MeshBasicMaterial({ color: 0x009AFF });
     this.materials['closed-delta'] = new THREE.MeshBasicMaterial({ color: 0x010407 });
     this.materials['open-delta'] = new THREE.MeshBasicMaterial({ color: 0x219ebc });
-    this.materials['log-linkedin'] = new THREE.MeshBasicMaterial({ color: 0x000BD8 });
+    this.materials['logo-linkedin'] = new THREE.MeshBasicMaterial({ color: 0x000BD8 });
     this.materials['text-code'] = new THREE.MeshBasicMaterial({ color: 0x050108 });
     this.materials['logo-ig'] = new THREE.MeshBasicMaterial({
       color: 0xed1850,
@@ -167,7 +166,6 @@ class NateHub {
       'open-delta',
       'closed-delta',
       'chair-pole',
-      'log-linkedin',
       'monitor-screen',
       'monitor-stand',
       'monitor-back',
@@ -180,7 +178,8 @@ class NateHub {
       'chair-wheel-4',
       'text-code',
       'logo-ig',
-      'Cube001',
+      'logo-linkedin',
+      'led-strip',
     ];
 
     this.cube = this.gltfLoader.load(
@@ -202,7 +201,7 @@ class NateHub {
 
   setLayerMaterial(child) {
     switch (child.name) {
-      case 'text-artwork001':
+      case 'text-artwork':
         child.material.color.set(0xedf6f9);
         break;
       case 'chair-base':
