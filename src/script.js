@@ -246,14 +246,18 @@ class NateHub {
   }
 
   placeArtwork(children) {
-    const artwork = {
-      casa: this.textureLoader.load('artwork/casa.png'),
-    };
-    // console.log(artwork.casa.image);
-    // const aspect = artwork.casa.image.naturalHeight / artwork.casa.image.naturalWidth;
-    artwork.casa.wrapS = THREE.RepeatWrapping;
-    artwork.casa.wrapT = THREE.RepeatWrapping;
-    artwork.casa.repeat.set(1, 1);
+    const artwork = [
+      'gold-sun',
+      'garden-creature',
+      'coqui-flamboyan',
+      'owl-city',
+      'summit',
+      'thunder',
+      'treasure',
+      'casa',
+      'tulip',
+      'treehouse',
+    ];
 
     const frames = children.filter((child) => child.name.startsWith('frame-'));
 
@@ -261,19 +265,38 @@ class NateHub {
       const bbox = new THREE.Box3().setFromObject(frame);
       const frameSize = bbox.getSize(new THREE.Vector3());
 
-      const canvas = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(frameSize.x * 0.9, frameSize.y * 0.9, 2, 2),
-        new THREE.MeshBasicMaterial({
-          map: artwork.casa,
-        }),
-      );
+      const index = +frame.name.split('-')[1] - 1;
 
-      // console.log(frame.position.z)
+      const filePath = artwork[index] ?? artwork[0];
 
-      const positionY = frame.position.y + frame.parent.position.y;
-      canvas.position.set(frame.position.x, positionY, 5.45);
+      this.textureLoader.load(`artwork/${filePath}.png`, (texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(1, 1);
 
-      this.scene.add(canvas);
+        const artAspect = texture.image.height / texture.image.width;
+
+        const width = frameSize.x;
+        const height = frameSize.x * artAspect;
+
+        const canvas = new THREE.Mesh(
+          new THREE.PlaneBufferGeometry(width, height, 2, 2),
+          new THREE.MeshBasicMaterial({ map: texture }),
+        );
+
+        let resize = 1;
+        if (frameSize.y < canvas.geometry.parameters.height) {
+          resize = frameSize.y / canvas.geometry.parameters.height;
+        } else if (frameSize.x < canvas.geometry.parameters.width) {
+          resize = frameSize.x / canvas.geometry.parameters.width;
+        }
+        canvas.scale.set(resize, resize, 1);
+
+        const positionY = frame.position.y + frame.parent.position.y;
+        canvas.position.set(frame.position.x, positionY, 5.48);
+
+        this.scene.add(canvas);
+      });
     });
   }
 
