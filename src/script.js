@@ -99,22 +99,18 @@ class NateHub {
     this.camera = new THREE.PerspectiveCamera(25, this.getScreenAspectRatio(), 0.1, 1000);
     this.camera.position.set(38, 6, 10);
     this.controls = new OrbitControls(this.camera, this.canvas);
-
-    const cameraFolder = this.gui.addFolder('Camera');
-
-    cameraFolder.add(this.camera.position, 'x', -100, 100, 0.001);
-    cameraFolder.add(this.camera.position, 'y', -100, 100, 0.001);
-    cameraFolder.add(this.camera.position, 'z', -100, 100, 0.001);
+    this.controls.minDistance = 7.5;
+    this.controls.maxDistance = 150;
   }
 
   light() {
     const ambientLight = new THREE.AmbientLight(0xcccccc, 0.01);
     this.scene.add(ambientLight);
 
-    const artworkLight = new THREE.SpotLight(0xffffff, 0.9);
+    const artworkLight = new THREE.SpotLight(0xffffff);
     artworkLight.position.set(4.6, 6.8, 7.8);
     artworkLight.angle = Math.PI * 0.15;
-    artworkLight.intensity = 3;
+    artworkLight.intensity = 2;
     artworkLight.distance = 7;
     artworkLight.penumbra = 0.3;
     this.scene.add(artworkLight);
@@ -163,8 +159,6 @@ class NateHub {
     this.materials['chair-wheel-4'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
     this.materials['monitor-back'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
     this.materials['monitor-screen'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
-
-    // const indeed = this.textureLoader.load('i-help-people-get-jobs-bg.png');
     this.materials['monitor-window'] = new THREE.MeshBasicMaterial({ color: 0x3063f2 });
   }
 
@@ -209,13 +203,12 @@ class NateHub {
             if (child.name === 'text-artwork001') {
               child.material.color.set(0xedf6f9);
             } else if (chair.indexOf(child.name) > -1) {
-              if (chair.name === 'chair-pole') {
+              if (child.name === 'chair-pole') {
                 child.material.metalness = 0.5;
-              }
-
-              if (chair.name === 'chair-seat') {
+                child.material.roughness = 0.25;
+              } else if (child.name === 'chair-seat') {
                 child.material.color.set(0x747474);
-                child.material.roughness = 1;
+                child.material.roughness = 0.66;
               }
             } else if (child.name === 'monitor-stand') {
               child.material.color.set(0x000000);
@@ -229,6 +222,17 @@ class NateHub {
             }
           }
         });
+
+        const indeed = this.textureLoader.load('i-help-people-get-jobs-bg.png');
+        this.monitorScreen = new THREE.Mesh(
+          new THREE.PlaneBufferGeometry(2.33, 1.33),
+          new THREE.MeshBasicMaterial({
+            map: indeed,
+          }),
+        );
+        this.monitorScreen.rotation.y = Math.PI * 0.5;
+        this.monitorScreen.position.set(1.04, -0.3, -1.6);
+        this.scene.add(this.monitorScreen);
       },
     );
   }
@@ -237,8 +241,6 @@ class NateHub {
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
     this.controls.update();
-
-    this.monitorLightHelper.update();
 
     // Update tween
     // TWEEN.update(time);
