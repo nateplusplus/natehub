@@ -222,7 +222,8 @@ class NateHub {
 
         gltf.scene.traverse(this.setLayerMaterial.bind(this));
 
-        this.addMonitorScreen();
+        this.monitor = new Monitor(this);
+        this.monitor.add();
 
         this.placeArtwork(gltf.scene.children);
 
@@ -261,22 +262,6 @@ class NateHub {
           child.material = this.materials.baked;
         }
     }
-  }
-
-  addMonitorScreen() {
-    const indeed = this.textureLoader.load('i-help-people-get-jobs-bg.png');
-    this.monitorScreen = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(2.33, 1.33),
-      new THREE.MeshBasicMaterial({
-        map: indeed,
-      }),
-    );
-    this.monitorScreen.rotation.y = Math.PI * 0.5;
-    this.monitorScreen.position.set(1.04, -0.3, -1.6);
-    this.monitorScreen.name = 'monitor-display';
-    this.scene.add(this.monitorScreen);
-
-    this.monitor = new Monitor();
   }
 
   placeArtwork(children) {

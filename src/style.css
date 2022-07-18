@@ -20,20 +20,39 @@ body {
 
 .dialog {
     position: absolute;
-    width: 270px;
-    background: #EFEFEF;
-    border: 1px solid #AFAFAF;
-    border-radius: 8px;
-    box-shadow: -2px 5px 19px 1px rgba(0, 0, 0, 0.15);
-    font-size: 14px;
-    padding: 20px 15px;
-    bottom: 50%;
-    left: 50%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+}
+@media (min-width: 600px) {
+    .dialog {
+        bottom: 40px;
+    }
 }
 
-.dialog--right {
-    left: initial;
-    right: 50%;
+.dialog__content {
+    background: rgba(0, 119, 182, 0.75);
+    border-top: 1px solid #0096c7;
+    box-shadow: 1px 3px 76px 13px rgba(0,0,0,0.46);
+    color: white;
+    font-size: 14px;
+    padding: 40px 20px;
+    line-height: 1.5;
+    position: relative;
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .dialog__content {
+        width: 600px;
+    }
+}
+
+.dialog a,
+.dialog a:visited {
+    color: white;
 }
 
 .d-none {
@@ -42,4 +61,17 @@ body {
 
 .dialog p {
     margin-bottom: 1em;
+}
+
+.dialog__close {
+    background: none;
+    appearance: none;
+    border: none;
+    box-shadow: none;
+    color: white;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 24px;
+    padding: 3px;
 }
