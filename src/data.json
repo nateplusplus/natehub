@@ -1,0 +1,34 @@
+[
+    {
+        "name": "pushin",
+        "copy": "I built PushIn.js as a lightweight opensource parallax effect that simulates an interactive dolly-in or push-in animation on a webpage.",
+        "cta": {
+            "text": "View PushIn on GitHub",
+            "href": "https://github.com/nateplusplus/pushin"
+        }
+    },
+    {
+        "name": "indeed",
+        "copy": "I'm proud to work at Indeed as a Web Developer in Marketing Systems.",
+        "cta": {
+            "text": "Visit Indeed.com",
+            "href": "https://www.indeed.com"
+        }
+    },
+    {
+        "name": "ig-nateplusplus",
+        "copy": "Follow me on instagram!",
+        "cta": {
+            "text": "Go to Instagram",
+            "href": "https://www.instagram.com/nateplusplus/"
+        }
+    },
+    {
+        "name": "linkedin",
+        "copy": "Let's connect!",
+        "cta": {
+            "text": "Go to LinkedIn",
+            "href": "https://www.linkedin.com/in/nateplusplus/"
+        }
+    },
+];

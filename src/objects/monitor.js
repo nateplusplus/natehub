@@ -1,12 +1,18 @@
 import * as THREE from 'three';
+import NatehubModal from '../modal';
 
 class Monitor {
   constructor(parent) {
     this.parent = parent;
+
+    customElements.define('natehub-modal', NatehubModal);
   }
 
   handleClicked(object) {
     console.log('Monitor clicked! Woot!');
+
+    const modal = document.createElement('natehub-modal');
+    document.body.appendChild(modal);
   }
 
   add() {
