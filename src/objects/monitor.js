@@ -1,18 +1,25 @@
 import * as THREE from 'three';
 import NatehubModal from '../modal';
 
+import data from '../data.json';
+
 class Monitor {
   constructor(parent) {
     this.parent = parent;
+    this.data = data.find((item) => item.name === 'indeed');
 
     customElements.define('natehub-modal', NatehubModal);
   }
 
-  handleClicked(object) {
-    console.log('Monitor clicked! Woot!');
-
+  handleClicked() {
     const modal = document.createElement('natehub-modal');
     document.body.appendChild(modal);
+    modal.heading = this.data.heading ?? '';
+    modal.copy = this.data.copy ?? '';
+  }
+
+  handleMouseover() {
+    console.log('mouseover');
   }
 
   add() {

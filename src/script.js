@@ -64,11 +64,15 @@ class NateHub {
     window.addEventListener('resize', this.handleResize.bind(this));
 
     this.hammertime.on('tap', this.handleTap.bind(this));
+    this.canvas.addEventListener('mousemove', this.handleMousemove.bind(this));
   }
 
   interactiveObjects() {
     this.interactive = {
-      'monitor-display': this.monitor.handleClicked,
+      'monitor-display': {
+        onTap: this.monitor.handleClicked.bind(this.monitor),
+        onMouseover: this.monitor.handleMouseover.bind(this.monitor),
+      },
     };
   }
 
@@ -79,14 +83,26 @@ class NateHub {
     setTimeout(
       () => {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
-        const clicked = intersects[0].object;
+        const clicked = intersects[0]?.object;
 
-        if (typeof this.interactive[clicked.name] !== 'undefined') {
-          this.interactive[clicked.name](clicked);
+        if (clicked && typeof this.interactive[clicked.name] !== 'undefined') {
+          this.interactive[clicked.name]?.onTap(clicked);
         }
       },
       100,
     );
+  }
+
+  handleMousemove(event) {
+    this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
+    this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
+
+    const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
+    const clicked = intersects[0]?.object;
+
+    if (clicked && typeof this.interactive[clicked.name] !== 'undefined') {
+      this.interactive[clicked.name]?.onMouseover(clicked);
+    }
   }
 
   handleResize() {

@@ -18,7 +18,7 @@ body {
     outline: none;
 }
 
-.dialog {
+natehub-modal {
     position: absolute;
     display: flex;
     justify-content: center;
@@ -27,12 +27,12 @@ body {
     left: 0;
 }
 @media (min-width: 600px) {
-    .dialog {
+    natehub-modal {
         bottom: 40px;
     }
 }
 
-.dialog__content {
+.modal__content {
     background: rgba(0, 119, 182, 0.75);
     border-top: 1px solid #0096c7;
     box-shadow: 1px 3px 76px 13px rgba(0,0,0,0.46);
@@ -45,13 +45,13 @@ body {
 }
 
 @media (min-width: 600px) {
-    .dialog__content {
+    .modal__content {
         width: 600px;
     }
 }
 
-.dialog a,
-.dialog a:visited {
+natehub-modal a,
+natehub-modal a:visited {
     color: white;
 }
 
@@ -59,11 +59,11 @@ body {
     display: none;
 }
 
-.dialog p {
+natehub-modal p {
     margin-bottom: 1em;
 }
 
-.dialog__close {
+.modal__close {
     background: none;
     appearance: none;
     border: none;
