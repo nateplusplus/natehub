@@ -1,15 +1,5 @@
 class NatehubModal extends HTMLElement {
   connectedCallback() {
-    /*
-      <div class="dialog">
-        <div class="dialog__content">
-          <h2></h2>
-          <p></p>
-          <a href="#" target="_blank">Read more</a>
-          <button class="dialog__close" title="Close dialog">&times;</button>
-        </div>
-      </div>
-      */
     this.children.container = document.createElement('div');
     this.children.container.classList.add('modal__content');
 
@@ -28,6 +18,8 @@ class NatehubModal extends HTMLElement {
     this.children.close.classList.add('modal__close');
     this.children.close.setAttribute('title', 'Close dialog');
     this.children.close.innerHTML = '&times;';
+
+    this.children.close.addEventListener('click', this.close.bind(this));
 
     this.children.container.appendChild(this.children.heading);
     this.children.container.appendChild(this.children.copy);
@@ -69,6 +61,10 @@ class NatehubModal extends HTMLElement {
     if (name === 'copy') {
       this.children.copy.innerHTML = newValue;
     }
+  }
+
+  close() {
+    this.remove();
   }
 }
 

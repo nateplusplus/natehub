@@ -4,16 +4,18 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
-
 import GUI from 'lil-gui';
 // import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
+import NatehubModal from './modal';
 import Monitor from './objects/monitor';
+import SocialLogo from './objects/social-logo';
 
 class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
+    customElements.define('natehub-modal', NatehubModal);
     this.interactiveElements = [];
 
     this.mouse = new THREE.Vector2();
@@ -71,7 +73,18 @@ class NateHub {
     this.interactive = {
       'monitor-display': {
         onTap: this.monitor.handleClicked.bind(this.monitor),
-        onMouseover: this.monitor.handleMouseover.bind(this.monitor),
+      },
+      'logo-ig': {
+        onTap: this.logoIg.handleClicked.bind(this.logoIg),
+      },
+      'logo-linkedin': {
+        onTap: this.linkedIn.handleClicked.bind(this.linkedIn),
+      },
+      'open-delta': {
+        onTap: this.pushin.handleClicked.bind(this.pushin),
+      },
+      'closed-delta': {
+        onTap: this.pushin.handleClicked.bind(this.pushin),
       },
     };
   }
@@ -85,6 +98,7 @@ class NateHub {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
         const clicked = intersects[0]?.object;
 
+        NateHub.closeAllModals();
         if (clicked && typeof this.interactive[clicked.name] !== 'undefined') {
           this.interactive[clicked.name]?.onTap(clicked);
         }
@@ -93,15 +107,21 @@ class NateHub {
     );
   }
 
+  static closeAllModals() {
+    document.querySelectorAll('natehub-modal').forEach((modal) => modal.close());
+  }
+
   handleMousemove(event) {
     this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
     this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
 
     const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
-    const clicked = intersects[0]?.object;
+    const hovered = intersects[0]?.object;
 
-    if (clicked && typeof this.interactive[clicked.name] !== 'undefined') {
-      this.interactive[clicked.name]?.onMouseover(clicked);
+    if (hovered && typeof this.interactive[hovered.name] !== 'undefined') {
+      this.canvas.style.cursor = 'pointer';
+    } else {
+      this.canvas.style.cursor = 'auto';
     }
   }
 
@@ -238,8 +258,12 @@ class NateHub {
 
         gltf.scene.traverse(this.setLayerMaterial.bind(this));
 
-        this.monitor = new Monitor(this);
+        this.monitor = new Monitor(this, 'indeed');
         this.monitor.add();
+
+        this.logoIg = new SocialLogo(this, 'ig-nateplusplus');
+        this.linkedIn = new SocialLogo(this, 'linkedin');
+        this.pushin = new SocialLogo(this, 'pushin');
 
         this.placeArtwork(gltf.scene.children);
 
