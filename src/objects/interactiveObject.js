@@ -10,8 +10,8 @@ class InteractiveObject {
   handleClicked() {
     const modal = document.createElement('natehub-modal');
     document.body.appendChild(modal);
-    modal.heading = this.data.heading ?? '';
-    modal.copy = this.data.copy ?? '';
+    modal.heading = this.data?.heading ?? '';
+    modal.copy = this.data?.copy ?? '';
   }
 }
 

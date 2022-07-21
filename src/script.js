@@ -11,6 +11,7 @@ import Hammer from 'hammerjs';
 import NatehubModal from './modal';
 import Monitor from './objects/monitor';
 import SocialLogo from './objects/social-logo';
+import Artwork from './objects/artwork';
 
 class NateHub {
   constructor() {
@@ -85,6 +86,36 @@ class NateHub {
       },
       'closed-delta': {
         onTap: this.pushin.handleClicked.bind(this.pushin),
+      },
+      'gold-sun': {
+        onTap: this['gold-sun'].handleClicked.bind(this['gold-sun']),
+      },
+      'garden-creature': {
+        onTap: this['garden-creature'].handleClicked.bind(this['garden-creature']),
+      },
+      'coqui-flamboyan': {
+        onTap: this['coqui-flamboyan'].handleClicked.bind(this['coqui-flamboyan']),
+      },
+      'owl-city': {
+        onTap: this['owl-city'].handleClicked.bind(this['owl-city']),
+      },
+      summit: {
+        onTap: this.summit.handleClicked.bind(this.summit),
+      },
+      thunder: {
+        onTap: this.thunder.handleClicked.bind(this.thunder),
+      },
+      treasure: {
+        onTap: this.treasure.handleClicked.bind(this.treasure),
+      },
+      casa: {
+        onTap: this.casa.handleClicked.bind(this.casa),
+      },
+      tulip: {
+        onTap: this.tulip.handleClicked.bind(this.tulip),
+      },
+      treehouse: {
+        onTap: this.treehouse.handleClicked.bind(this.treehouse),
       },
     };
   }
@@ -305,57 +336,12 @@ class NateHub {
   }
 
   placeArtwork(children) {
-    const artwork = [
-      'gold-sun',
-      'garden-creature',
-      'coqui-flamboyan',
-      'owl-city',
-      'summit',
-      'thunder',
-      'treasure',
-      'casa',
-      'tulip',
-      'treehouse',
-    ];
-
     const frames = children.filter((child) => child.name.startsWith('frame-'));
 
     frames.forEach((frame) => {
-      const bbox = new THREE.Box3().setFromObject(frame);
-      const frameSize = bbox.getSize(new THREE.Vector3());
-
-      const index = +frame.name.split('-')[1] - 1;
-
-      const filePath = artwork[index] ?? artwork[0];
-
-      this.textureLoader.load(`artwork/${filePath}.png`, (texture) => {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(1, 1);
-
-        const artAspect = texture.image.height / texture.image.width;
-
-        const width = frameSize.x;
-        const height = frameSize.x * artAspect;
-
-        const canvas = new THREE.Mesh(
-          new THREE.PlaneBufferGeometry(width, height, 2, 2),
-          new THREE.MeshBasicMaterial({ map: texture }),
-        );
-
-        let resize = 1;
-        if (frameSize.y < canvas.geometry.parameters.height) {
-          resize = frameSize.y / canvas.geometry.parameters.height;
-        } else if (frameSize.x < canvas.geometry.parameters.width) {
-          resize = frameSize.x / canvas.geometry.parameters.width;
-        }
-        canvas.scale.set(resize, resize, 1);
-
-        const positionY = frame.position.y + frame.parent.position.y;
-        canvas.position.set(frame.position.x, positionY, 5.48);
-
-        this.scene.add(canvas);
-      });
+      const artwork = new Artwork(this, frame);
+      this[artwork.name] = artwork;
+      artwork.add();
     });
   }
 
