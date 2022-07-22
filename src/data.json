@@ -30,5 +30,86 @@
             "text": "Go to LinkedIn",
             "href": "https://www.linkedin.com/in/nateplusplus/"
         }
+    },
+    {
+        "name": "gold-sun",
+        "copy": "Gold Sun",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "garden-creature",
+        "copy": "Garden Creature",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "coqui-flamboyan",
+        "copy": "Coquí Flamboyán",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "owl-city",
+        "copy": "Owl City",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "summit",
+        "copy": "Summit",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "thunder",
+        "copy": "Thunder",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "treasure",
+        "copy": "Treasure",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "casa",
+        "copy": "Casa",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "tulip",
+        "copy": "Tulip",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "treehouse",
+        "copy": "Treehouse",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
     }
+
 ]

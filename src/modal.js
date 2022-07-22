@@ -30,7 +30,7 @@ class NatehubModal extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['heading', 'copy'];
+    return ['heading', 'copy', 'cta-text', 'cta-href'];
   }
 
   static get heading() {
@@ -49,6 +49,22 @@ class NatehubModal extends HTMLElement {
     this.setAttribute('copy', value);
   }
 
+  static get ctaText() {
+    return this.getAttribute('cta-text');
+  }
+
+  set ctaText(value) {
+    this.setAttribute('cta-text', value);
+  }
+
+  static get ctaHref() {
+    return this.getAttribute('cta-href');
+  }
+
+  set ctaHref(value) {
+    this.setAttribute('cta-href', value);
+  }
+
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue || !this.isConnected) {
       return;
@@ -60,6 +76,14 @@ class NatehubModal extends HTMLElement {
 
     if (name === 'copy') {
       this.children.copy.innerHTML = newValue;
+    }
+
+    if (name === 'cta-text') {
+      this.children.cta.innerHTML = newValue;
+    }
+
+    if (name === 'cta-href') {
+      this.children.cta.href = newValue;
     }
   }
 

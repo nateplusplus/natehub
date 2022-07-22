@@ -26,6 +26,7 @@ class Artwork extends InteractiveObject {
     ];
 
     this.name = artwork[index] ?? artwork[0];
+    this.setData();
   }
 
   add() {
