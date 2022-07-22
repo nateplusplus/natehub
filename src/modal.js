@@ -33,7 +33,7 @@ class NatehubModal extends HTMLElement {
     return ['heading', 'copy', 'cta-text', 'cta-href'];
   }
 
-  static get heading() {
+  get heading() {
     return this.getAttribute('heading');
   }
 
@@ -41,7 +41,7 @@ class NatehubModal extends HTMLElement {
     this.setAttribute('heading', value);
   }
 
-  static get copy() {
+  get copy() {
     return this.getAttribute('copy');
   }
 
@@ -49,7 +49,7 @@ class NatehubModal extends HTMLElement {
     this.setAttribute('copy', value);
   }
 
-  static get ctaText() {
+  get ctaText() {
     return this.getAttribute('cta-text');
   }
 
@@ -57,7 +57,7 @@ class NatehubModal extends HTMLElement {
     this.setAttribute('cta-text', value);
   }
 
-  static get ctaHref() {
+  get ctaHref() {
     return this.getAttribute('cta-href');
   }
 
