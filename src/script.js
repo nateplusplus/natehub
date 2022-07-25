@@ -292,8 +292,8 @@ class NateHub {
         this.monitor = new Monitor(this, 'indeed');
         this.monitor.add();
 
-        this.logoIg = new SocialLogo(this, 'ig-nateplusplus');
-        this.linkedIn = new SocialLogo(this, 'linkedin');
+        this.logoIg = new SocialLogo(this, 'logo-ig');
+        this.linkedIn = new SocialLogo(this, 'logo-linkedin');
         this.pushin = new SocialLogo(this, 'pushin');
 
         this.placeArtwork(gltf.scene.children);

@@ -16,7 +16,7 @@
         }
     },
     {
-        "name": "ig-nateplusplus",
+        "name": "logo-ig",
         "copy": "Follow me on instagram!",
         "cta": {
             "text": "Go to Instagram",
@@ -24,7 +24,7 @@
         }
     },
     {
-        "name": "linkedin",
+        "name": "logo-linkedin",
         "copy": "Let's connect!",
         "cta": {
             "text": "Go to LinkedIn",
