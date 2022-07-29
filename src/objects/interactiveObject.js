@@ -6,6 +6,7 @@ class InteractiveObject {
   constructor(parent, name) {
     this.parent = parent;
     this.name = name;
+    this.active = false;
 
     this.parent.scene.traverse((child) => {
       if (this.name === 'pushin' && child.name === 'closed-delta') {
@@ -16,8 +17,6 @@ class InteractiveObject {
     });
 
     this.setData();
-
-    this.handleActive();
   }
 
   setData() {
@@ -34,30 +33,38 @@ class InteractiveObject {
   }
 
   handleActive() {
-    if (this.mesh) {
+    if (this.mesh && this.parent.active !== this.name) {
       const bbox = new THREE.Box3().setFromObject(this.mesh);
       this.meshSize = bbox.getSize(new THREE.Vector3());
 
       const resize = 1.2;
 
       this.activeBox = new THREE.Mesh(
-        new BoxBufferGeometry(
-          this.meshSize.x * resize,
-          this.meshSize.y * resize,
-          this.meshSize.z * resize,
+        new THREE.TorusBufferGeometry(
+          Math.max(this.meshSize.x, this.meshSize.y, this.meshSize.z) * 0.5 * resize,
+          0.15,
+          32,
+          32,
         ),
         new THREE.MeshBasicMaterial({
           transparent: true,
-          opacity: 0.25,
+          opacity: 0.3,
+          color: new THREE.Color('#4287f5'),
         }),
       );
       const positionY = this.mesh.position.y + this.parent.cube.position.y;
       this.activeBox.position.set(this.mesh.position.x, positionY, this.mesh.position.z);
-
       this.activeBox.rotation.y = this.mesh.rotation.y;
+      this.activeBox.lookAt(this.parent.camera.position);
+
+      this.parent.active = this;
 
       this.parent.scene.add(this.activeBox);
     }
+  }
+
+  deactivate() {
+    this.parent.scene.remove(this.activeBox);
   }
 }
 

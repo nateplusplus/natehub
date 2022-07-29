@@ -37,6 +37,12 @@ class NateHub {
       height: window.innerHeight,
     };
 
+    this.points = {
+      start: new THREE.Vector3(38, 6, 10),
+      code: new THREE.Vector3(42, 3.7, 0),
+      artwork: new THREE.Vector3(-4.75, 2.34, 41.5),
+    };
+
     this.setupScene();
     this.light();
     this.loadMaterials();
@@ -70,56 +76,6 @@ class NateHub {
     this.canvas.addEventListener('mousemove', this.handleMousemove.bind(this));
   }
 
-  interactiveObjects() {
-    this.interactive = {
-      'monitor-display': {
-        onTap: this.monitor.handleClicked.bind(this.monitor),
-      },
-      'logo-ig': {
-        onTap: this.logoIg.handleClicked.bind(this.logoIg),
-      },
-      'logo-linkedin': {
-        onTap: this.linkedIn.handleClicked.bind(this.linkedIn),
-      },
-      'open-delta': {
-        onTap: this.pushin.handleClicked.bind(this.pushin),
-      },
-      'closed-delta': {
-        onTap: this.pushin.handleClicked.bind(this.pushin),
-      },
-      'gold-sun': {
-        onTap: this['gold-sun'].handleClicked.bind(this['gold-sun']),
-      },
-      'garden-creature': {
-        onTap: this['garden-creature'].handleClicked.bind(this['garden-creature']),
-      },
-      'coqui-flamboyan': {
-        onTap: this['coqui-flamboyan'].handleClicked.bind(this['coqui-flamboyan']),
-      },
-      'owl-city': {
-        onTap: this['owl-city'].handleClicked.bind(this['owl-city']),
-      },
-      summit: {
-        onTap: this.summit.handleClicked.bind(this.summit),
-      },
-      thunder: {
-        onTap: this.thunder.handleClicked.bind(this.thunder),
-      },
-      treasure: {
-        onTap: this.treasure.handleClicked.bind(this.treasure),
-      },
-      casa: {
-        onTap: this.casa.handleClicked.bind(this.casa),
-      },
-      tulip: {
-        onTap: this.tulip.handleClicked.bind(this.tulip),
-      },
-      treehouse: {
-        onTap: this.treehouse.handleClicked.bind(this.treehouse),
-      },
-    };
-  }
-
   handleTap(event) {
     this.mouse.x = (event.center.x / this.sizes.width) * 2 - 1;
     this.mouse.y = -(event.center.y / this.sizes.height) * 2 + 1;
@@ -128,10 +84,11 @@ class NateHub {
       () => {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
         const clicked = intersects[0]?.object;
+        const isInteractive = this.interactive.includes(clicked.name);
 
         NateHub.closeAllModals();
-        if (clicked && typeof this.interactive[clicked.name] !== 'undefined') {
-          this.interactive[clicked.name]?.onTap(clicked);
+        if (clicked && isInteractive && clicked.name in this) {
+          this[clicked.name]?.handleClicked();
         }
       },
       100,
@@ -149,10 +106,15 @@ class NateHub {
     const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
     const hovered = intersects[0]?.object;
 
-    if (hovered && typeof this.interactive[hovered.name] !== 'undefined') {
+    if (hovered && this.interactive.includes(hovered.name)) {
       this.canvas.style.cursor = 'pointer';
+      if (this.active && hovered.name !== this.active.name) {
+        this.active?.deactivate();
+      }
+      this[hovered.name].handleActive();
     } else {
       this.canvas.style.cursor = 'auto';
+      this.active?.deactivate();
     }
   }
 
@@ -193,10 +155,11 @@ class NateHub {
     this.renderer.outputEncoding = THREE.sRGBEncoding;
 
     this.camera = new THREE.PerspectiveCamera(25, this.getScreenAspectRatio(), 0.1, 1000);
-    this.camera.position.set(38, 6, 10);
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.minDistance = 7.5;
     this.controls.maxDistance = 150;
+
+    this.goToHashPosition();
   }
 
   light() {
@@ -290,16 +253,32 @@ class NateHub {
 
         this.cube.traverse(this.setLayerMaterial.bind(this));
 
-        this.monitor = new Monitor(this, 'indeed');
-        this.monitor.add();
+        this['monitor-screen'] = new Monitor(this, 'indeed');
+        this['monitor-screen'].add();
 
-        this.logoIg = new SocialLogo(this, 'logo-ig');
-        this.linkedIn = new SocialLogo(this, 'logo-linkedin');
+        this['logo-ig'] = new SocialLogo(this, 'logo-ig');
+        this['logo-linkedin'] = new SocialLogo(this, 'logo-linkedin');
         this.pushin = new SocialLogo(this, 'pushin');
 
         this.placeArtwork(this.cube.children);
 
-        this.interactiveObjects();
+        this.interactive = [
+          'monitor-display',
+          'logo-ig',
+          'logo-linkedin',
+          'open-delta',
+          'closed-delta',
+          'gold-sun',
+          'garden-creature',
+          'coqui-flamboyan',
+          'owl-city',
+          'summit',
+          'thunder',
+          'treasure',
+          'casa',
+          'tulip',
+          'treehouse',
+        ];
       },
     );
   }
@@ -344,6 +323,15 @@ class NateHub {
       this[artwork.name] = artwork;
       artwork.add();
     });
+  }
+
+  goToHashPosition() {
+    const position = window.location.hash.replace('#', '');
+
+    const target = this.points[position] ?? this.points.start;
+
+    const { x: camX, y: camY, z: camZ } = target;
+    this.camera.position.set(camX, camY, camZ);
   }
 
   tick(time) {
