@@ -35,11 +35,27 @@ class InteractiveObject {
 
   handleActive() {
     if (this.mesh) {
+      const bbox = new THREE.Box3().setFromObject(this.mesh);
+      this.meshSize = bbox.getSize(new THREE.Vector3());
+
+      const resize = 1.2;
+
       this.activeBox = new THREE.Mesh(
-        new BoxBufferGeometry(1, 1, 0.1, 2, 2, 2),
-        new THREE.MeshBasicMaterial(),
+        new BoxBufferGeometry(
+          this.meshSize.x * resize,
+          this.meshSize.y * resize,
+          this.meshSize.z * resize,
+        ),
+        new THREE.MeshBasicMaterial({
+          transparent: true,
+          opacity: 0.25,
+        }),
       );
-      this.activeBox.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
+      const positionY = this.mesh.position.y + this.parent.cube.position.y;
+      this.activeBox.position.set(this.mesh.position.x, positionY, this.mesh.position.z);
+
+      this.activeBox.rotation.y = this.mesh.rotation.y;
+
       this.parent.scene.add(this.activeBox);
     }
   }

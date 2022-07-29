@@ -279,15 +279,16 @@ class NateHub {
       'led-strip',
     ];
 
-    this.cube = this.gltfLoader.load(
+    this.gltfLoader.load(
       'natecube.glb',
       (gltf) => {
-        const bbox = new THREE.Box3().setFromObject(gltf.scene);
+        this.cube = gltf.scene;
+        const bbox = new THREE.Box3().setFromObject(this.cube);
         const modelSize = bbox.getSize(new THREE.Vector3());
-        gltf.scene.position.y = modelSize.y * -0.5;
-        this.scene.add(gltf.scene);
+        this.cube.position.y = modelSize.y * -0.5;
+        this.scene.add(this.cube);
 
-        gltf.scene.traverse(this.setLayerMaterial.bind(this));
+        this.cube.traverse(this.setLayerMaterial.bind(this));
 
         this.monitor = new Monitor(this, 'indeed');
         this.monitor.add();
@@ -296,7 +297,7 @@ class NateHub {
         this.linkedIn = new SocialLogo(this, 'logo-linkedin');
         this.pushin = new SocialLogo(this, 'pushin');
 
-        this.placeArtwork(gltf.scene.children);
+        this.placeArtwork(this.cube.children);
 
         this.interactiveObjects();
       },
