@@ -11,6 +11,6 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'no-param-reassign': ['error', { props: false }],
+    'no-param-reassign': 'off',
   },
 };

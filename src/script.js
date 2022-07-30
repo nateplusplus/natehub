@@ -108,13 +108,21 @@ class NateHub {
 
     if (hovered && this.interactive.includes(hovered.name)) {
       this.canvas.style.cursor = 'pointer';
-      if (this.active && hovered.name !== this.active.name) {
-        this.active?.deactivate();
+      if (!this.active || hovered.name !== this.active.name) {
+        const radius = this[hovered.name].boundingRadius();
+        const position = this[hovered.name].getOverlayPosition();
+        const rotation = this[hovered.name].mesh.rotation.y;
+        this.addActive(radius, position, rotation);
       }
-      this[hovered.name].handleActive();
     } else {
       this.canvas.style.cursor = 'auto';
-      this.active?.deactivate();
+
+      if (this.active) {
+        this.scene.remove(this.active);
+        this.active.geometry.dispose();
+        this.active.material.dispose();
+        this.active = null;
+      }
     }
   }
 
@@ -130,6 +138,25 @@ class NateHub {
     // Update renderer
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  }
+
+  addActive(radius, position, rotation) {
+    radius = radius || 1;
+    position = position || new THREE.Vector3();
+    rotation = rotation || 0;
+
+    this.active = new THREE.Mesh(
+      new THREE.TorusBufferGeometry(radius, 0.15, 32, 32),
+      new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0.3,
+        color: new THREE.Color('#4287f5'),
+      }),
+    );
+    this.active.position.copy(position);
+    this.active.rotation.y = rotation;
+    this.active.lookAt(this.camera.position);
+    this.scene.add(this.active);
   }
 
   setupScene() {
