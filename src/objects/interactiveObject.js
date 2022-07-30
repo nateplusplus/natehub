@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { BoxBufferGeometry } from 'three';
+import { BoxBufferGeometry, Box3Helper, Box3 } from 'three';
 import data from '../data.json';
 
 class InteractiveObject {
@@ -16,11 +16,26 @@ class InteractiveObject {
       }
     });
 
+    this.makeBoundingBox();
+
     this.setData();
   }
 
   setData() {
     this.data = data.find((item) => item.name === this.name);
+  }
+
+  makeBoundingBox() {
+    if (this.mesh) {
+      const bbox = new THREE.Box3().setFromObject(this.mesh);
+      // bbox.position.y += this.parent.cube.position.y;
+      console.log(bbox);
+
+      const boxHelper = new THREE.Box3Helper(bbox);
+      boxHelper.name = `${this.mesh.name}-bbox`;
+
+      this.parent.scene.add(boxHelper);
+    }
   }
 
   handleClicked() {
@@ -48,8 +63,8 @@ class InteractiveObject {
   getOverlayPosition() {
     let position = new THREE.Vector3();
     if (this.mesh) {
-      const positionY = this.mesh.position.y + this.parent.cube.position.y;
-      position = new THREE.Vector3(this.mesh.position.x, positionY, this.mesh.position.z);
+      const pY = this.mesh.position.y + this.parent.cube.position.y;
+      position = new THREE.Vector3(this.mesh.position.x, pY, this.mesh.position.z);
     }
 
     return position;

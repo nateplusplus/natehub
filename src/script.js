@@ -105,8 +105,10 @@ class NateHub {
 
     const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
     const hovered = intersects[0]?.object;
+    // console.log(hovered.name);
+    const name = hovered ? hovered.name.replace('-bbox', '') : '';
 
-    if (hovered && this.interactive.includes(hovered.name)) {
+    if (this.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
       if (!this.active || hovered.name !== this.active.name) {
         const radius = this[hovered.name].boundingRadius();
@@ -144,6 +146,10 @@ class NateHub {
     radius = radius || 1;
     position = position || new THREE.Vector3();
     rotation = rotation || 0;
+
+    if (this.active) {
+      this.scene.remove(this.active);
+    }
 
     this.active = new THREE.Mesh(
       new THREE.TorusBufferGeometry(radius, 0.15, 32, 32),
