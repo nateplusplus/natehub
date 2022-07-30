@@ -35,8 +35,8 @@
         "name": "gold-sun",
         "copy": "Gold Sun",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/127250877/Heron-Sunset"
         }
     },
     {
@@ -59,8 +59,8 @@
         "name": "owl-city",
         "copy": "Owl City",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/127253745/Owl-City"
         }
     },
     {
@@ -91,8 +91,8 @@
         "name": "casa",
         "copy": "Casa",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/127252353/Abstract-Beach-House"
         }
     },
     {
@@ -106,6 +106,14 @@
     {
         "name": "treehouse",
         "copy": "Treehouse",
+        "cta": {
+            "text": "Go to artwork",
+            "href": "#"
+        }
+    },
+    {
+        "name": "gold",
+        "copy": "Golden Willow",
         "cta": {
             "text": "Go to artwork",
             "href": "#"

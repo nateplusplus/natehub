@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { BoxBufferGeometry, Box3Helper, Box3 } from 'three';
 import data from '../data.json';
 
 class InteractiveObject {
@@ -7,6 +6,7 @@ class InteractiveObject {
     this.parent = parent;
     this.name = name;
     this.active = false;
+    this.front = 'x';
 
     this.parent.scene.traverse((child) => {
       if (this.name === 'pushin' && child.name === 'closed-delta') {
@@ -17,7 +17,6 @@ class InteractiveObject {
     });
 
     this.makeBoundingBox();
-
     this.setData();
   }
 
@@ -28,13 +27,29 @@ class InteractiveObject {
   makeBoundingBox() {
     if (this.mesh) {
       const bbox = new THREE.Box3().setFromObject(this.mesh);
-      // bbox.position.y += this.parent.cube.position.y;
-      console.log(bbox);
 
-      const boxHelper = new THREE.Box3Helper(bbox);
-      boxHelper.name = `${this.mesh.name}-bbox`;
+      const dimensions = new THREE.Vector3().subVectors(bbox.max, bbox.min);
+      const padding = 0.2;
+      const boxGeo = new THREE.BoxBufferGeometry(
+        dimensions.x + padding,
+        dimensions.y + padding,
+        dimensions.z + padding,
+      );
 
-      this.parent.scene.add(boxHelper);
+      const box = new THREE.Mesh(
+        boxGeo,
+        new THREE.MeshBasicMaterial({
+          transparent: true,
+          opacity: 0.2,
+        }),
+      );
+
+      box.visible = false;
+
+      box.name = `${this.mesh.name}Bbox`;
+      box.position.copy(this.mesh.position);
+
+      this.parent.cube.add(box);
     }
   }
 
@@ -63,8 +78,20 @@ class InteractiveObject {
   getOverlayPosition() {
     let position = new THREE.Vector3();
     if (this.mesh) {
-      const pY = this.mesh.position.y + this.parent.cube.position.y;
-      position = new THREE.Vector3(this.mesh.position.x, pY, this.mesh.position.z);
+      position = new THREE.Vector3(
+        this.mesh.position.x,
+        this.mesh.position.y,
+        this.mesh.position.z,
+      );
+
+      // Add padding to whichever dimension is considered the front
+      // This ensures that the hover state is positioned slightly in front,
+      // and allows it to face the object.
+      if (position[this.front] > 0) {
+        position[this.front] += 0.2;
+      } else {
+        position[this.front] -= 0.2;
+      }
     }
 
     return position;

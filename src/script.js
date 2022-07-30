@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 import GUI from 'lil-gui';
-// import * as TWEEN from '@tweenjs/tween.js';
+import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
 import NatehubModal from './modal';
@@ -17,14 +17,13 @@ class NateHub {
   constructor() {
     this.canvas = document.querySelector('canvas.webgl');
     customElements.define('natehub-modal', NatehubModal);
-    this.interactiveElements = [];
 
     this.mouse = new THREE.Vector2();
     this.mouseRaycaster = new THREE.Raycaster();
 
     this.hammertime = new Hammer(this.canvas);
 
-    this.gui = new GUI();
+    // this.gui = new GUI();
 
     this.breakpoints = {
       md: 768,
@@ -38,7 +37,8 @@ class NateHub {
     };
 
     this.points = {
-      start: new THREE.Vector3(38, 6, 10),
+      start: new THREE.Vector3(70, 10, 0),
+      home: new THREE.Vector3(38, 6, 10),
       code: new THREE.Vector3(42, 3.7, 0),
       artwork: new THREE.Vector3(-4.75, 2.34, 41.5),
     };
@@ -83,12 +83,13 @@ class NateHub {
     setTimeout(
       () => {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
-        const clicked = intersects[0]?.object;
-        const isInteractive = this.interactive.includes(clicked.name);
+        const clicked = intersects[0]?.object?.name ?? '';
+        const name = NateHub.getObjectName(clicked);
+        const isInteractive = this.interactive.includes(name);
 
         NateHub.closeAllModals();
-        if (clicked && isInteractive && clicked.name in this) {
-          this[clicked.name]?.handleClicked();
+        if (clicked && isInteractive && name in this) {
+          this[name]?.handleClicked();
         }
       },
       100,
@@ -99,32 +100,45 @@ class NateHub {
     document.querySelectorAll('natehub-modal').forEach((modal) => modal.close());
   }
 
+  static getObjectName(bboxName) {
+    return bboxName.replace('Bbox', '');
+  }
+
   handleMousemove(event) {
     this.mouse.x = (event.clientX / this.sizes.width) * 2 - 1;
     this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
 
     const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
-    const hovered = intersects[0]?.object;
-    // console.log(hovered.name);
-    const name = hovered ? hovered.name.replace('-bbox', '') : '';
+    const hovered = intersects[0]?.object?.name ?? '';
+
+    if (hovered && hovered.includes('Active')) {
+      // Do nothing if we're hovering over the hover state itself
+      return;
+    }
+
+    const name = NateHub.getObjectName(hovered);
 
     if (this.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
-      if (!this.active || hovered.name !== this.active.name) {
-        const radius = this[hovered.name].boundingRadius();
-        const position = this[hovered.name].getOverlayPosition();
-        const rotation = this[hovered.name].mesh.rotation.y;
-        this.addActive(radius, position, rotation);
+      if (!this.active || `${name}Active` !== this.active.name) {
+        const radius = this[name].boundingRadius();
+        const position = this[name].getOverlayPosition();
+        const rotation = this[name].mesh.rotation.y;
+        const lookAt = this[name].mesh.position;
+        this.addActive(name, radius, position, rotation, lookAt);
       }
     } else {
       this.canvas.style.cursor = 'auto';
+      this.removeActiveState();
+    }
+  }
 
-      if (this.active) {
-        this.scene.remove(this.active);
-        this.active.geometry.dispose();
-        this.active.material.dispose();
-        this.active = null;
-      }
+  removeActiveState() {
+    if (this.active) {
+      this.cube.remove(this.active);
+      this.active.geometry.dispose();
+      this.active.material.dispose();
+      this.active = null;
     }
   }
 
@@ -142,14 +156,12 @@ class NateHub {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
 
-  addActive(radius, position, rotation) {
+  addActive(name, radius, position, rotation, lookAt) {
     radius = radius || 1;
     position = position || new THREE.Vector3();
-    rotation = rotation || 0;
+    lookAt = lookAt || new THREE.Vector3();
 
-    if (this.active) {
-      this.scene.remove(this.active);
-    }
+    this.removeActiveState();
 
     this.active = new THREE.Mesh(
       new THREE.TorusBufferGeometry(radius, 0.15, 32, 32),
@@ -161,8 +173,11 @@ class NateHub {
     );
     this.active.position.copy(position);
     this.active.rotation.y = rotation;
-    this.active.lookAt(this.camera.position);
-    this.scene.add(this.active);
+    this.active.lookAt(lookAt);
+
+    this.active.name = `${name}Active`;
+
+    this.cube.add(this.active);
   }
 
   setupScene() {
@@ -188,8 +203,9 @@ class NateHub {
     this.renderer.outputEncoding = THREE.sRGBEncoding;
 
     this.camera = new THREE.PerspectiveCamera(25, this.getScreenAspectRatio(), 0.1, 1000);
+    this.camera.position.copy(this.points.start);
     this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.minDistance = 7.5;
+    this.controls.minDistance = 10;
     this.controls.maxDistance = 150;
 
     this.goToHashPosition();
@@ -286,12 +302,12 @@ class NateHub {
 
         this.cube.traverse(this.setLayerMaterial.bind(this));
 
-        this['monitor-screen'] = new Monitor(this, 'indeed');
-        this['monitor-screen'].add();
+        this['monitor-display'] = new Monitor(this, 'indeed');
+        this['monitor-display'].add();
 
         this['logo-ig'] = new SocialLogo(this, 'logo-ig');
         this['logo-linkedin'] = new SocialLogo(this, 'logo-linkedin');
-        this.pushin = new SocialLogo(this, 'pushin');
+        this['closed-delta'] = new SocialLogo(this, 'pushin');
 
         this.placeArtwork(this.cube.children);
 
@@ -299,18 +315,18 @@ class NateHub {
           'monitor-display',
           'logo-ig',
           'logo-linkedin',
-          'open-delta',
           'closed-delta',
-          'gold-sun',
-          'garden-creature',
-          'coqui-flamboyan',
-          'owl-city',
-          'summit',
-          'thunder',
-          'treasure',
-          'casa',
-          'tulip',
-          'treehouse',
+          'frame-1-sq',
+          'frame-2-sq',
+          'frame-3-portrait',
+          'frame-4-portrait',
+          'frame-5-sq',
+          'frame-6-sq',
+          'frame-7-landscape',
+          'frame-8-landscape',
+          'frame-9-portrait',
+          'frame-10-sq',
+          'frame-11-sq',
         ];
       },
     );
@@ -353,18 +369,18 @@ class NateHub {
 
     frames.forEach((frame) => {
       const artwork = new Artwork(this, frame);
-      this[artwork.name] = artwork;
+      this[frame.name] = artwork;
       artwork.add();
     });
   }
 
   goToHashPosition() {
     const position = window.location.hash.replace('#', '');
+    const target = this.points[position] ?? this.points.home;
 
-    const target = this.points[position] ?? this.points.start;
-
-    const { x: camX, y: camY, z: camZ } = target;
-    this.camera.position.set(camX, camY, camZ);
+    const panTween = new TWEEN.Tween(this.camera.position).to(target, 2000);
+    panTween.easing(TWEEN.Easing.Quadratic.Out);
+    panTween.start();
   }
 
   tick(time) {
@@ -373,7 +389,7 @@ class NateHub {
     this.controls.update();
 
     // Update tween
-    // TWEEN.update(time);
+    TWEEN.update(time);
 
     // Render
     this.renderer.render(this.scene, this.camera);

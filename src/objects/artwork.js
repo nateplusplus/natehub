@@ -4,7 +4,7 @@ import InteractiveObject from './interactiveObject';
 class Artwork extends InteractiveObject {
   constructor(parent, frame) {
     super(parent, frame.name);
-
+    this.front = 'z';
     this.frame = frame;
 
     const bbox = new THREE.Box3().setFromObject(frame);
@@ -23,6 +23,7 @@ class Artwork extends InteractiveObject {
       'casa',
       'tulip',
       'treehouse',
+      'gold',
     ];
 
     this.name = artwork[index] ?? artwork[0];
@@ -53,12 +54,15 @@ class Artwork extends InteractiveObject {
       }
       canvas.scale.set(resize, resize, 1);
 
-      const positionY = this.frame.position.y + this.frame.parent.position.y;
-      canvas.position.set(this.frame.position.x, positionY, 5.48);
+      canvas.position.set(
+        this.frame.position.x,
+        this.frame.position.y,
+        5.48,
+      );
 
       canvas.name = this.name;
 
-      this.parent.scene.add(canvas);
+      this.parent.cube.add(canvas);
     });
   }
 }
