@@ -1,7 +1,7 @@
 class NatehubModal extends HTMLElement {
   connectedCallback() {
-    this.children.container = document.createElement('div');
-    this.children.container.classList.add('modal__content');
+    this.container = document.createElement('div');
+    this.container.classList.add('modal__content');
 
     this.children.heading = document.createElement('h2');
     this.children.heading.innerHTML = this.heading ?? '';
@@ -19,14 +19,14 @@ class NatehubModal extends HTMLElement {
     this.children.close.setAttribute('title', 'Close dialog');
     this.children.close.innerHTML = '&times;';
 
-    this.children.close.addEventListener('click', this.close.bind(this));
+    this.container.appendChild(this.children.close);
+    this.container.appendChild(this.children.heading);
+    this.container.appendChild(this.children.copy);
+    this.container.appendChild(this.children.cta);
 
-    this.children.container.appendChild(this.children.heading);
-    this.children.container.appendChild(this.children.copy);
-    this.children.container.appendChild(this.children.cta);
-    this.children.container.appendChild(this.children.close);
+    this.appendChild(this.container);
 
-    this.appendChild(this.children.container);
+    this.children.close.addEventListener('click', this.handleClose.bind(this));
   }
 
   static get observedAttributes() {
@@ -88,6 +88,10 @@ class NatehubModal extends HTMLElement {
   }
 
   close() {
+    this.remove();
+  }
+
+  handleClose() {
     this.remove();
   }
 }

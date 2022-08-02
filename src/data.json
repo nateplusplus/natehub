@@ -1,6 +1,7 @@
 [
     {
         "name": "pushin",
+        "heading": "PushIn.js",
         "copy": "I built PushIn.js as a lightweight opensource parallax effect that simulates an interactive dolly-in or push-in animation on a webpage.",
         "cta": {
             "text": "View PushIn on GitHub",
@@ -9,6 +10,7 @@
     },
     {
         "name": "indeed",
+        "heading": "My role at Indeed",
         "copy": "I'm proud to work at Indeed as a Web Developer in Marketing Systems.",
         "cta": {
             "text": "Visit Indeed.com",
@@ -17,7 +19,8 @@
     },
     {
         "name": "logo-ig",
-        "copy": "Follow me on instagram!",
+        "heading": "Instagram",
+        "copy": "Follow me on instagram: @nateplusplus",
         "cta": {
             "text": "Go to Instagram",
             "href": "https://www.instagram.com/nateplusplus/"
@@ -25,7 +28,8 @@
     },
     {
         "name": "logo-linkedin",
-        "copy": "Let's connect!",
+        "heading": "LinkedIn",
+        "copy": "Let's connect on LinkedIn!",
         "cta": {
             "text": "Go to LinkedIn",
             "href": "https://www.linkedin.com/in/nateplusplus/"
@@ -33,7 +37,8 @@
     },
     {
         "name": "gold-sun",
-        "copy": "Gold Sun",
+        "heading": "Gold Sun",
+        "copy": "copy...",
         "cta": {
             "text": "View on Behance",
             "href": "https://www.behance.net/gallery/127250877/Heron-Sunset"
@@ -41,7 +46,8 @@
     },
     {
         "name": "garden-creature",
-        "copy": "Garden Creature",
+        "heading": "Garden Creature",
+        "copy": "copy",
         "cta": {
             "text": "Go to artwork",
             "href": "#"
@@ -49,6 +55,7 @@
     },
     {
         "name": "coqui-flamboyan",
+        "heading": "Coquí Flamboyán",
         "copy": "Coquí Flamboyán",
         "cta": {
             "text": "Go to artwork",
@@ -57,6 +64,7 @@
     },
     {
         "name": "owl-city",
+        "heading": "Owl City",
         "copy": "Owl City",
         "cta": {
             "text": "View on Behance",
@@ -65,6 +73,7 @@
     },
     {
         "name": "summit",
+        "heading": "Summit",
         "copy": "Summit",
         "cta": {
             "text": "Go to artwork",
@@ -73,6 +82,7 @@
     },
     {
         "name": "thunder",
+        "heading": "Thunder",
         "copy": "Thunder",
         "cta": {
             "text": "Go to artwork",
@@ -81,6 +91,7 @@
     },
     {
         "name": "treasure",
+        "heading": "Treasure",
         "copy": "Treasure",
         "cta": {
             "text": "Go to artwork",
@@ -89,6 +100,7 @@
     },
     {
         "name": "casa",
+        "heading": "Casa",
         "copy": "Casa",
         "cta": {
             "text": "View on Behance",
@@ -97,6 +109,7 @@
     },
     {
         "name": "tulip",
+        "heading": "Tulip",
         "copy": "Tulip",
         "cta": {
             "text": "Go to artwork",
@@ -105,6 +118,7 @@
     },
     {
         "name": "treehouse",
+        "heading": "Treehouse",
         "copy": "Treehouse",
         "cta": {
             "text": "Go to artwork",
@@ -113,10 +127,11 @@
     },
     {
         "name": "gold",
+        "heading": "Golden Willow",
         "copy": "Golden Willow",
         "cta": {
             "text": "Go to artwork",
-            "href": "#"
+            "href": "https://www.behance.net/gallery/149390403/Golden-Willow"
         }
     }
 
