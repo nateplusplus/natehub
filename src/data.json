@@ -20,7 +20,7 @@
     {
         "name": "logoInstagram",
         "heading": "Instagram",
-        "copy": "Follow me on instagram: @nateplusplus",
+        "copy": "Follow me on instagram @nateplusplus for all my nerdy tech pics.",
         "cta": {
             "text": "Go to Instagram",
             "href": "https://www.instagram.com/nateplusplus/"
@@ -110,19 +110,19 @@
     {
         "name": "tulip",
         "heading": "Tulip",
-        "copy": "Tulip",
+        "copy": "In this work I wanted to convey the concept of a Tulip using a minimalist style. I decided to add detail within the tones of each shape by scratching in textures with a palette knife and using a wet brush to create subtle bloom effects.<br><br><strong>Details</strong><br>Watercolor on paper<br>10.5in x 14.75in",
         "cta": {
             "text": "View on Behance",
-            "href": "#"
+            "href": "https://www.behance.net/gallery/149948477/Tulip"
         }
     },
     {
         "name": "treehouse",
         "heading": "Treehouse",
-        "copy": "Treehouse",
+        "copy": "This painting was sort of an experiment to see if I could convey the concept of a house purely through negative space. I liked the idea of nature really owning the space, and the home sort of melting into the background of that scene.<br><br><strong>Details</strong><br>Watercolor on paper<br>10in x 8in",
         "cta": {
             "text": "View on Behance",
-            "href": "#"
+            "href": "https://www.behance.net/gallery/149971495/Treehouse"
         }
     },
     {
