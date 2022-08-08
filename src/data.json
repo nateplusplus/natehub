@@ -18,7 +18,7 @@
         }
     },
     {
-        "name": "logo-ig",
+        "name": "logoInstagram",
         "heading": "Instagram",
         "copy": "Follow me on instagram: @nateplusplus",
         "cta": {
@@ -27,7 +27,7 @@
         }
     },
     {
-        "name": "logo-linkedin",
+        "name": "logoLinkedin",
         "heading": "LinkedIn",
         "copy": "Let's connect on LinkedIn!",
         "cta": {
@@ -38,7 +38,7 @@
     {
         "name": "gold-sun",
         "heading": "Gold Sun",
-        "copy": "copy...",
+        "copy": "I love watching herons perched at a nearby pond. They sit and wait until just before the sun sets, and then take off, soaring above the trees. I like to think they enjoy the sunsets.<br><br><strong>Details</strong><br>Watercolor with gold metallic paint<br>11in x 11in, hot press paper",
         "cta": {
             "text": "View on Behance",
             "href": "https://www.behance.net/gallery/127250877/Heron-Sunset"
@@ -47,25 +47,25 @@
     {
         "name": "garden-creature",
         "heading": "Garden Creature",
-        "copy": "copy",
+        "copy": "I was inspired by some cubist and futurist artwork that almost deconstructed figures into interesting patterns. I wanted to do that with an animal to sort of capture all their movements in an abstract way.<br><br><strong>Details</strong><br>Watercolor and ink on paper<br>8in x 10in",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/149902093/Garden-Creature"
         }
     },
     {
         "name": "coqui-flamboyan",
         "heading": "Coquí Flamboyán",
-        "copy": "Coquí Flamboyán",
+        "copy": "This work was dedicated to my mother-in-law who lives in San Juan, Puerto Rico. I wanted to find a creative way to integrate two beloved symbols of the island into one. This features a coquí frog, intertwined with the flower of a Flamboyán.<br><br><strong>Details</strong><br>Watercolor and ink on paper<br>4in x 6in",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/149901295/Coqui-Flamboyan"
         }
     },
     {
         "name": "owl-city",
         "heading": "Owl City",
-        "copy": "Owl City",
+        "copy": "This was an exploration of meshing nature with an urban scene in an abstract way. I had some fun with peppered tones in this piece.<br><br><strong>Details</strong><br>Watercolor and ink on paper<br>11in x 14in",
         "cta": {
             "text": "View on Behance",
             "href": "https://www.behance.net/gallery/127253745/Owl-City"
@@ -74,34 +74,34 @@
     {
         "name": "summit",
         "heading": "Summit",
-        "copy": "Summit",
+        "copy": "This idea started with a series of little bookmarks, but after seeing how much I loved the finished product, I wanted to try it out in a larger format too.<br><br><strong>Details</strong><br>Watercolor on paper<br>Three parts - 4.75in x 11in each",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/149908167/Summit"
         }
     },
     {
         "name": "thunder",
         "heading": "Thunder",
-        "copy": "Thunder",
+        "copy": "I thought a lot about this one: how to paint a sound? I decided to try to convey a violent and noisy collision.<br><br><strong>Details</strong><br>Watercolor and white ink on paper<br>14in x 11in",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/149908635/Thunder"
         }
     },
     {
         "name": "treasure",
         "heading": "Treasure",
-        "copy": "Treasure",
+        "copy": "I had a lot of fun allowing the watercolors to mix freely and form interesting patterns like crystals forming on the page.<br><br><strong>Details</strong><br>Watercolor on paper<br>16.25in x 11.5in",
         "cta": {
-            "text": "Go to artwork",
-            "href": "#"
+            "text": "View on Behance",
+            "href": "https://www.behance.net/gallery/149908391/Treasure"
         }
     },
     {
         "name": "casa",
         "heading": "Casa",
-        "copy": "Casa",
+        "copy": "My inspiration for this comes from looking at all the architectural shapes I've found around many neighborhoods here in Texas. When I chose this palette, I felt like it reminded me of a beach kiosk.<br><br><strong>Details</strong><br>Watercolor on paper<br>14in x 11in",
         "cta": {
             "text": "View on Behance",
             "href": "https://www.behance.net/gallery/127252353/Abstract-Beach-House"
@@ -112,7 +112,7 @@
         "heading": "Tulip",
         "copy": "Tulip",
         "cta": {
-            "text": "Go to artwork",
+            "text": "View on Behance",
             "href": "#"
         }
     },
@@ -121,16 +121,16 @@
         "heading": "Treehouse",
         "copy": "Treehouse",
         "cta": {
-            "text": "Go to artwork",
+            "text": "View on Behance",
             "href": "#"
         }
     },
     {
         "name": "gold",
         "heading": "Golden Willow",
-        "copy": "Golden Willow",
+        "copy": "I like to imagine being showered with gold when I look back at this work. The mix of textures made this painting a fun exercise, and I really enjoy the result.<br><br><strong>Details</strong><br>Watercolor on paper<br>8in x 10in",
         "cta": {
-            "text": "Go to artwork",
+            "text": "View on Behance",
             "href": "https://www.behance.net/gallery/149390403/Golden-Willow"
         }
     }

@@ -9,7 +9,7 @@ class InteractiveObject {
     this.front = 'x';
 
     this.parent.scene.traverse((child) => {
-      if (this.name === 'pushin' && child.name === 'closed-delta') {
+      if (this.name === 'pushin' && child.name === 'closedDelta') {
         this.mesh = child;
       } else if (child.name === this.name) {
         this.mesh = child;

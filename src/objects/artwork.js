@@ -10,7 +10,7 @@ class Artwork extends InteractiveObject {
     const bbox = new THREE.Box3().setFromObject(frame);
     this.frameSize = bbox.getSize(new THREE.Vector3());
 
-    const index = +frame.name.split('-')[1] - 1;
+    const index = +frame.name.match(/\d+/) - 1;
 
     const artwork = [
       'gold-sun',
@@ -31,7 +31,7 @@ class Artwork extends InteractiveObject {
   }
 
   add() {
-    this.parent.textureLoader.load(`artwork/${this.name}.png`, (texture) => {
+    this.parent.textureLoader.load(`artwork/${this.name}.jpg`, (texture) => {
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       texture.repeat.set(1, 1);

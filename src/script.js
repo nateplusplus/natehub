@@ -240,6 +240,15 @@ class NateHub {
     this.scene.add(monitorTarget);
 
     monitorLight.target = monitorTarget;
+
+    const nameLight = new THREE.RectAreaLight(0x81A2FF, 1.5);
+    nameLight.position.set(2.17, 3.16, -1.14);
+    nameLight.width = 5;
+    nameLight.height = 1.7;
+    nameLight.color = new THREE.Color(0x009AFF);
+    this.scene.add(nameLight);
+
+    nameLight.lookAt(-10, -9.5, -2.6);
   }
 
   loadMaterials() {
@@ -250,45 +259,46 @@ class NateHub {
       baked: new THREE.MeshBasicMaterial({ map: bakedTexture }),
       test: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
     };
-    this.materials['led-strip'] = new THREE.MeshBasicMaterial({ color: 0x009AFF });
-    this.materials['closed-delta'] = new THREE.MeshBasicMaterial({ color: 0x010407 });
-    this.materials['open-delta'] = new THREE.MeshBasicMaterial({ color: 0x219ebc });
-    this.materials['logo-linkedin'] = new THREE.MeshBasicMaterial({ color: 0x000BD8 });
-    this.materials['text-code'] = new THREE.MeshBasicMaterial({ color: 0x050108 });
-    this.materials['logo-ig'] = new THREE.MeshBasicMaterial({
+    this.materials.ledStrip = new THREE.MeshBasicMaterial({ color: 0x009AFF });
+    this.materials.closedDelta = new THREE.MeshBasicMaterial({ color: 0x010407 });
+    this.materials.openDelta = new THREE.MeshBasicMaterial({ color: 0x219ebc });
+    this.materials.logoLinkedin = new THREE.MeshBasicMaterial({ color: 0x000BD8 });
+    this.materials.textCode = new THREE.MeshBasicMaterial({ color: 0x050108 });
+    this.materials.logoInstagram = new THREE.MeshBasicMaterial({
       color: 0xed1850,
       transparent: true,
       opacity: 0.6,
     });
-    this.materials['chair-wheel-1'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials['chair-wheel-2'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials['chair-wheel-3'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials['chair-wheel-4'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials['monitor-back'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials['monitor-screen'] = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials['monitor-window'] = new THREE.MeshBasicMaterial({ color: 0x3063f2 });
+    this.materials.chairWheel1 = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials.chairWheel2 = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials.chairWheel3 = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials.chairWheel4 = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials.monitorBack = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials.monitorScreen = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.materials.monitorWindow = new THREE.MeshBasicMaterial({ color: 0x3063f2 });
   }
 
   cube() {
     this.unbakedLayers = [
-      'text-artwork001',
-      'open-delta',
-      'closed-delta',
-      'chair-pole',
-      'monitor-screen',
-      'monitor-stand',
-      'monitor-back',
-      'monitor-window',
-      'chair-base',
-      'chair-seat',
-      'chair-wheel-1',
-      'chair-wheel-2',
-      'chair-wheel-3',
-      'chair-wheel-4',
-      'text-code',
-      'logo-ig',
-      'logo-linkedin',
-      'led-strip',
+      'textArtwork',
+      'textName',
+      'openDelta',
+      'closedDelta',
+      'chairPole',
+      'monitorScreen',
+      'monitorStand',
+      'monitorBack',
+      'monitorWindow',
+      'chairBase',
+      'chairSeat',
+      'chairWheel1',
+      'chairWheel2',
+      'chairWheel3',
+      'chairWheel4',
+      'textCode',
+      'logoInstagram',
+      'logoLinkedin',
+      'ledStrip',
     ];
 
     this.gltfLoader.load(
@@ -302,31 +312,31 @@ class NateHub {
 
         this.cube.traverse(this.setLayerMaterial.bind(this));
 
-        this['monitor-display'] = new Monitor(this, 'indeed');
-        this['monitor-display'].add();
+        this.monitorDisplay = new Monitor(this, 'indeed');
+        this.monitorDisplay.add();
 
-        this['logo-ig'] = new SocialLogo(this, 'logo-ig');
-        this['logo-linkedin'] = new SocialLogo(this, 'logo-linkedin');
-        this['closed-delta'] = new SocialLogo(this, 'pushin');
+        this.logoInstagram = new SocialLogo(this, 'logoInstagram');
+        this.logoLinkedin = new SocialLogo(this, 'logoLinkedin');
+        this.closedDelta = new SocialLogo(this, 'pushin');
 
         this.placeArtwork(this.cube.children);
 
         this.interactive = [
-          'monitor-display',
-          'logo-ig',
-          'logo-linkedin',
-          'closed-delta',
-          'frame-1-sq',
-          'frame-2-sq',
-          'frame-3-portrait',
-          'frame-4-portrait',
-          'frame-5-sq',
-          'frame-6-sq',
-          'frame-7-landscape',
-          'frame-8-landscape',
-          'frame-9-portrait',
-          'frame-10-sq',
-          'frame-11-sq',
+          'monitorDisplay',
+          'logoInstagram',
+          'logoLinkedin',
+          'closedDelta',
+          'frame1',
+          'frame2',
+          'frame3',
+          'frame4',
+          'frame5',
+          'frame6',
+          'frame7',
+          'frame8',
+          'frame9',
+          'frame10',
+          'frame11',
         ];
       },
     );
@@ -334,22 +344,23 @@ class NateHub {
 
   setLayerMaterial(child) {
     switch (child.name) {
-      case 'text-artwork':
+      case 'textArtwork':
         child.material.color.set(0xedf6f9);
         break;
-      case 'chair-base':
+      case 'chairBase':
+      case 'textName':
         child.material.color.set(0xFAFAFA);
         child.material.roughness = 0;
         break;
-      case 'chair-seat':
+      case 'chairSeat':
         child.material.color.set(0x747474);
         child.material.roughness = 0.66;
         break;
-      case 'monitor-stand':
+      case 'monitorStand':
         child.material.color.set(0x000000);
         child.material.roughness = 0.25;
         break;
-      case 'chair-pole':
+      case 'chairPole':
         child.material.metalness = 0.5;
         child.material.roughness = 0.25;
         break;
@@ -365,7 +376,7 @@ class NateHub {
   }
 
   placeArtwork(children) {
-    const frames = children.filter((child) => child.name.startsWith('frame-'));
+    const frames = children.filter((child) => child.name.startsWith('frame'));
 
     frames.forEach((frame) => {
       const artwork = new Artwork(this, frame);
