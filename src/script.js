@@ -182,8 +182,35 @@ class NateHub {
 
   setupScene() {
     this.scene = new THREE.Scene();
-    this.textureLoader = new THREE.TextureLoader();
-    this.loadingManager = new THREE.LoadingManager();
+
+    const loading = document.querySelector('.loading');
+    const progressBar = document.querySelector('.loading__progress-bar');
+    let loadingTimeout;
+
+    this.loadingManager = new THREE.LoadingManager(
+      () => {
+        clearTimeout(loadingTimeout);
+
+        loadingTimeout = setTimeout(
+          () => {
+            progressBar.style = '';
+            loading.classList.add('fade');
+
+            this.goToHashPosition();
+
+            setTimeout(
+              () => loading.classList.add('complete'),
+              1100,
+            );
+          },
+          600,
+        );
+      },
+      (url, loaded, total) => {
+        progressBar.style.transform = `scaleX(${loaded / total})`;
+      },
+    );
+    this.textureLoader = new THREE.TextureLoader(this.loadingManager);
 
     // DRACO Loader
     this.dracoLoader = new DRACOLoader();
@@ -207,8 +234,6 @@ class NateHub {
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.minDistance = 10;
     this.controls.maxDistance = 150;
-
-    this.goToHashPosition();
   }
 
   light() {
