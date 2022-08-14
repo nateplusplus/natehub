@@ -49,7 +49,7 @@ class Clickable {
       box.name = `${this.mesh.name}Bbox`;
       box.position.copy(this.mesh.position);
 
-      this.parent.cube.add(box);
+      this.parent.scene.add(box);
     }
   }
 

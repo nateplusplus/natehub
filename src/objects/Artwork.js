@@ -31,7 +31,7 @@ class Artwork extends Clickable {
   }
 
   add() {
-    this.parent.textureLoader.load(`artwork/${this.name}.jpg`, (texture) => {
+    this.parent.parent.textureLoader.load(`artwork/${this.name}.jpg`, (texture) => {
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       texture.repeat.set(1, 1);
@@ -62,7 +62,7 @@ class Artwork extends Clickable {
 
       canvas.name = this.name;
 
-      this.parent.cube.add(canvas);
+      this.parent.scene.add(canvas);
     });
   }
 }
