@@ -8,10 +8,10 @@ import GUI from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
-import NatehubModal from './modal';
-import Monitor from './objects/monitor';
-import SocialLogo from './objects/social-logo';
-import Artwork from './objects/artwork';
+import NatehubModal from './NatehubModal';
+import Monitor from './objects/Monitor';
+import Clickable from './objects/Clickable';
+import Artwork from './objects/Artwork';
 
 class NateHub {
   constructor() {
@@ -90,6 +90,7 @@ class NateHub {
         NateHub.closeAllModals();
         if (clicked && isInteractive && name in this) {
           this[name]?.handleClicked();
+          this.setActive(name);
         }
       },
       100,
@@ -120,16 +121,20 @@ class NateHub {
 
     if (this.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
-      if (!this.active || `${name}Active` !== this.active.name) {
-        const radius = this[name].boundingRadius();
-        const position = this[name].getOverlayPosition();
-        const rotation = this[name].mesh.rotation.y;
-        const lookAt = this[name].mesh.position;
-        this.addActive(name, radius, position, rotation, lookAt);
-      }
+      this.setActive(name);
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
+    }
+  }
+
+  setActive(name) {
+    if (!this.active || `${name}Active` !== this.active.name) {
+      const radius = this[name].boundingRadius();
+      const position = this[name].getOverlayPosition();
+      const rotation = this[name].mesh.rotation.y;
+      const lookAt = this[name].mesh.position;
+      this.addActive(name, radius, position, rotation, lookAt);
     }
   }
 
@@ -193,8 +198,8 @@ class NateHub {
 
         loadingTimeout = setTimeout(
           () => {
-            progressBar.style = '';
             loading.classList.add('fade');
+            progressBar.style = '';
 
             this.goToHashPosition();
 
@@ -207,17 +212,20 @@ class NateHub {
         );
       },
       (url, loaded, total) => {
-        progressBar.style.transform = `scaleX(${loaded / total})`;
+        if (total > 1) {
+          const progress = Math.round((loaded / total) * 1000) / 1000;
+          progressBar.style.transform = `scaleX(${progress})`;
+        }
       },
     );
     this.textureLoader = new THREE.TextureLoader(this.loadingManager);
 
     // DRACO Loader
-    this.dracoLoader = new DRACOLoader();
+    this.dracoLoader = new DRACOLoader(this.loadingManager);
     this.dracoLoader.setDecoderPath('draco/');
 
     // GLTF Loader
-    this.gltfLoader = new GLTFLoader();
+    this.gltfLoader = new GLTFLoader(this.loadingManager);
     this.gltfLoader.setDRACOLoader(this.dracoLoader);
 
     this.renderer = new THREE.WebGLRenderer({
@@ -340,9 +348,9 @@ class NateHub {
         this.monitorDisplay = new Monitor(this, 'indeed');
         this.monitorDisplay.add();
 
-        this.logoInstagram = new SocialLogo(this, 'logoInstagram');
-        this.logoLinkedin = new SocialLogo(this, 'logoLinkedin');
-        this.closedDelta = new SocialLogo(this, 'pushin');
+        this.logoInstagram = new Clickable(this, 'logoInstagram');
+        this.logoLinkedin = new Clickable(this, 'logoLinkedin');
+        this.closedDelta = new Clickable(this, 'pushin');
 
         this.placeArtwork(this.cube.children);
 

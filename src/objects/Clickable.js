@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import data from '../data.json';
 
-class InteractiveObject {
+class Clickable {
   constructor(parent, name) {
     this.parent = parent;
     this.name = name;
@@ -98,4 +98,4 @@ class InteractiveObject {
   }
 }
 
-export default InteractiveObject;
+export default Clickable;
