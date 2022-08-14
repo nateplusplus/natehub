@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import InteractiveObject from './interactiveObject';
+import Clickable from './Clickable';
 
-class Monitor extends InteractiveObject {
+class Monitor extends Clickable {
   constructor(parent, frame) {
     super(parent, frame.name);
     this.name = 'indeed';

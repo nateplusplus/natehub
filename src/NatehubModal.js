@@ -1,3 +1,5 @@
+import Hammer from 'hammerjs';
+
 class NatehubModal extends HTMLElement {
   connectedCallback() {
     this.container = document.createElement('div');
@@ -26,7 +28,8 @@ class NatehubModal extends HTMLElement {
 
     this.appendChild(this.container);
 
-    this.children.close.addEventListener('click', this.handleClose.bind(this));
+    this.hammertime = new Hammer(this.children.close);
+    this.hammertime.on('tap', this.handleClose.bind(this));
   }
 
   static get observedAttributes() {

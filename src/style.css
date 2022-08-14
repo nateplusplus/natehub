@@ -136,7 +136,7 @@ natehub-modal img {
 
 .loading.fade .loading__message {
     opacity: 0;
-    transform: translate(20px);
+    transform: translateY(20px);
 }
 
 .loading.fade .loading__progress-bar {
