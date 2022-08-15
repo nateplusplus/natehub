@@ -44,7 +44,7 @@ class Artwork extends Clickable {
       const height = this.frameSize.x * artAspect;
 
       const canvas = new Mesh(
-        new PlaneBufferGeometry(width, height, 2, 2),
+        new PlaneBufferGeometry(width, height, 1, 1),
         new MeshBasicMaterial({ map: texture }),
       );
 
