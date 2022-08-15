@@ -9,9 +9,7 @@ import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
 import NatehubModal from './NatehubModal';
-import Monitor from './objects/Monitor';
-import Clickable from './objects/Clickable';
-import Artwork from './objects/Artwork';
+import Cube from './Cube';
 
 class NateHub {
   constructor() {
@@ -36,19 +34,25 @@ class NateHub {
       height: window.innerHeight,
     };
 
+    this.setPoints();
+    this.setupScene();
+    this.light();
+    this.addCube();
+    this.bindEvents();
+    this.tick();
+  }
+
+  setPoints() {
     this.points = {
-      start: new THREE.Vector3(70, 10, 0),
-      home: new THREE.Vector3(38, 6, 10),
+      start: new THREE.Vector3(90, 15, 0),
+      home: new THREE.Vector3(60, 7, 12),
       code: new THREE.Vector3(42, 3.7, 0),
       artwork: new THREE.Vector3(-4.75, 2.34, 41.5),
     };
 
-    this.setupScene();
-    this.light();
-    this.loadMaterials();
-    this.cube();
-    this.bindEvents();
-    this.tick();
+    if (this.sizes.width > 767) {
+      this.points.home = new THREE.Vector3(38, 6, 10);
+    }
   }
 
   getBreakpoint() {
@@ -85,11 +89,11 @@ class NateHub {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
         const clicked = intersects[0]?.object?.name ?? '';
         const name = NateHub.getObjectName(clicked);
-        const isInteractive = this.interactive.includes(name);
+        const isInteractive = this.cube.interactive.includes(name);
 
         NateHub.closeAllModals();
-        if (clicked && isInteractive && name in this) {
-          this[name]?.handleClicked();
+        if (clicked && isInteractive && name in this.cube.objects) {
+          this.cube.objects[name]?.handleClicked();
           this.setActive(name);
         }
       },
@@ -119,7 +123,7 @@ class NateHub {
 
     const name = NateHub.getObjectName(hovered);
 
-    if (this.interactive.includes(name)) {
+    if (this.cube.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
       this.setActive(name);
     } else {
@@ -130,17 +134,17 @@ class NateHub {
 
   setActive(name) {
     if (!this.active || `${name}Active` !== this.active.name) {
-      const radius = this[name].boundingRadius();
-      const position = this[name].getOverlayPosition();
-      const rotation = this[name].mesh.rotation.y;
-      const lookAt = this[name].mesh.position;
+      const radius = this.cube.objects[name].boundingRadius();
+      const position = this.cube.objects[name].getOverlayPosition();
+      const rotation = this.cube.objects[name].mesh.rotation.y;
+      const lookAt = this.cube.objects[name].mesh.position;
       this.addActive(name, radius, position, rotation, lookAt);
     }
   }
 
   removeActiveState() {
     if (this.active) {
-      this.cube.remove(this.active);
+      this.cube.scene.remove(this.active);
       this.active.geometry.dispose();
       this.active.material.dispose();
       this.active = null;
@@ -182,7 +186,7 @@ class NateHub {
 
     this.active.name = `${name}Active`;
 
-    this.cube.add(this.active);
+    this.cube.scene.add(this.active);
   }
 
   setupScene() {
@@ -284,138 +288,10 @@ class NateHub {
     nameLight.lookAt(-10, -9.5, -2.6);
   }
 
-  loadMaterials() {
-    const bakedTexture = this.textureLoader.load('natecube-baked.jpg');
-    bakedTexture.flipY = false;
-    bakedTexture.encoding = THREE.sRGBEncoding;
-    this.materials = {
-      baked: new THREE.MeshBasicMaterial({ map: bakedTexture }),
-      test: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-    };
-    this.materials.ledStrip = new THREE.MeshBasicMaterial({ color: 0x009AFF });
-    this.materials.closedDelta = new THREE.MeshBasicMaterial({ color: 0x010407 });
-    this.materials.openDelta = new THREE.MeshBasicMaterial({ color: 0x219ebc });
-    this.materials.logoLinkedin = new THREE.MeshBasicMaterial({ color: 0x000BD8 });
-    this.materials.textCode = new THREE.MeshBasicMaterial({ color: 0x050108 });
-    this.materials.logoInstagram = new THREE.MeshBasicMaterial({
-      color: 0xed1850,
-      transparent: true,
-      opacity: 0.6,
-    });
-    this.materials.chairWheel1 = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials.chairWheel2 = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials.chairWheel3 = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials.chairWheel4 = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials.monitorBack = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials.monitorScreen = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    this.materials.monitorWindow = new THREE.MeshBasicMaterial({ color: 0x3063f2 });
-  }
-
-  cube() {
-    this.unbakedLayers = [
-      'textArtwork',
-      'textName',
-      'openDelta',
-      'closedDelta',
-      'chairPole',
-      'monitorScreen',
-      'monitorStand',
-      'monitorBack',
-      'monitorWindow',
-      'chairBase',
-      'chairSeat',
-      'chairWheel1',
-      'chairWheel2',
-      'chairWheel3',
-      'chairWheel4',
-      'textCode',
-      'logoInstagram',
-      'logoLinkedin',
-      'ledStrip',
-    ];
-
-    this.gltfLoader.load(
-      'natecube.glb',
-      (gltf) => {
-        this.cube = gltf.scene;
-        const bbox = new THREE.Box3().setFromObject(this.cube);
-        const modelSize = bbox.getSize(new THREE.Vector3());
-        this.cube.position.y = modelSize.y * -0.5;
-        this.scene.add(this.cube);
-
-        this.cube.traverse(this.setLayerMaterial.bind(this));
-
-        this.monitorDisplay = new Monitor(this, 'indeed');
-        this.monitorDisplay.add();
-
-        this.logoInstagram = new Clickable(this, 'logoInstagram');
-        this.logoLinkedin = new Clickable(this, 'logoLinkedin');
-        this.closedDelta = new Clickable(this, 'pushin');
-
-        this.placeArtwork(this.cube.children);
-
-        this.interactive = [
-          'monitorDisplay',
-          'logoInstagram',
-          'logoLinkedin',
-          'closedDelta',
-          'frame1',
-          'frame2',
-          'frame3',
-          'frame4',
-          'frame5',
-          'frame6',
-          'frame7',
-          'frame8',
-          'frame9',
-          'frame10',
-          'frame11',
-        ];
-      },
-    );
-  }
-
-  setLayerMaterial(child) {
-    switch (child.name) {
-      case 'textArtwork':
-        child.material.color.set(0xedf6f9);
-        break;
-      case 'chairBase':
-      case 'textName':
-        child.material.color.set(0xFAFAFA);
-        child.material.roughness = 0;
-        break;
-      case 'chairSeat':
-        child.material.color.set(0x747474);
-        child.material.roughness = 0.66;
-        break;
-      case 'monitorStand':
-        child.material.color.set(0x000000);
-        child.material.roughness = 0.25;
-        break;
-      case 'chairPole':
-        child.material.metalness = 0.5;
-        child.material.roughness = 0.25;
-        break;
-      default:
-        if (this.materials[child.name]) {
-          child.material = this.materials[child.name];
-        } else if (this.unbakedLayers.indexOf(child.name) > -1) {
-          child.material = this.materials.test;
-        } else {
-          child.material = this.materials.baked;
-        }
-    }
-  }
-
-  placeArtwork(children) {
-    const frames = children.filter((child) => child.name.startsWith('frame'));
-
-    frames.forEach((frame) => {
-      const artwork = new Artwork(this, frame);
-      this[frame.name] = artwork;
-      artwork.add();
-    });
+  addCube() {
+    this.cube = new Cube(this);
+    this.cube.loadMaterials();
+    this.cube.load();
   }
 
   goToHashPosition() {

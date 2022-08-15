@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { Box3, Vector3, BoxBufferGeometry, Mesh, MeshBasicMaterial } from 'three';
 import data from '../data.json';
 
 class Clickable {
@@ -26,19 +26,19 @@ class Clickable {
 
   makeBoundingBox() {
     if (this.mesh) {
-      const bbox = new THREE.Box3().setFromObject(this.mesh);
+      const bbox = new Box3().setFromObject(this.mesh);
 
-      const dimensions = new THREE.Vector3().subVectors(bbox.max, bbox.min);
+      const dimensions = new Vector3().subVectors(bbox.max, bbox.min);
       const padding = 0.2;
-      const boxGeo = new THREE.BoxBufferGeometry(
+      const boxGeo = new BoxBufferGeometry(
         dimensions.x + padding,
         dimensions.y + padding,
         dimensions.z + padding,
       );
 
-      const box = new THREE.Mesh(
+      const box = new Mesh(
         boxGeo,
-        new THREE.MeshBasicMaterial({
+        new MeshBasicMaterial({
           transparent: true,
           opacity: 0.2,
         }),
@@ -49,7 +49,7 @@ class Clickable {
       box.name = `${this.mesh.name}Bbox`;
       box.position.copy(this.mesh.position);
 
-      this.parent.cube.add(box);
+      this.parent.scene.add(box);
     }
   }
 
@@ -67,8 +67,8 @@ class Clickable {
     let radius = 1;
 
     if (this.mesh) {
-      const bbox = new THREE.Box3().setFromObject(this.mesh);
-      this.meshSize = bbox.getSize(new THREE.Vector3());
+      const bbox = new Box3().setFromObject(this.mesh);
+      this.meshSize = bbox.getSize(new Vector3());
       radius = Math.max(this.meshSize.x, this.meshSize.y, this.meshSize.z) * 0.5 * resize;
     }
 
@@ -76,9 +76,9 @@ class Clickable {
   }
 
   getOverlayPosition() {
-    let position = new THREE.Vector3();
+    let position = new Vector3();
     if (this.mesh) {
-      position = new THREE.Vector3(
+      position = new Vector3(
         this.mesh.position.x,
         this.mesh.position.y,
         this.mesh.position.z,

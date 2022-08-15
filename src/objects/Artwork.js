@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+import {
+  Box3, Vector3, RepeatWrapping, Mesh, PlaneBufferGeometry, MeshBasicMaterial,
+} from 'three';
 import Clickable from './Clickable';
 
 class Artwork extends Clickable {
@@ -7,8 +9,8 @@ class Artwork extends Clickable {
     this.front = 'z';
     this.frame = frame;
 
-    const bbox = new THREE.Box3().setFromObject(frame);
-    this.frameSize = bbox.getSize(new THREE.Vector3());
+    const bbox = new Box3().setFromObject(frame);
+    this.frameSize = bbox.getSize(new Vector3());
 
     const index = +frame.name.match(/\d+/) - 1;
 
@@ -31,9 +33,9 @@ class Artwork extends Clickable {
   }
 
   add() {
-    this.parent.textureLoader.load(`artwork/${this.name}.jpg`, (texture) => {
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
+    this.parent.parent.textureLoader.load(`artwork/${this.name}.jpg`, (texture) => {
+      texture.wrapS = RepeatWrapping;
+      texture.wrapT = RepeatWrapping;
       texture.repeat.set(1, 1);
 
       const artAspect = texture.image.height / texture.image.width;
@@ -41,9 +43,9 @@ class Artwork extends Clickable {
       const width = this.frameSize.x;
       const height = this.frameSize.x * artAspect;
 
-      const canvas = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(width, height, 2, 2),
-        new THREE.MeshBasicMaterial({ map: texture }),
+      const canvas = new Mesh(
+        new PlaneBufferGeometry(width, height, 2, 2),
+        new MeshBasicMaterial({ map: texture }),
       );
 
       let resize = 1;
@@ -62,7 +64,7 @@ class Artwork extends Clickable {
 
       canvas.name = this.name;
 
-      this.parent.cube.add(canvas);
+      this.parent.scene.add(canvas);
     });
   }
 }
