@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+import {
+  Vector3, Box3, MeshBasicMaterial, sRGBEncoding,
+} from 'three';
 import Artwork from './objects/Artwork';
 import Clickable from './objects/Clickable';
 import Monitor from './objects/Monitor';
@@ -55,8 +57,8 @@ export default class Cube {
       'natecube.glb',
       (gltf) => {
         this.scene = gltf.scene;
-        const bbox = new THREE.Box3().setFromObject(this.scene);
-        const modelSize = bbox.getSize(new THREE.Vector3());
+        const bbox = new Box3().setFromObject(this.scene);
+        const modelSize = bbox.getSize(new Vector3());
         this.scene.position.y = modelSize.y * -0.5;
         this.parent.scene.add(this.scene);
 
@@ -77,27 +79,27 @@ export default class Cube {
   loadMaterials() {
     const bakedTexture = this.parent.textureLoader.load('natecube-baked.jpg');
     bakedTexture.flipY = false;
-    bakedTexture.encoding = THREE.sRGBEncoding;
+    bakedTexture.encoding = sRGBEncoding;
     this.materials = {
-      baked: new THREE.MeshBasicMaterial({ map: bakedTexture }),
-      test: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-      ledStrip: new THREE.MeshBasicMaterial({ color: 0x009AFF }),
-      closedDelta: new THREE.MeshBasicMaterial({ color: 0x010407 }),
-      openDelta: new THREE.MeshBasicMaterial({ color: 0x219ebc }),
-      logoLinkedin: new THREE.MeshBasicMaterial({ color: 0x000BD8 }),
-      textCode: new THREE.MeshBasicMaterial({ color: 0x050108 }),
-      logoInstagram: new THREE.MeshBasicMaterial({
+      baked: new MeshBasicMaterial({ map: bakedTexture }),
+      test: new MeshBasicMaterial({ color: 0xff0000 }),
+      ledStrip: new MeshBasicMaterial({ color: 0x009AFF }),
+      closedDelta: new MeshBasicMaterial({ color: 0x010407 }),
+      openDelta: new MeshBasicMaterial({ color: 0x219ebc }),
+      logoLinkedin: new MeshBasicMaterial({ color: 0x000BD8 }),
+      textCode: new MeshBasicMaterial({ color: 0x050108 }),
+      logoInstagram: new MeshBasicMaterial({
         color: 0xed1850,
         transparent: true,
         opacity: 0.6,
       }),
-      chairWheel1: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-      chairWheel2: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-      chairWheel3: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-      chairWheel4: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-      monitorBack: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-      monitorScreen: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-      monitorWindow: new THREE.MeshBasicMaterial({ color: 0x3063f2 }),
+      chairWheel1: new MeshBasicMaterial({ color: 0x000000 }),
+      chairWheel2: new MeshBasicMaterial({ color: 0x000000 }),
+      chairWheel3: new MeshBasicMaterial({ color: 0x000000 }),
+      chairWheel4: new MeshBasicMaterial({ color: 0x000000 }),
+      monitorBack: new MeshBasicMaterial({ color: 0x000000 }),
+      monitorScreen: new MeshBasicMaterial({ color: 0x000000 }),
+      monitorWindow: new MeshBasicMaterial({ color: 0x3063f2 }),
     };
   }
 
@@ -139,7 +141,7 @@ export default class Cube {
 
     frames.forEach((frame) => {
       const artwork = new Artwork(this, frame);
-      this[frame.name] = artwork;
+      this.objects[frame.name] = artwork;
       artwork.add();
     });
   }

@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { PlaneBufferGeometry, MeshBasicMaterial, Mesh } from 'three';
 import Clickable from './Clickable';
 
 class Monitor extends Clickable {
@@ -11,9 +11,9 @@ class Monitor extends Clickable {
 
   add() {
     const indeed = this.parent.parent.textureLoader.load('i-help-people-get-jobs-bg.jpg');
-    this.mesh = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(2.33, 1.33),
-      new THREE.MeshBasicMaterial({
+    this.mesh = new Mesh(
+      new PlaneBufferGeometry(2.33, 1.33),
+      new MeshBasicMaterial({
         map: indeed,
       }),
     );

@@ -92,8 +92,8 @@ class NateHub {
         const isInteractive = this.cube.interactive.includes(name);
 
         NateHub.closeAllModals();
-        if (clicked && isInteractive && name in this) {
-          this[name]?.handleClicked();
+        if (clicked && isInteractive && name in this.cube.objects) {
+          this.cube.objects[name]?.handleClicked();
           this.setActive(name);
         }
       },
