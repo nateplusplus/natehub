@@ -4,12 +4,13 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
-import GUI from 'lil-gui';
+// import GUI from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
 import NatehubModal from './NatehubModal';
 import Cube from './Cube';
+import Chair from './objects/Chair';
 
 class NateHub {
   constructor() {
@@ -18,6 +19,7 @@ class NateHub {
 
     this.mouse = new THREE.Vector2();
     this.mouseRaycaster = new THREE.Raycaster();
+    this.clock = new THREE.Clock();
 
     this.hammertime = new Hammer(this.canvas);
 
@@ -38,6 +40,7 @@ class NateHub {
     this.setupScene();
     this.light();
     this.addCube();
+    this.addChair();
     this.bindEvents();
     this.tick();
   }
@@ -89,16 +92,27 @@ class NateHub {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
         const clicked = intersects[0]?.object?.name ?? '';
         const name = NateHub.getObjectName(clicked);
-        const isInteractive = this.cube.interactive.includes(name);
+        const isInteractive = this.getInteractiveObjects().includes(name);
 
         NateHub.closeAllModals();
-        if (clicked && isInteractive && name in this.cube.objects) {
-          this.cube.objects[name]?.handleClicked();
-          this.setActive(name);
+        if (clicked && isInteractive) {
+          if (name in this.cube.objects) {
+            this.cube.objects[name]?.handleClicked();
+            this.setActive(name);
+          } else if (this.chair.interactive.includes(name)) {
+            this.chair.handleClicked();
+          }
         }
       },
       100,
     );
+  }
+
+  getInteractiveObjects() {
+    return [
+      ...this.cube.interactive,
+      ...this.chair.interactive,
+    ];
   }
 
   static closeAllModals() {
@@ -126,6 +140,8 @@ class NateHub {
     if (this.cube.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
       this.setActive(name);
+    } else if (this.chair.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
@@ -294,6 +310,11 @@ class NateHub {
     this.cube.load();
   }
 
+  addChair() {
+    this.chair = new Chair(this);
+    this.chair.add();
+  }
+
   goToHashPosition() {
     const position = window.location.hash.replace('#', '');
     const target = this.points[position] ?? this.points.home;
@@ -304,11 +325,14 @@ class NateHub {
   }
 
   tick(time) {
+    const deltaTime = this.clock.getDelta();
+
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
     this.controls.update();
 
-    // Update tween
+    this.chair.update(deltaTime);
+
     TWEEN.update(time);
 
     // Render

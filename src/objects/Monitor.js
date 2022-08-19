@@ -2,10 +2,8 @@ import { PlaneBufferGeometry, MeshBasicMaterial, Mesh } from 'three';
 import Clickable from './Clickable';
 
 class Monitor extends Clickable {
-  constructor(parent, frame) {
-    super(parent, frame.name);
-    this.name = 'indeed';
-
+  constructor(parent) {
+    super(parent, 'indeed');
     this.front = 'x';
   }
 

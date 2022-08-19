@@ -96,6 +96,12 @@ class Clickable {
 
     return position;
   }
+
+  update(deltaTime) {
+    if (this.mixer) {
+      this.mixer.update(deltaTime);
+    }
+  }
 }
 
 export default Clickable;

@@ -93,10 +93,6 @@ export default class Cube {
         transparent: true,
         opacity: 0.6,
       }),
-      chairWheel1: new MeshBasicMaterial({ color: 0x000000 }),
-      chairWheel2: new MeshBasicMaterial({ color: 0x000000 }),
-      chairWheel3: new MeshBasicMaterial({ color: 0x000000 }),
-      chairWheel4: new MeshBasicMaterial({ color: 0x000000 }),
       monitorBack: new MeshBasicMaterial({ color: 0x000000 }),
       monitorScreen: new MeshBasicMaterial({ color: 0x000000 }),
       monitorWindow: new MeshBasicMaterial({ color: 0x3063f2 }),
@@ -108,21 +104,12 @@ export default class Cube {
       case 'textArtwork':
         child.material.color.set(0xedf6f9);
         break;
-      case 'chairBase':
       case 'textName':
         child.material.color.set(0xFAFAFA);
         child.material.roughness = 0;
         break;
-      case 'chairSeat':
-        child.material.color.set(0x747474);
-        child.material.roughness = 0.66;
-        break;
       case 'monitorStand':
         child.material.color.set(0x000000);
-        child.material.roughness = 0.25;
-        break;
-      case 'chairPole':
-        child.material.metalness = 0.5;
         child.material.roughness = 0.25;
         break;
       default:
