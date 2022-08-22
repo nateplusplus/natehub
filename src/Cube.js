@@ -64,6 +64,9 @@ export default class Cube {
 
         this.scene.traverse(this.setLayerMaterial.bind(this));
 
+        const textArtwork = this.scene.children.find((child) => child.name === 'textArtwork');
+        textArtwork.material.color.set(0xedf6f9);
+
         this.objects.monitorDisplay = new Monitor(this, 'indeed');
         this.objects.monitorDisplay.add();
 
@@ -100,26 +103,10 @@ export default class Cube {
   }
 
   setLayerMaterial(child) {
-    switch (child.name) {
-      case 'textArtwork':
-        child.material.color.set(0xedf6f9);
-        break;
-      case 'textName':
-        child.material.color.set(0xFAFAFA);
-        child.material.roughness = 0;
-        break;
-      case 'monitorStand':
-        child.material.color.set(0x000000);
-        child.material.roughness = 0.25;
-        break;
-      default:
-        if (this.materials[child.name]) {
-          child.material = this.materials[child.name];
-        } else if (this.unbakedLayers.indexOf(child.name) > -1) {
-          child.material = this.materials.test;
-        } else {
-          child.material = this.materials.baked;
-        }
+    if (this.materials[child.name]) {
+      child.material = this.materials[child.name];
+    } else if (!this.unbakedLayers.includes(child.name)) {
+      child.material = this.materials.baked;
     }
   }
 

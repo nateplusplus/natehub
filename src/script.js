@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
 // import GUI from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
@@ -41,6 +42,7 @@ class NateHub {
     this.light();
     this.addCube();
     this.addChair();
+    this.addName();
     this.bindEvents();
     this.tick();
   }
@@ -248,6 +250,9 @@ class NateHub {
     this.gltfLoader = new GLTFLoader(this.loadingManager);
     this.gltfLoader.setDRACOLoader(this.dracoLoader);
 
+    // Fonts
+    this.fontLoader = new FontLoader(this.loadingManager);
+
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
@@ -262,6 +267,27 @@ class NateHub {
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.minDistance = 10;
     this.controls.maxDistance = 150;
+  }
+
+  addName() {
+    this.fontLoader.load(
+      'fonts/helvetiker_bold.typeface.json',
+      (font) => {
+        const geometry = new TextGeometry( 'Hello three.js!', {
+          font: font,
+          size: 80,
+          height: 5,
+          curveSegments: 12,
+          bevelEnabled: true,
+          bevelThickness: 10,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5
+        } );
+
+        this.scene.add(geometry);
+      },
+    );
   }
 
   light() {
