@@ -42,7 +42,7 @@ class NateHub {
     this.light();
     this.addCube();
     this.addChair();
-    this.addName();
+    // this.addName();
     this.bindEvents();
     this.tick();
   }
@@ -269,26 +269,26 @@ class NateHub {
     this.controls.maxDistance = 150;
   }
 
-  addName() {
-    this.fontLoader.load(
-      'fonts/helvetiker_bold.typeface.json',
-      (font) => {
-        const geometry = new TextGeometry( 'Hello three.js!', {
-          font: font,
-          size: 80,
-          height: 5,
-          curveSegments: 12,
-          bevelEnabled: true,
-          bevelThickness: 10,
-          bevelSize: 8,
-          bevelOffset: 0,
-          bevelSegments: 5
-        } );
+  // addName() {
+  //   this.fontLoader.load(
+  //     'fonts/helvetiker_bold.typeface.json',
+  //     (font) => {
+  //       const geometry = new TextGeometry( 'Hello three.js!', {
+  //         font: font,
+  //         size: 80,
+  //         height: 5,
+  //         curveSegments: 12,
+  //         bevelEnabled: true,
+  //         bevelThickness: 10,
+  //         bevelSize: 8,
+  //         bevelOffset: 0,
+  //         bevelSegments: 5
+  //       } );
 
-        this.scene.add(geometry);
-      },
-    );
-  }
+  //       this.scene.add(geometry);
+  //     },
+  //   );
+  // }
 
   light() {
     const ambientLight = new THREE.AmbientLight(0xcccccc, 0.01);
