@@ -4,8 +4,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
-// import GUI from 'lil-gui';
+import GUI from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
@@ -24,7 +25,7 @@ class NateHub {
 
     this.hammertime = new Hammer(this.canvas);
 
-    // this.gui = new GUI();
+    this.gui = new GUI();
 
     this.breakpoints = {
       md: 768,
@@ -42,7 +43,7 @@ class NateHub {
     this.light();
     this.addCube();
     this.addChair();
-    // this.addName();
+    this.addName();
     this.bindEvents();
     this.tick();
   }
@@ -269,26 +270,38 @@ class NateHub {
     this.controls.maxDistance = 150;
   }
 
-  // addName() {
-  //   this.fontLoader.load(
-  //     'fonts/helvetiker_bold.typeface.json',
-  //     (font) => {
-  //       const geometry = new TextGeometry( 'Hello three.js!', {
-  //         font: font,
-  //         size: 80,
-  //         height: 5,
-  //         curveSegments: 12,
-  //         bevelEnabled: true,
-  //         bevelThickness: 10,
-  //         bevelSize: 8,
-  //         bevelOffset: 0,
-  //         bevelSegments: 5
-  //       } );
+  addName() {
+    this.fontLoader.load(
+      'fonts/helvetiker_bold.typeface.json',
+      (font) => {
+        const textGeo = new TextGeometry('Nate\nBlair', {
+          font,
+          size: 0.7,
+          height: 0.4,
+          curveSegments: 6,
+          bevelEnabled: true,
+          bevelThickness: 0.01,
+          bevelSize: 0.01,
+          bevelOffset: 0,
+          bevelSegments: 1,
+        });
 
-  //       this.scene.add(geometry);
-  //     },
-  //   );
-  // }
+        const textMaterial = new THREE.MeshStandardMaterial();
+
+        const text = new THREE.Mesh(textGeo, textMaterial);
+
+        text.position.x = 0.7;
+        text.position.y = 3;
+        text.position.z = -1;
+        text.rotation.y = Math.PI * 0.5;
+        text.rotation.x = Math.PI * -0.2;
+
+        this.gui.add(text.rotation, 'x', Math.PI * -0.25, 0);
+
+        this.scene.add(text);
+      },
+    );
+  }
 
   light() {
     const ambientLight = new THREE.AmbientLight(0xcccccc, 0.01);
