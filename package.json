@@ -6,7 +6,7 @@
     "start": "webpack serve --config ./bundler/webpack.dev.js"
   },
   "dependencies": {
-    "@babel/core": "^7.15.8",
+    "@babel/core": "^7.18.13",
     "@babel/preset-env": "^7.15.8",
     "@tweenjs/tween.js": "^18.6.4",
     "babel-loader": "^8.2.3",
