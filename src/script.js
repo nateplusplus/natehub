@@ -6,7 +6,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
-import GUI from 'lil-gui';
+// import GUI from 'lil-gui';
 import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
@@ -25,7 +25,7 @@ class NateHub {
 
     this.hammertime = new Hammer(this.canvas);
 
-    this.gui = new GUI();
+    // this.gui = new GUI();
 
     this.breakpoints = {
       md: 768,
@@ -274,10 +274,10 @@ class NateHub {
     this.fontLoader.load(
       'fonts/helvetiker_bold.typeface.json',
       (font) => {
-        const textGeo = new TextGeometry('Nate\nBlair', {
+        const textGeo = new TextGeometry("Hello,\nI'm Nate.", {
           font,
-          size: 0.7,
-          height: 0.4,
+          size: 0.4,
+          height: 0.3,
           curveSegments: 6,
           bevelEnabled: true,
           bevelThickness: 0.01,
@@ -291,12 +291,10 @@ class NateHub {
         const text = new THREE.Mesh(textGeo, textMaterial);
 
         text.position.x = 0.7;
-        text.position.y = 3;
+        text.position.y = 2.7;
         text.position.z = -1;
         text.rotation.y = Math.PI * 0.5;
-        text.rotation.x = Math.PI * -0.2;
-
-        this.gui.add(text.rotation, 'x', Math.PI * -0.25, 0);
+        text.rotation.x = Math.PI * -0.0955;
 
         this.scene.add(text);
       },
