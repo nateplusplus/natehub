@@ -4,6 +4,7 @@ module.exports = {
     es2021: true,
   },
   extends: [
+    'react-app',
     'airbnb-base',
   ],
   parserOptions: {
@@ -12,5 +13,7 @@ module.exports = {
   },
   rules: {
     'no-param-reassign': 'off',
+    'no-unused-vars': 'warn',
+    'comma-dangle': ['error', { functions: 'never' }]
   },
 };
