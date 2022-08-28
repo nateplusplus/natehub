@@ -17,6 +17,8 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import CodeIcon from '@mui/icons-material/Code';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 
+import data from '../../three/data.json';
+
 function Nav({ collapsed, toggle }) {
   const transitionDuration = {
     enter: 300,
@@ -35,6 +37,25 @@ function Nav({ collapsed, toggle }) {
         </Fab>
       </Zoom>
     );
+  }
+
+  function subMenu(section) {
+    const links = [];
+    data.forEach(
+      (item, index) => {
+        if (item.section === section) {
+          links.push(
+            <ListItem key={`${section}-${index}`} dense={true}>
+              <ListItemButton component="a" href={`?select=${item.name}#${section}`} onClick={toggle}>
+                <ListItemText inset primary={item.name} />
+              </ListItemButton>
+            </ListItem>
+          );
+        }
+      }
+    );
+
+    return links;
   }
 
   return (
@@ -69,6 +90,7 @@ function Nav({ collapsed, toggle }) {
                 <ListItemText primary="Code" />
               </ListItemButton>
             </ListItem>
+            { subMenu('code') }
             <ListItem disablePadding>
               <ListItemButton component="a" href="#artwork" onClick={toggle}>
                 <ListItemIcon>
@@ -77,6 +99,7 @@ function Nav({ collapsed, toggle }) {
                 <ListItemText primary="Artwork" />
               </ListItemButton>
             </ListItem>
+            { subMenu('artwork') }
           </List>
         </Box>
       </Drawer>
