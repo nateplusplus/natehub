@@ -1,44 +1,68 @@
 import React from 'react';
 
 import {
-  IconButton,
-  Container,
-  Fade,
   Drawer,
   Box,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  ListItemIcon
+  ListItemIcon,
+  Divider,
+  ListSubheader,
+  Fab,
+  Zoom
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import CodeIcon from '@mui/icons-material/Code';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 
 function Nav({ collapsed, toggle }) {
+  const transitionDuration = {
+    enter: 300,
+    exit: 300
+  };
+
+  function menuToggle() {
+    return (
+      <Zoom
+        in={collapsed}
+        timeout={transitionDuration}
+        unmountOnExit
+      >
+        <Fab aria-label='Open menu' size='large' onClick={toggle} >
+          <MenuOutlinedIcon fontSize='large' />
+        </Fab>
+      </Zoom>
+    );
+  }
+
   return (
     <>
-      <Container sx={ {
-        position: 'absolute', zIndex: 100, display: 'flex', justifyContent: 'flex-end'
+      <Box sx={ {
+        position: 'absolute',
+        zIndex: 10,
+        display: 'flex',
+        justifyContent: 'flex-end',
+        width: '100%',
+        padding: '1rem'
       } }>
-        <Fade in={collapsed}>
-          <IconButton aria-label='Open menu' size='large' onClick={toggle} sx={{ position: 'absolute' }}>
-              <MenuOutlinedIcon fontSize='large' sx={{ color: '#ffffff' }} />
-          </IconButton>
-        </Fade>
-      </Container>
-      <Drawer anchor='right' open={!collapsed}>
-        <Box sx={{ padding: '1rem 1.5rem' }}>
-          <Fade in={!collapsed}>
-            <IconButton aria-label='Close menu' size='large' onClick={toggle}>
-                <CloseIcon fontSize='large' />
-            </IconButton>
-          </Fade>
+        { menuToggle() }
+      </Box>
+      <Drawer
+        anchor='right'
+        open={!collapsed}
+        onClose={toggle}
+        transitionDuration={transitionDuration}
+      >
+        <Box sx={{ position: 'relative' }}>
           <List>
+            <ListSubheader>
+              Jump to...
+            </ListSubheader>
+            <Divider />
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#code">
+              <ListItemButton component="a" href="#code" onClick={toggle}>
                 <ListItemIcon>
                   <CodeIcon />
                 </ListItemIcon>
@@ -46,7 +70,7 @@ function Nav({ collapsed, toggle }) {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#artwork">
+              <ListItemButton component="a" href="#artwork" onClick={toggle}>
                 <ListItemIcon>
                   <PaletteOutlinedIcon />
                 </ListItemIcon>
