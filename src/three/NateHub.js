@@ -83,6 +83,7 @@ class NateHub {
 
   bindEvents() {
     window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener('hashchange', this.goToHashPosition.bind(this));
 
     this.hammertime.on('tap', this.handleTap.bind(this));
     this.canvas.addEventListener('mousemove', this.handleMousemove.bind(this));

@@ -1,10 +1,13 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import './App.css';
 import NateHub from './three/NateHub';
+// eslint-disable-next-line import/no-unresolved, import/extensions
+import Nav from './components/Nav';
 
 function App() {
   const canvasRef = useRef();
   const natehubRef = useRef();
+  const [navCollapsed, setNavCollapsed] = useState(true);
 
   useEffect(() => {
     const { current: canvas } = canvasRef;
@@ -14,8 +17,13 @@ function App() {
     }
   }, []);
 
+  function navToggle() {
+    setNavCollapsed(!navCollapsed);
+  }
+
   return (
     <div className="App">
+      <Nav collapsed={navCollapsed} toggle={navToggle} />
       <canvas className="webgl" ref={canvasRef}/>
       <div className="loading">
         <div className="loading__progress">
