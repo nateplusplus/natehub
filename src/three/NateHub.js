@@ -84,9 +84,22 @@ class NateHub {
   bindEvents() {
     window.addEventListener('resize', this.handleResize.bind(this));
     window.addEventListener('hashchange', this.goToHashPosition.bind(this));
+    window.addEventListener('nbclick', this.handleNbClick.bind(this));
 
     this.hammertime.on('tap', this.handleTap.bind(this));
     this.canvas.addEventListener('mousemove', this.handleMousemove.bind(this));
+  }
+
+  handleNbClick(e) {
+    const { name } = e.detail;
+    NateHub.closeAllModals();
+
+    Object.keys(this.cube.objects).forEach((key) => {
+      if (this.cube.objects[key]?.name === name) {
+        this.cube.objects[key].handleClicked();
+        this.setActive(key);
+      }
+    });
   }
 
   handleTap(event) {

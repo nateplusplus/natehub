@@ -62,6 +62,13 @@ class Clickable {
     modal.copy = this.data?.copy ?? '';
     modal.ctaText = this.data?.cta?.text ?? '';
     modal.ctaHref = this.data?.cta?.href ?? '';
+
+    setTimeout(
+      () => {
+        modal.container.focus();
+      },
+      5
+    );
   }
 
   boundingRadius() {

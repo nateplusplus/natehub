@@ -19,6 +19,9 @@ import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 
 import data from '../../three/data.json';
 
+// eslint-disable-next-line import/no-unresolved, import/extensions
+import SubnavItem from '../SubnavItem';
+
 function Nav({ collapsed, toggle }) {
   const transitionDuration = {
     enter: 300,
@@ -45,11 +48,7 @@ function Nav({ collapsed, toggle }) {
       (item, index) => {
         if (item.section === section) {
           links.push(
-            <ListItem key={`${section}-${index}`} dense={true}>
-              <ListItemButton component="a" href={`?select=${item.name}#${section}`} onClick={toggle}>
-                <ListItemText inset primary={item.name} />
-              </ListItemButton>
-            </ListItem>
+            <SubnavItem key={`${section}-${index}`} section={section} toggle={toggle} item={item} />
           );
         }
       }

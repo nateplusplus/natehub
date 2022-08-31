@@ -4,6 +4,7 @@ class NatehubModal extends HTMLElement {
   connectedCallback() {
     this.container = document.createElement('div');
     this.container.classList.add('modal__content');
+    this.container.setAttribute('tabindex', 0);
 
     this.children.heading = document.createElement('h2');
     this.children.heading.innerHTML = this.heading ?? '';
@@ -30,6 +31,14 @@ class NatehubModal extends HTMLElement {
 
     this.hammertime = new Hammer(this.children.close);
     this.hammertime.on('tap', this.handleClose.bind(this));
+
+    this.addEventListener('click', this.handleClose.bind(this));
+
+    this.addEventListener('keydown', (event) => {
+      if (event.key.toLocaleLowerCase() === 'escape') {
+        this.handleClose();
+      }
+    });
   }
 
   static get observedAttributes() {
