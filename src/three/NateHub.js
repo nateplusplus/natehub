@@ -6,12 +6,14 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
 // import GUI from 'lil-gui';
+
 import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
 import NatehubModal from './NatehubModal';
 import Cube from './Cube';
 import Chair from './objects/Chair';
+import InstagramIcon from './objects/InstagramIcon';
 
 class NateHub {
   constructor(canvas) {
@@ -45,6 +47,7 @@ class NateHub {
     this.light();
     this.addCube();
     this.addChair();
+    this.addIgNateplusplus();
     this.addName();
     this.bindEvents();
     this.tick();
@@ -94,12 +97,11 @@ class NateHub {
     const { name } = e.detail;
     NateHub.closeAllModals();
 
-    Object.keys(this.cube.objects).forEach((key) => {
-      if (this.cube.objects[key]?.name === name) {
-        this.cube.objects[key].handleClicked();
-        this.setActive(key);
-      }
-    });
+    const object = this.getActiveObjects().find((item) => item.name === name);
+    if (object) {
+      object.handleClicked();
+      object.setActive();
+    }
   }
 
   handleTap(event) {
@@ -117,9 +119,12 @@ class NateHub {
         if (clicked && isInteractive) {
           if (name in this.cube.objects) {
             this.cube.objects[name]?.handleClicked();
-            this.setActive(name);
+            this.cube.objects[name].setActive();
           } else if (this.chair.interactive.includes(name)) {
             this.chair.handleClicked();
+          } else if (this.igNateplusplus.interactive.includes(name)) {
+            this.igNateplusplus.handleClicked();
+            this.igNateplusplus.setActive();
           }
         }
       },
@@ -130,7 +135,15 @@ class NateHub {
   getInteractiveObjects() {
     return [
       ...this.cube.interactive,
-      ...this.chair.interactive
+      ...this.chair.interactive,
+      ...this.igNateplusplus.interactive
+    ];
+  }
+
+  getActiveObjects() {
+    return [
+      ...Object.values(this.cube.objects),
+      this.igNateplusplus
     ];
   }
 
@@ -158,30 +171,23 @@ class NateHub {
 
     if (this.cube.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
-      this.setActive(name);
+      this.cube.objects[name].setActive();
     } else if (this.chair.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
+    } else if (this.igNateplusplus.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.igNateplusplus.setActive();
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
     }
   }
 
-  setActive(name) {
-    if (!this.active || `${name}Active` !== this.active.name) {
-      const radius = this.cube.objects[name].boundingRadius();
-      const position = this.cube.objects[name].getOverlayPosition();
-      const rotation = this.cube.objects[name].mesh.rotation.y;
-      const lookAt = this.cube.objects[name].mesh.position;
-      this.addActive(name, radius, position, rotation, lookAt);
-    }
-  }
-
   removeActiveState() {
     if (this.active) {
-      this.cube.scene.remove(this.active);
-      this.active.geometry.dispose();
-      this.active.material.dispose();
+      this.active.target.scene.remove(this.active.mesh);
+      this.active.mesh.geometry.dispose();
+      this.active.mesh.material.dispose();
       this.active = null;
     }
   }
@@ -198,30 +204,6 @@ class NateHub {
     // Update renderer
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  }
-
-  addActive(name, radius, position, rotation, lookAt) {
-    radius = radius || 1;
-    position = position || new THREE.Vector3();
-    lookAt = lookAt || new THREE.Vector3();
-
-    this.removeActiveState();
-
-    this.active = new THREE.Mesh(
-      new THREE.TorusBufferGeometry(radius, 0.15, 32, 32),
-      new THREE.MeshBasicMaterial({
-        transparent: true,
-        opacity: 0.3,
-        color: new THREE.Color('#4287f5')
-      })
-    );
-    this.active.position.copy(position);
-    this.active.rotation.y = rotation;
-    this.active.lookAt(lookAt);
-
-    this.active.name = `${name}Active`;
-
-    this.cube.scene.add(this.active);
   }
 
   setupScene() {
@@ -368,6 +350,11 @@ class NateHub {
     this.chair.add();
   }
 
+  addIgNateplusplus() {
+    this.igNateplusplus = new InstagramIcon(this, 'igNateplusplus');
+    this.igNateplusplus.add();
+  }
+
   goToHashPosition() {
     const position = window.location.hash.replace('#', '');
     const target = this.points[position] ?? this.points.home;
@@ -385,6 +372,7 @@ class NateHub {
     this.controls.update();
 
     this.chair.update(deltaTime);
+    this.igNateplusplus.update(deltaTime);
 
     TWEEN.update(time);
 
