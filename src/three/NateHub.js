@@ -5,7 +5,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
-import GUI from 'lil-gui';
+// import GUI from 'lil-gui';
 
 import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
@@ -25,7 +25,7 @@ class NateHub {
 
     this.hammertime = new Hammer(this.canvas);
 
-    this.gui = new GUI();
+    // this.gui = new GUI();
 
     this.breakpoints = {
       md: 768,
@@ -97,10 +97,10 @@ class NateHub {
     const { name } = e.detail;
     NateHub.closeAllModals();
 
-    const activate = this.getActiveObjects.find((object) => object.name === name);
-    if (activate) {
-      activate.handleClicked();
-      this.setActive(activate);
+    const object = this.getActiveObjects().find((item) => item.name === name);
+    if (object) {
+      object.handleClicked();
+      object.setActive();
     }
   }
 
@@ -119,12 +119,12 @@ class NateHub {
         if (clicked && isInteractive) {
           if (name in this.cube.objects) {
             this.cube.objects[name]?.handleClicked();
-            this.setActive(this.cube.objects[name]);
+            this.cube.objects[name].setActive();
           } else if (this.chair.interactive.includes(name)) {
             this.chair.handleClicked();
           } else if (this.igNateplusplus.interactive.includes(name)) {
             this.igNateplusplus.handleClicked();
-            this.setActive(this.igNateplusplus);
+            this.igNateplusplus.setActive();
           }
         }
       },
@@ -142,7 +142,7 @@ class NateHub {
 
   getActiveObjects() {
     return [
-      ...this.cube.objects,
+      ...Object.values(this.cube.objects),
       this.igNateplusplus
     ];
   }
@@ -171,33 +171,23 @@ class NateHub {
 
     if (this.cube.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
-      this.setActive(this.cube.objects[name]);
+      this.cube.objects[name].setActive();
     } else if (this.chair.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
     } else if (this.igNateplusplus.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
-      this.setActive(this.igNateplusplus);
+      this.igNateplusplus.setActive();
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
     }
   }
 
-  setActive(object) {
-    if (!this.active || `${object.name}Active` !== this.active.name) {
-      const radius = object.boundingRadius();
-      const position = object.getOverlayPosition();
-      const rotation = object.mesh.rotation.y;
-      const lookAt = object.mesh.position;
-      this.addActive(object, radius, position, rotation, lookAt);
-    }
-  }
-
   removeActiveState() {
     if (this.active) {
-      this.cube.scene.remove(this.active);
-      this.active.geometry.dispose();
-      this.active.material.dispose();
+      this.active.target.scene.remove(this.active.mesh);
+      this.active.mesh.geometry.dispose();
+      this.active.mesh.material.dispose();
       this.active = null;
     }
   }
@@ -214,30 +204,6 @@ class NateHub {
     // Update renderer
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  }
-
-  addActive(object, radius, position, rotation, lookAt) {
-    radius = radius || 1;
-    position = position || new THREE.Vector3();
-    lookAt = lookAt || new THREE.Vector3();
-
-    this.removeActiveState();
-
-    this.active = new THREE.Mesh(
-      new THREE.TorusBufferGeometry(radius, 0.15, 32, 32),
-      new THREE.MeshBasicMaterial({
-        transparent: true,
-        opacity: 0.3,
-        color: new THREE.Color('#4287f5')
-      })
-    );
-    this.active.position.copy(position);
-    this.active.rotation.y = rotation;
-    this.active.lookAt(lookAt);
-
-    this.active.name = `${object.name}Active`;
-
-    this.cube.scene.add(this.active);
   }
 
   setupScene() {

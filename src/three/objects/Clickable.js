@@ -1,22 +1,24 @@
 import {
-  Box3, Vector3, BoxBufferGeometry, Mesh, MeshBasicMaterial
+  Box3, Vector3, BoxBufferGeometry, Mesh, MeshBasicMaterial, TorusBufferGeometry, Color
 } from 'three';
 import data from '../data.json';
 
 class Clickable {
   constructor(parent, name) {
     this.parent = parent;
+    this.natehub = parent.parent ?? parent;
     this.name = name;
     this.active = false;
     this.front = 'x';
 
-    this.parent.scene.traverse((child) => {
-      if (this.name === 'pushin' && child.name === 'closedDelta') {
-        this.mesh = child;
-      } else if (child.name === this.name) {
-        this.mesh = child;
-      }
-    });
+    this.overlay = {
+      radius: 1.2,
+      thickness: 0.15
+    };
+  }
+
+  add() {
+    this.scene = this.gltf ? this.gltf.scene : this.parent.gltf.scene;
 
     this.makeBoundingBox();
     this.setData();
@@ -38,7 +40,7 @@ class Clickable {
         dimensions.z + padding
       );
 
-      const box = new Mesh(
+      this.box = new Mesh(
         boxGeo,
         new MeshBasicMaterial({
           transparent: true,
@@ -46,12 +48,12 @@ class Clickable {
         })
       );
 
-      box.visible = false;
+      this.box.visible = false;
 
-      box.name = `${this.mesh.name}Bbox`;
-      box.position.copy(this.mesh.position);
+      this.box.name = `${this.mesh.name}Bbox`;
+      this.box.position.copy(this.mesh.position);
 
-      this.parent.scene.add(box);
+      this.scene.add(this.box);
     }
   }
 
@@ -72,13 +74,14 @@ class Clickable {
   }
 
   boundingRadius() {
-    const resize = 1.2;
     let radius = 1;
 
     if (this.mesh) {
       const bbox = new Box3().setFromObject(this.mesh);
       this.meshSize = bbox.getSize(new Vector3());
-      radius = Math.max(this.meshSize.x, this.meshSize.y, this.meshSize.z) * 0.5 * resize;
+      const maxSize = Math.max(this.meshSize.x, this.meshSize.y, this.meshSize.z);
+
+      radius = maxSize * 0.5 * this.overlay.radius;
     }
 
     return radius;
@@ -110,6 +113,47 @@ class Clickable {
     if (this.mixer) {
       this.mixer.update(deltaTime);
     }
+  }
+
+  setActive() {
+    if (!this.natehub.active || `${this.name}Active` !== this.natehub.active.name) {
+      const radius = this.boundingRadius();
+      const position = this.getOverlayPosition();
+      const rotation = this.mesh.rotation.y;
+      const lookAt = this.mesh.position;
+      this.addActive(radius, position, rotation, lookAt);
+    }
+  }
+
+  addActive(radius, position, rotation, lookAt) {
+    radius = radius || 1;
+    position = position || new Vector3();
+    lookAt = lookAt || new Vector3();
+
+    const name = `${this.name}Active`;
+
+    const active = {
+      name,
+      target: this,
+      mesh: new Mesh(
+        new TorusBufferGeometry(radius, this.overlay.thickness, 32, 32),
+        new MeshBasicMaterial({
+          transparent: true,
+          opacity: 0.3,
+          color: new Color('#4287f5')
+        })
+      )
+    };
+    active.mesh.name = name;
+
+    active.mesh.position.copy(position);
+    active.mesh.rotation.y = rotation;
+    active.mesh.lookAt(lookAt);
+
+    this.natehub.removeActiveState();
+    this.natehub.active = active;
+
+    this.scene.add(this.natehub.active.mesh);
   }
 }
 

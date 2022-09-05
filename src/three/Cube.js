@@ -56,27 +56,41 @@ export default class Cube {
     this.parent.gltfLoader.load(
       'natecube.glb',
       (gltf) => {
-        this.scene = gltf.scene;
-        const bbox = new Box3().setFromObject(this.scene);
+        this.gltf = gltf;
+        const bbox = new Box3().setFromObject(this.gltf.scene);
         const modelSize = bbox.getSize(new Vector3());
-        this.scene.position.y = modelSize.y * -0.5;
-        this.parent.scene.add(this.scene);
+        this.gltf.scene.position.y = modelSize.y * -0.5;
+        this.parent.scene.add(this.gltf.scene);
 
-        this.scene.traverse(this.setLayerMaterial.bind(this));
+        this.gltf.scene.traverse(this.setLayerMaterial.bind(this));
 
-        const textArtwork = this.scene.children.find((child) => child.name === 'textArtwork');
+        const textArtwork = this.gltf.scene.children.find((child) => child.name === 'textArtwork');
         textArtwork.material.color.set(0xedf6f9);
 
         this.objects.monitorDisplay = new Monitor(this, 'indeed');
         this.objects.monitorDisplay.add();
 
-        this.objects.logoInstagram = new Clickable(this, 'logoInstagram');
         this.objects.logoLinkedin = new Clickable(this, 'logoLinkedin');
-        this.objects.closedDelta = new Clickable(this, 'pushin');
+        this.objects.logoLinkedin.mesh = this.gltf.scene.children.find((child) => child.name === 'logoLinkedin');
+        this.objects.logoLinkedin.add();
 
-        this.placeArtwork(this.scene.children);
+        this.objects.closedDelta = new Clickable(this, 'pushin');
+        this.objects.closedDelta.mesh = this.gltf.scene.children.find((child) => child.name === 'closedDelta');
+        this.objects.closedDelta.add();
+
+        this.placeArtwork(this.gltf.scene.children);
       }
     );
+  }
+
+  addMesh(clickable) {
+    this.gltf.scene.traverse((child) => {
+      if (clickable.name === 'pushin' && child.name === 'closedDelta') {
+        clickable.mesh = child;
+      } else if (child.name === this.name) {
+        clickable.mesh = child;
+      }
+    });
   }
 
   loadMaterials() {
