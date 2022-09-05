@@ -33,7 +33,7 @@ class Artwork extends Clickable {
   }
 
   add() {
-    this.parent.parent.textureLoader.load(`artwork/${this.name}.jpg`, (texture) => {
+    this.natehub.textureLoader.load(`artwork/${this.name}.jpg`, (texture) => {
       texture.wrapS = RepeatWrapping;
       texture.wrapT = RepeatWrapping;
       texture.repeat.set(1, 1);
@@ -64,7 +64,11 @@ class Artwork extends Clickable {
 
       canvas.name = this.name;
 
-      this.parent.scene.add(canvas);
+      this.parent.gltf.scene.add(canvas);
+
+      this.mesh = this.frame;
+
+      super.add();
     });
   }
 }

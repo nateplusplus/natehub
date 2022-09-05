@@ -18,10 +18,9 @@ class Monitor extends Clickable {
     this.mesh.rotation.y = Math.PI * 0.5;
     this.mesh.position.set(1.04, 5, -1.6);
     this.mesh.name = 'monitorDisplay';
-    this.parent.scene.add(this.mesh);
+    this.parent.gltf.scene.add(this.mesh);
 
-    this.makeBoundingBox();
-    this.setData();
+    super.add();
   }
 }
 
