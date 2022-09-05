@@ -5,13 +5,15 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
-// import GUI from 'lil-gui';
+import GUI from 'lil-gui';
+
 import * as TWEEN from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
 
 import NatehubModal from './NatehubModal';
 import Cube from './Cube';
 import Chair from './objects/Chair';
+import InstagramIcon from './objects/InstagramIcon';
 
 class NateHub {
   constructor(canvas) {
@@ -23,7 +25,7 @@ class NateHub {
 
     this.hammertime = new Hammer(this.canvas);
 
-    // this.gui = new GUI();
+    this.gui = new GUI();
 
     this.breakpoints = {
       md: 768,
@@ -45,6 +47,7 @@ class NateHub {
     this.light();
     this.addCube();
     this.addChair();
+    this.addIgNateplusplus();
     this.addName();
     this.bindEvents();
     this.tick();
@@ -94,12 +97,11 @@ class NateHub {
     const { name } = e.detail;
     NateHub.closeAllModals();
 
-    Object.keys(this.cube.objects).forEach((key) => {
-      if (this.cube.objects[key]?.name === name) {
-        this.cube.objects[key].handleClicked();
-        this.setActive(key);
-      }
-    });
+    const activate = this.getActiveObjects.find((object) => object.name === name);
+    if (activate) {
+      activate.handleClicked();
+      this.setActive(activate);
+    }
   }
 
   handleTap(event) {
@@ -117,9 +119,12 @@ class NateHub {
         if (clicked && isInteractive) {
           if (name in this.cube.objects) {
             this.cube.objects[name]?.handleClicked();
-            this.setActive(name);
+            this.setActive(this.cube.objects[name]);
           } else if (this.chair.interactive.includes(name)) {
             this.chair.handleClicked();
+          } else if (this.igNateplusplus.interactive.includes(name)) {
+            this.igNateplusplus.handleClicked();
+            this.setActive(this.igNateplusplus);
           }
         }
       },
@@ -130,7 +135,15 @@ class NateHub {
   getInteractiveObjects() {
     return [
       ...this.cube.interactive,
-      ...this.chair.interactive
+      ...this.chair.interactive,
+      ...this.igNateplusplus.interactive
+    ];
+  }
+
+  getActiveObjects() {
+    return [
+      ...this.cube.objects,
+      this.igNateplusplus
     ];
   }
 
@@ -158,22 +171,25 @@ class NateHub {
 
     if (this.cube.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
-      this.setActive(name);
+      this.setActive(this.cube.objects[name]);
     } else if (this.chair.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
+    } else if (this.igNateplusplus.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.setActive(this.igNateplusplus);
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
     }
   }
 
-  setActive(name) {
-    if (!this.active || `${name}Active` !== this.active.name) {
-      const radius = this.cube.objects[name].boundingRadius();
-      const position = this.cube.objects[name].getOverlayPosition();
-      const rotation = this.cube.objects[name].mesh.rotation.y;
-      const lookAt = this.cube.objects[name].mesh.position;
-      this.addActive(name, radius, position, rotation, lookAt);
+  setActive(object) {
+    if (!this.active || `${object.name}Active` !== this.active.name) {
+      const radius = object.boundingRadius();
+      const position = object.getOverlayPosition();
+      const rotation = object.mesh.rotation.y;
+      const lookAt = object.mesh.position;
+      this.addActive(object, radius, position, rotation, lookAt);
     }
   }
 
@@ -200,7 +216,7 @@ class NateHub {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
 
-  addActive(name, radius, position, rotation, lookAt) {
+  addActive(object, radius, position, rotation, lookAt) {
     radius = radius || 1;
     position = position || new THREE.Vector3();
     lookAt = lookAt || new THREE.Vector3();
@@ -219,7 +235,7 @@ class NateHub {
     this.active.rotation.y = rotation;
     this.active.lookAt(lookAt);
 
-    this.active.name = `${name}Active`;
+    this.active.name = `${object.name}Active`;
 
     this.cube.scene.add(this.active);
   }
@@ -368,6 +384,11 @@ class NateHub {
     this.chair.add();
   }
 
+  addIgNateplusplus() {
+    this.igNateplusplus = new InstagramIcon(this, 'igNateplusplus');
+    this.igNateplusplus.add();
+  }
+
   goToHashPosition() {
     const position = window.location.hash.replace('#', '');
     const target = this.points[position] ?? this.points.home;
@@ -385,6 +406,7 @@ class NateHub {
     this.controls.update();
 
     this.chair.update(deltaTime);
+    this.igNateplusplus.update(deltaTime);
 
     TWEEN.update(time);
 

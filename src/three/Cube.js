@@ -8,6 +8,7 @@ import Monitor from './objects/Monitor';
 export default class Cube {
   constructor(parent) {
     this.parent = parent;
+    this.name = 'cube';
 
     this.objects = {};
 
@@ -35,7 +36,6 @@ export default class Cube {
 
     this.interactive = [
       'monitorDisplay',
-      'logoInstagram',
       'logoLinkedin',
       'closedDelta',
       'frame1',
