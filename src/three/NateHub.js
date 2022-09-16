@@ -14,6 +14,8 @@ import NatehubModal from './NatehubModal';
 import Cube from './Cube';
 import Chair from './objects/Chair';
 import InstagramIcon from './objects/InstagramIcon';
+import PushinIcon from './objects/PushinIcon';
+import LinkedInIcon from './objects/LinkedInIcon';
 
 class NateHub {
   constructor(canvas) {
@@ -48,6 +50,8 @@ class NateHub {
     this.addCube();
     this.addChair();
     this.addIgNateplusplus();
+    this.addPushinIcon();
+    this.addLinkedIn();
     this.addName();
     this.bindEvents();
     this.tick();
@@ -125,6 +129,12 @@ class NateHub {
           } else if (this.igNateplusplus.interactive.includes(name)) {
             this.igNateplusplus.handleClicked();
             this.igNateplusplus.setActive();
+          } else if (this.pushinIcon.interactive.includes(name)) {
+            this.pushinIcon.handleClicked();
+            this.pushinIcon.setActive();
+          } else if (this.linkedIn.interactive.includes(name)) {
+            this.linkedIn.handleClicked();
+            this.linkedIn.setActive();
           }
         }
       },
@@ -136,14 +146,17 @@ class NateHub {
     return [
       ...this.cube.interactive,
       ...this.chair.interactive,
-      ...this.igNateplusplus.interactive
+      ...this.igNateplusplus.interactive,
+      ...this.pushinIcon.interactive,
+      ...this.linkedIn.interactive
     ];
   }
 
   getActiveObjects() {
     return [
       ...Object.values(this.cube.objects),
-      this.igNateplusplus
+      this.igNateplusplus,
+      this.linkedIn
     ];
   }
 
@@ -177,6 +190,12 @@ class NateHub {
     } else if (this.igNateplusplus.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
       this.igNateplusplus.setActive();
+    } else if (this.pushinIcon.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.pushinIcon.setActive();
+    } else if (this.linkedIn.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.linkedIn.setActive();
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
@@ -355,6 +374,16 @@ class NateHub {
     this.igNateplusplus.add();
   }
 
+  addPushinIcon() {
+    this.pushinIcon = new PushinIcon(this, 'pushinIcon');
+    this.pushinIcon.add();
+  }
+
+  addLinkedIn() {
+    this.linkedIn = new LinkedInIcon(this, 'linkedIn');
+    this.linkedIn.add();
+  }
+
   goToHashPosition() {
     const position = window.location.hash.replace('#', '');
     const target = this.points[position] ?? this.points.home;
@@ -373,6 +402,8 @@ class NateHub {
 
     this.chair.update(deltaTime);
     this.igNateplusplus.update(deltaTime);
+    this.pushinIcon.update(deltaTime);
+    this.linkedIn.update(deltaTime);
 
     TWEEN.update(time);
 
