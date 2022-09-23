@@ -17,6 +17,7 @@ import Chair from './objects/Chair';
 import InstagramIcon from './objects/InstagramIcon';
 import PushinIcon from './objects/PushinIcon';
 import LinkedInIcon from './objects/LinkedInIcon';
+import Ghost from './objects/Ghost';
 
 class NateHub {
   constructor(canvas) {
@@ -55,6 +56,9 @@ class NateHub {
     this.addPushinIcon();
     this.addLinkedIn();
     this.addName();
+
+    this.halloween();
+
     this.bindEvents();
     this.tick();
   }
@@ -396,6 +400,13 @@ class NateHub {
       rotation: new Vector3(0, Math.PI * -0.08, 0)
     });
     this.igNateplusplus.add();
+  }
+
+  halloween() {
+    this.ghost = new Ghost(this, 'ghost', {
+      position: new Vector3(-4.5, 0, 8)
+    });
+    this.ghost.add();
   }
 
   addPushinIcon() {
