@@ -2,7 +2,6 @@ import {
   Vector3, Box3, MeshBasicMaterial, sRGBEncoding
 } from 'three';
 import Artwork from './objects/Artwork';
-import Clickable from './objects/Clickable';
 import Monitor from './objects/Monitor';
 
 export default class Cube {
