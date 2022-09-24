@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
@@ -14,6 +15,8 @@ import NatehubModal from './NatehubModal';
 import Cube from './Cube';
 import Chair from './objects/Chair';
 import InstagramIcon from './objects/InstagramIcon';
+import PushinIcon from './objects/PushinIcon';
+import LinkedInIcon from './objects/LinkedInIcon';
 
 class NateHub {
   constructor(canvas) {
@@ -48,6 +51,9 @@ class NateHub {
     this.addCube();
     this.addChair();
     this.addIgNateplusplus();
+    this.addIgArtwork();
+    this.addPushinIcon();
+    this.addLinkedIn();
     this.addName();
     this.bindEvents();
     this.tick();
@@ -111,7 +117,8 @@ class NateHub {
     setTimeout(
       () => {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
-        const clicked = intersects[0]?.object?.name ?? '';
+        const object = intersects[0]?.object;
+        const clicked = object?.name ?? '';
         const name = NateHub.getObjectName(clicked);
         const isInteractive = this.getInteractiveObjects().includes(name);
 
@@ -122,9 +129,18 @@ class NateHub {
             this.cube.objects[name].setActive();
           } else if (this.chair.interactive.includes(name)) {
             this.chair.handleClicked();
-          } else if (this.igNateplusplus.interactive.includes(name)) {
+          } else if (object.parent.name === 'igNateplusplus') {
             this.igNateplusplus.handleClicked();
             this.igNateplusplus.setActive();
+          } else if (object.parent.name === 'igArtwork') {
+            this.igArtwork.handleClicked();
+            this.igArtwork.setActive();
+          } else if (this.pushinIcon.interactive.includes(name)) {
+            this.pushinIcon.handleClicked();
+            this.pushinIcon.setActive();
+          } else if (this.linkedIn.interactive.includes(name)) {
+            this.linkedIn.handleClicked();
+            this.linkedIn.setActive();
           }
         }
       },
@@ -136,14 +152,20 @@ class NateHub {
     return [
       ...this.cube.interactive,
       ...this.chair.interactive,
-      ...this.igNateplusplus.interactive
+      ...this.igNateplusplus.interactive,
+      ...this.igArtwork.interactive,
+      ...this.pushinIcon.interactive,
+      ...this.linkedIn.interactive
     ];
   }
 
   getActiveObjects() {
     return [
       ...Object.values(this.cube.objects),
-      this.igNateplusplus
+      this.pushinIcon,
+      this.igNateplusplus,
+      this.igArtwork,
+      this.linkedIn
     ];
   }
 
@@ -177,6 +199,15 @@ class NateHub {
     } else if (this.igNateplusplus.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
       this.igNateplusplus.setActive();
+    } else if (this.igArtwork.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.igArtwork.setActive();
+    } else if (this.pushinIcon.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.pushinIcon.setActive();
+    } else if (this.linkedIn.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.linkedIn.setActive();
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
@@ -350,9 +381,31 @@ class NateHub {
     this.chair.add();
   }
 
+  addIgArtwork() {
+    this.igArtwork = new InstagramIcon(this, 'igArtwork', {
+      position: new Vector3(-4.6, -3.46, 5.35),
+      front: 'z',
+      rotation: new Vector3(0, Math.PI * 0.5, 0)
+    });
+    this.igArtwork.add();
+  }
+
   addIgNateplusplus() {
-    this.igNateplusplus = new InstagramIcon(this, 'igNateplusplus');
+    this.igNateplusplus = new InstagramIcon(this, 'igNateplusplus', {
+      position: new Vector3(1.12, -1.181, 1.115),
+      rotation: new Vector3(0, Math.PI * -0.08, 0)
+    });
     this.igNateplusplus.add();
+  }
+
+  addPushinIcon() {
+    this.pushinIcon = new PushinIcon(this, 'pushinIcon');
+    this.pushinIcon.add();
+  }
+
+  addLinkedIn() {
+    this.linkedIn = new LinkedInIcon(this, 'linkedIn');
+    this.linkedIn.add();
   }
 
   goToHashPosition() {
@@ -373,6 +426,9 @@ class NateHub {
 
     this.chair.update(deltaTime);
     this.igNateplusplus.update(deltaTime);
+    this.igArtwork.update(deltaTime);
+    this.pushinIcon.update(deltaTime);
+    this.linkedIn.update(deltaTime);
 
     TWEEN.update(time);
 
