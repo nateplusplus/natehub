@@ -430,6 +430,16 @@ class NateHub {
 
   tick(time) {
     const deltaTime = this.clock.getDelta();
+    const elapsedTime = this.clock.getElapsedTime();
+
+    const ghostAngle = (-elapsedTime * 0.3) + 450;
+    if (this.ghost.gltf) {
+      this.ghost.gltf.scene.position.x = Math.cos(ghostAngle) * 10;
+      this.ghost.gltf.scene.position.z = Math.sin(ghostAngle) * 10;
+      this.ghost.gltf.scene.position.y = Math.sin(elapsedTime * 2.5);
+
+      this.ghost.gltf.scene.rotation.y = -ghostAngle + (Math.PI * 0.5);
+    }
 
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
