@@ -372,6 +372,10 @@ class NateHub {
     this.scene.add(nameLight);
 
     nameLight.lookAt(-10, -9.5, -2.6);
+
+    this.directionalLight = new THREE.DirectionalLight(0xAAAAAA, 0.45);
+    this.directionalLight.position.set(0, 10, -10);
+    this.scene.add(this.directionalLight);
   }
 
   addCube() {
