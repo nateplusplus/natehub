@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-// import { Vector3 } from 'three';
-// import * as TWEEN from '@tweenjs/tween.js';
 
 import Clickable from './Clickable';
 
@@ -35,6 +33,7 @@ class Ghost extends Clickable {
   }
 
   handleClicked() {
+    // eslint-disable-next-line no-console
     console.log('Boo!', this);
   }
 }
