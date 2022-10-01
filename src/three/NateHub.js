@@ -17,6 +17,7 @@ import Chair from './objects/Chair';
 import InstagramIcon from './objects/InstagramIcon';
 import PushinIcon from './objects/PushinIcon';
 import LinkedInIcon from './objects/LinkedInIcon';
+import Ghost from './objects/Ghost';
 
 class NateHub {
   constructor(canvas) {
@@ -55,6 +56,9 @@ class NateHub {
     this.addPushinIcon();
     this.addLinkedIn();
     this.addName();
+
+    this.halloween();
+
     this.bindEvents();
     this.tick();
   }
@@ -368,6 +372,10 @@ class NateHub {
     this.scene.add(nameLight);
 
     nameLight.lookAt(-10, -9.5, -2.6);
+
+    this.directionalLight = new THREE.DirectionalLight(0xAAAAAA, 0.45);
+    this.directionalLight.position.set(0, 10, -10);
+    this.scene.add(this.directionalLight);
   }
 
   addCube() {
@@ -398,6 +406,13 @@ class NateHub {
     this.igNateplusplus.add();
   }
 
+  halloween() {
+    this.ghost = new Ghost(this, 'ghost', {
+      position: new Vector3(-4.5, 0, 8)
+    });
+    this.ghost.add();
+  }
+
   addPushinIcon() {
     this.pushinIcon = new PushinIcon(this, 'pushinIcon');
     this.pushinIcon.add();
@@ -419,6 +434,16 @@ class NateHub {
 
   tick(time) {
     const deltaTime = this.clock.getDelta();
+    const elapsedTime = this.clock.getElapsedTime();
+
+    const ghostAngle = (-elapsedTime * 0.3) + 450;
+    if (this.ghost.gltf) {
+      this.ghost.gltf.scene.position.x = Math.cos(ghostAngle) * 10;
+      this.ghost.gltf.scene.position.z = Math.sin(ghostAngle) * 10;
+      this.ghost.gltf.scene.position.y = Math.sin(elapsedTime * 2.5);
+
+      this.ghost.gltf.scene.rotation.y = -ghostAngle + (Math.PI * 0.5);
+    }
 
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
