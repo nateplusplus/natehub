@@ -304,10 +304,20 @@ class NateHub {
   }
 
   addName() {
+    const greetings = [
+      "Hello,\nI'm Nate.",
+      'Happy\nHalloween!',
+      'BEWARE\nOF GHOST',
+      "Boo\ny'all!",
+      'Watch\nfor BUGS!'
+    ];
+
+    const index = NateHub.getRandomIndex(greetings.length - 1);
+
     this.fontLoader.load(
       'fonts/helvetiker_bold.typeface.json',
       (font) => {
-        const textGeo = new TextGeometry("Hello,\nI'm Nate.", {
+        const textGeo = new TextGeometry(greetings[index], {
           font,
           size: 0.4,
           height: 0.3,
@@ -325,7 +335,7 @@ class NateHub {
 
         text.position.x = 0.7;
         text.position.y = 2.7;
-        text.position.z = -1;
+        text.position.z = -0.5;
         text.rotation.y = Math.PI * 0.5;
         text.rotation.x = Math.PI * -0.0955;
 
@@ -368,7 +378,8 @@ class NateHub {
     nameLight.position.set(2.17, 3.16, -1.14);
     nameLight.width = 5;
     nameLight.height = 1.7;
-    nameLight.color = new THREE.Color(0x009AFF);
+    // nameLight.color = new THREE.Color(0x009AFF);
+    nameLight.color = new THREE.Color(0x00FF4B);
     this.scene.add(nameLight);
 
     nameLight.lookAt(-10, -9.5, -2.6);
@@ -421,6 +432,10 @@ class NateHub {
   addLinkedIn() {
     this.linkedIn = new LinkedInIcon(this, 'linkedIn');
     this.linkedIn.add();
+  }
+
+  static getRandomIndex(max) {
+    return Math.round(Math.random() * max);
   }
 
   goToHashPosition() {
