@@ -422,6 +422,34 @@ class NateHub {
       position: new Vector3(-4.5, 0, 8)
     });
     this.ghost.add();
+
+    this.rainTexture = this.textureLoader.load('/rain.png');
+    this.rainTexture.rotation = Math.PI * 0.25;
+
+    this.rainCount = 2000;
+    this.rainGeo = new THREE.BufferGeometry();
+    const positions = [];
+    const velocities = [];
+    for (let i = 0; i < this.rainCount; i += 1) {
+      positions.push(Math.random() * 100 - 50);
+      positions.push(Math.random() * 200 - 100);
+      positions.push(Math.random() * 100 - 50);
+
+      velocities.push(0);
+      velocities.push(0);
+      velocities.push(0);
+    }
+    this.rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    this.rainGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
+
+    const rainMaterial = new THREE.PointsMaterial({
+      // color: 0xaaaaaa,
+      map: this.rainTexture,
+      size: 0.4,
+      transparent: true
+    });
+    this.rain = new THREE.Points(this.rainGeo, rainMaterial);
+    this.scene.add(this.rain);
   }
 
   addPushinIcon() {
@@ -459,6 +487,25 @@ class NateHub {
 
       this.ghost.gltf.scene.rotation.y = -ghostAngle + (Math.PI * 0.5);
     }
+
+    if (this.rainCount) {
+      for (let i = 0; i < this.rainCount; i += 1) {
+        const i3 = i * 3;
+        this.rainGeo.attributes.position.array[i3 + 1] -= 0.3;
+        this.rainGeo.attributes.position.array[i3 + 2] -= 0.3;
+
+        const py = this.rainGeo.attributes.position.array[i3 + 1];
+        if (py < -50) {
+          this.rainGeo.attributes.position.array[i3 + 1] = Math.random() * 100 - 50;
+        }
+
+        const pz = this.rainGeo.attributes.position.array[i3 + 2];
+        if (pz < -50) {
+          this.rainGeo.attributes.position.array[i3 + 2] = Math.random() * 100 - 50;
+        }
+      }
+    }
+    this.rainGeo.attributes.position.needsUpdate = true;
 
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
