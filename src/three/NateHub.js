@@ -424,7 +424,6 @@ class NateHub {
     this.ghost.add();
 
     this.rainTexture = this.textureLoader.load('/rain.png');
-    this.rainTexture.rotation = Math.PI * 0.25;
 
     this.rainCount = 2000;
     this.rainGeo = new THREE.BufferGeometry();
@@ -443,10 +442,13 @@ class NateHub {
     this.rainGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
 
     const rainMaterial = new THREE.PointsMaterial({
-      // color: 0xaaaaaa,
-      map: this.rainTexture,
-      size: 0.4,
-      transparent: true
+      transparent: true,
+      color: 0x99aaff,
+      alphaMap: this.rainTexture,
+      alphaTest: 0.001,
+      size: 0.2,
+      blending: THREE.AdditiveBlending,
+      opacity: 0.5
     });
     this.rain = new THREE.Points(this.rainGeo, rainMaterial);
     this.scene.add(this.rain);
@@ -491,8 +493,8 @@ class NateHub {
     if (this.rainCount) {
       for (let i = 0; i < this.rainCount; i += 1) {
         const i3 = i * 3;
-        this.rainGeo.attributes.position.array[i3 + 1] -= 0.3;
-        this.rainGeo.attributes.position.array[i3 + 2] -= 0.3;
+        this.rainGeo.attributes.position.array[i3 + 1] -= 0.38;
+        this.rainGeo.attributes.position.array[i3 + 2] -= 0.38;
 
         const py = this.rainGeo.attributes.position.array[i3 + 1];
         if (py < -50) {
