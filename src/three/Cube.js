@@ -2,7 +2,6 @@ import {
   Vector3, Box3, MeshBasicMaterial, sRGBEncoding
 } from 'three';
 import Artwork from './objects/Artwork';
-import Clickable from './objects/Clickable';
 import Monitor from './objects/Monitor';
 
 export default class Cube {
@@ -15,29 +14,16 @@ export default class Cube {
     this.unbakedLayers = [
       'textArtwork',
       'textName',
-      'openDelta',
-      'closedDelta',
-      'chairPole',
       'monitorScreen',
       'monitorStand',
       'monitorBack',
       'monitorWindow',
-      'chairBase',
-      'chairSeat',
-      'chairWheel1',
-      'chairWheel2',
-      'chairWheel3',
-      'chairWheel4',
       'textCode',
-      'logoInstagram',
-      'logoLinkedin',
       'ledStrip'
     ];
 
     this.interactive = [
       'monitorDisplay',
-      'logoLinkedin',
-      'closedDelta',
       'frame1',
       'frame2',
       'frame3',
@@ -70,14 +56,6 @@ export default class Cube {
         this.objects.monitorDisplay = new Monitor(this, 'indeed');
         this.objects.monitorDisplay.add();
 
-        this.objects.logoLinkedin = new Clickable(this, 'logoLinkedin');
-        this.objects.logoLinkedin.mesh = this.gltf.scene.children.find((child) => child.name === 'logoLinkedin');
-        this.objects.logoLinkedin.add();
-
-        this.objects.closedDelta = new Clickable(this, 'pushin');
-        this.objects.closedDelta.mesh = this.gltf.scene.children.find((child) => child.name === 'closedDelta');
-        this.objects.closedDelta.add();
-
         this.placeArtwork(this.gltf.scene.children);
       }
     );
@@ -85,9 +63,7 @@ export default class Cube {
 
   addMesh(clickable) {
     this.gltf.scene.traverse((child) => {
-      if (clickable.name === 'pushin' && child.name === 'closedDelta') {
-        clickable.mesh = child;
-      } else if (child.name === this.name) {
+      if (child.name === this.name) {
         clickable.mesh = child;
       }
     });
@@ -100,10 +76,8 @@ export default class Cube {
     this.materials = {
       baked: new MeshBasicMaterial({ map: bakedTexture }),
       test: new MeshBasicMaterial({ color: 0xff0000 }),
-      ledStrip: new MeshBasicMaterial({ color: 0x009AFF }),
-      closedDelta: new MeshBasicMaterial({ color: 0x010407 }),
-      openDelta: new MeshBasicMaterial({ color: 0x219ebc }),
-      logoLinkedin: new MeshBasicMaterial({ color: 0x000BD8 }),
+      // ledStrip: new MeshBasicMaterial({ color: 0x009AFF }),
+      ledStrip: new MeshBasicMaterial({ color: 0x00FF4B }),
       textCode: new MeshBasicMaterial({ color: 0x050108 }),
       logoInstagram: new MeshBasicMaterial({
         color: 0xed1850,

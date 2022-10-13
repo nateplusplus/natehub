@@ -4,7 +4,7 @@ import {
 import data from '../data.json';
 
 class Clickable {
-  constructor(parent, name) {
+  constructor(parent, name, settings) {
     this.parent = parent;
     this.natehub = parent.parent ?? parent;
     this.name = name;
@@ -15,6 +15,10 @@ class Clickable {
       radius: 1.2,
       thickness: 0.15
     };
+
+    this.position = settings?.position ?? new Vector3(0, 0, 0);
+    this.rotation = settings?.rotation ?? new Vector3(0, 0, 0);
+    this.front = settings?.front ?? 'x';
   }
 
   add() {
@@ -22,6 +26,10 @@ class Clickable {
 
     this.makeBoundingBox();
     this.setData();
+  }
+
+  setFront(axis) {
+    this.front = axis;
   }
 
   setData() {

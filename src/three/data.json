@@ -1,6 +1,6 @@
 [
     {
-        "name": "pushin",
+        "name": "pushinIcon",
         "section": "code",
         "label": "PushIn.js",
         "heading": "PushIn.js",
@@ -33,7 +33,18 @@
         }
     },
     {
-        "name": "logoLinkedin",
+        "name": "igArtwork",
+        "section": "artwork",
+        "label": "Instagram",
+        "heading": "Instagram",
+        "copy": "Follow my artwork on instagram: @nateblairart",
+        "cta": {
+            "text": "Go to Instagram",
+            "href": "https://www.instagram.com/nateblairart/"
+        }
+    },
+    {
+        "name": "linkedIn",
         "section": "code",
         "label": "LinkedIn",
         "heading": "LinkedIn",

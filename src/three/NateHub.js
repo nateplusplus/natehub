@@ -1,9 +1,12 @@
 import * as THREE from 'three';
+import { Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 
 // import GUI from 'lil-gui';
 
@@ -14,6 +17,9 @@ import NatehubModal from './NatehubModal';
 import Cube from './Cube';
 import Chair from './objects/Chair';
 import InstagramIcon from './objects/InstagramIcon';
+import PushinIcon from './objects/PushinIcon';
+import LinkedInIcon from './objects/LinkedInIcon';
+import Ghost from './objects/Ghost';
 
 class NateHub {
   constructor(canvas) {
@@ -37,6 +43,8 @@ class NateHub {
       width: window.innerWidth,
       height: window.innerHeight
     };
+
+    this.lightningTimer = 10;
   }
 
   setup() {
@@ -48,7 +56,13 @@ class NateHub {
     this.addCube();
     this.addChair();
     this.addIgNateplusplus();
+    this.addIgArtwork();
+    this.addPushinIcon();
+    this.addLinkedIn();
     this.addName();
+
+    this.halloween();
+
     this.bindEvents();
     this.tick();
   }
@@ -111,7 +125,8 @@ class NateHub {
     setTimeout(
       () => {
         const intersects = this.mouseRaycaster.intersectObjects(this.scene.children);
-        const clicked = intersects[0]?.object?.name ?? '';
+        const object = intersects[0]?.object;
+        const clicked = object?.name ?? '';
         const name = NateHub.getObjectName(clicked);
         const isInteractive = this.getInteractiveObjects().includes(name);
 
@@ -122,9 +137,18 @@ class NateHub {
             this.cube.objects[name].setActive();
           } else if (this.chair.interactive.includes(name)) {
             this.chair.handleClicked();
-          } else if (this.igNateplusplus.interactive.includes(name)) {
+          } else if (object.parent.name === 'igNateplusplus') {
             this.igNateplusplus.handleClicked();
             this.igNateplusplus.setActive();
+          } else if (object.parent.name === 'igArtwork') {
+            this.igArtwork.handleClicked();
+            this.igArtwork.setActive();
+          } else if (this.pushinIcon.interactive.includes(name)) {
+            this.pushinIcon.handleClicked();
+            this.pushinIcon.setActive();
+          } else if (this.linkedIn.interactive.includes(name)) {
+            this.linkedIn.handleClicked();
+            this.linkedIn.setActive();
           }
         }
       },
@@ -136,14 +160,20 @@ class NateHub {
     return [
       ...this.cube.interactive,
       ...this.chair.interactive,
-      ...this.igNateplusplus.interactive
+      ...this.igNateplusplus.interactive,
+      ...this.igArtwork.interactive,
+      ...this.pushinIcon.interactive,
+      ...this.linkedIn.interactive
     ];
   }
 
   getActiveObjects() {
     return [
       ...Object.values(this.cube.objects),
-      this.igNateplusplus
+      this.pushinIcon,
+      this.igNateplusplus,
+      this.igArtwork,
+      this.linkedIn
     ];
   }
 
@@ -177,6 +207,15 @@ class NateHub {
     } else if (this.igNateplusplus.interactive.includes(name)) {
       this.canvas.style.cursor = 'pointer';
       this.igNateplusplus.setActive();
+    } else if (this.igArtwork.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.igArtwork.setActive();
+    } else if (this.pushinIcon.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.pushinIcon.setActive();
+    } else if (this.linkedIn.interactive.includes(name)) {
+      this.canvas.style.cursor = 'pointer';
+      this.linkedIn.setActive();
     } else {
       this.canvas.style.cursor = 'auto';
       this.removeActiveState();
@@ -257,22 +296,49 @@ class NateHub {
       antialias: true,
       alpha: true
     });
+
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
 
+    /**
+     * Post processing
+     */
+    this.effectComposer = new EffectComposer(this.renderer);
+    this.effectComposer.setSize(this.sizes.width, this.sizes.height);
+    this.effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    /**
+     * Camera
+     */
     this.camera = new THREE.PerspectiveCamera(25, this.getScreenAspectRatio(), 0.1, 1000);
     this.camera.position.copy(this.points.start);
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.minDistance = 10;
     this.controls.maxDistance = 150;
+
+    /**
+     * Render pass
+     */
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.effectComposer.addPass(renderPass);
   }
 
   addName() {
+    const greetings = [
+      "Hello,\nI'm Nate.",
+      'Happy\nHalloween!',
+      'BEWARE\nOF GHOST',
+      "Boo\ny'all!",
+      'Watch\nfor BUGS!'
+    ];
+
+    const index = NateHub.getRandomIndex(greetings.length - 1);
+
     this.fontLoader.load(
       'fonts/helvetiker_bold.typeface.json',
       (font) => {
-        const textGeo = new TextGeometry("Hello,\nI'm Nate.", {
+        const textGeo = new TextGeometry(greetings[index], {
           font,
           size: 0.4,
           height: 0.3,
@@ -290,7 +356,7 @@ class NateHub {
 
         text.position.x = 0.7;
         text.position.y = 2.7;
-        text.position.z = -1;
+        text.position.z = -0.5;
         text.rotation.y = Math.PI * 0.5;
         text.rotation.x = Math.PI * -0.0955;
 
@@ -333,10 +399,15 @@ class NateHub {
     nameLight.position.set(2.17, 3.16, -1.14);
     nameLight.width = 5;
     nameLight.height = 1.7;
-    nameLight.color = new THREE.Color(0x009AFF);
+    // nameLight.color = new THREE.Color(0x009AFF);
+    nameLight.color = new THREE.Color(0x00FF4B);
     this.scene.add(nameLight);
 
     nameLight.lookAt(-10, -9.5, -2.6);
+
+    this.directionalLight = new THREE.DirectionalLight(0xAAAAAA, 0.45);
+    this.directionalLight.position.set(0, 10, -10);
+    this.scene.add(this.directionalLight);
   }
 
   addCube() {
@@ -350,9 +421,72 @@ class NateHub {
     this.chair.add();
   }
 
+  addIgArtwork() {
+    this.igArtwork = new InstagramIcon(this, 'igArtwork', {
+      position: new Vector3(-4.6, -3.46, 5.35),
+      front: 'z',
+      rotation: new Vector3(0, Math.PI * 0.5, 0)
+    });
+    this.igArtwork.add();
+  }
+
   addIgNateplusplus() {
-    this.igNateplusplus = new InstagramIcon(this, 'igNateplusplus');
+    this.igNateplusplus = new InstagramIcon(this, 'igNateplusplus', {
+      position: new Vector3(1.12, -1.181, 1.115),
+      rotation: new Vector3(0, Math.PI * -0.08, 0)
+    });
     this.igNateplusplus.add();
+  }
+
+  halloween() {
+    this.ghost = new Ghost(this, 'ghost', {
+      position: new Vector3(-4.5, 0, 8)
+    });
+    this.ghost.add();
+
+    this.rainTexture = this.textureLoader.load('/rain.png');
+
+    this.rainCount = 2000;
+    this.rainGeo = new THREE.BufferGeometry();
+    const positions = [];
+    const velocities = [];
+    for (let i = 0; i < this.rainCount; i += 1) {
+      positions.push(Math.random() * 100 - 50);
+      positions.push(Math.random() * 200 - 100);
+      positions.push(Math.random() * 100 - 50);
+
+      velocities.push(0);
+      velocities.push(0);
+      velocities.push(0);
+    }
+    this.rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    this.rainGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
+
+    const rainMaterial = new THREE.PointsMaterial({
+      transparent: true,
+      color: 0x99aaff,
+      alphaMap: this.rainTexture,
+      alphaTest: 0.001,
+      size: 0.2,
+      blending: THREE.AdditiveBlending,
+      opacity: 0.5
+    });
+    this.rain = new THREE.Points(this.rainGeo, rainMaterial);
+    this.scene.add(this.rain);
+  }
+
+  addPushinIcon() {
+    this.pushinIcon = new PushinIcon(this, 'pushinIcon');
+    this.pushinIcon.add();
+  }
+
+  addLinkedIn() {
+    this.linkedIn = new LinkedInIcon(this, 'linkedIn');
+    this.linkedIn.add();
+  }
+
+  static getRandomIndex(max) {
+    return Math.round(Math.random() * max);
   }
 
   goToHashPosition() {
@@ -366,6 +500,35 @@ class NateHub {
 
   tick(time) {
     const deltaTime = this.clock.getDelta();
+    const elapsedTime = this.clock.getElapsedTime();
+
+    const ghostAngle = (-elapsedTime * 0.3) + 450;
+    if (this.ghost.gltf) {
+      this.ghost.gltf.scene.position.x = Math.cos(ghostAngle) * 10;
+      this.ghost.gltf.scene.position.z = Math.sin(ghostAngle) * 10;
+      this.ghost.gltf.scene.position.y = Math.sin(elapsedTime * 2.5);
+
+      this.ghost.gltf.scene.rotation.y = -ghostAngle + (Math.PI * 0.5);
+    }
+
+    if (this.rainCount) {
+      for (let i = 0; i < this.rainCount; i += 1) {
+        const i3 = i * 3;
+        this.rainGeo.attributes.position.array[i3 + 1] -= 0.66;
+        this.rainGeo.attributes.position.array[i3 + 2] -= 0.33;
+
+        const py = this.rainGeo.attributes.position.array[i3 + 1];
+        if (py < -50) {
+          this.rainGeo.attributes.position.array[i3 + 1] = Math.random() * 100 - 50;
+        }
+
+        const pz = this.rainGeo.attributes.position.array[i3 + 2];
+        if (pz < -50) {
+          this.rainGeo.attributes.position.array[i3 + 2] = Math.random() * 100 - 50;
+        }
+      }
+    }
+    this.rainGeo.attributes.position.needsUpdate = true;
 
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
@@ -373,11 +536,29 @@ class NateHub {
 
     this.chair.update(deltaTime);
     this.igNateplusplus.update(deltaTime);
+    this.igArtwork.update(deltaTime);
+    this.pushinIcon.update(deltaTime);
+    this.linkedIn.update(deltaTime);
 
     TWEEN.update(time);
 
     // Render
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
+    this.effectComposer.render();
+
+    if (!this.flashing && Math.round(elapsedTime) % this.lightningTimer === 0) {
+      this.flashing = true;
+      this.canvas.style.background = `radial-gradient(circle at ${(Math.random() - 0.5) * 600}% ${(Math.random() - 0.5) * 600}%, rgba(164,186,209,1) 22%, rgba(18,26,40,1) 100%)`;
+
+      setTimeout(() => {
+        this.canvas.style.background = '';
+      }, 100);
+
+      setTimeout(() => {
+        this.flashing = false;
+        this.lightningTimer = Math.round(Math.random() * 15);
+      }, Math.max(250, (Math.random() * 1200)));
+    }
 
     // Call tick again on the next frame
     window.requestAnimationFrame(this.tick.bind(this));
