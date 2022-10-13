@@ -467,7 +467,7 @@ class NateHub {
       color: 0x99aaff,
       alphaMap: this.rainTexture,
       alphaTest: 0.001,
-      size: 0.2,
+      size: this.sizes.width < 700 ? 0.36 : 0.2,
       blending: THREE.AdditiveBlending,
       opacity: 0.5
     });
