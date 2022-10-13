@@ -148,3 +148,8 @@ natehub-modal img {
 .loading.complete {
   display: none;
 }
+
+.flash {
+  background: rgb(164,186,209);
+  background: radial-gradient(circle, rgba(164,186,209,1) 22%, rgba(18,26,40,1) 100%);
+}

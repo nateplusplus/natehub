@@ -5,6 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 
 // import GUI from 'lil-gui';
 
@@ -41,6 +43,8 @@ class NateHub {
       width: window.innerWidth,
       height: window.innerHeight
     };
+
+    this.lightningTimer = 10;
   }
 
   setup() {
@@ -292,15 +296,32 @@ class NateHub {
       antialias: true,
       alpha: true
     });
+
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
 
+    /**
+     * Post processing
+     */
+    this.effectComposer = new EffectComposer(this.renderer);
+    this.effectComposer.setSize(this.sizes.width, this.sizes.height);
+    this.effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    /**
+     * Camera
+     */
     this.camera = new THREE.PerspectiveCamera(25, this.getScreenAspectRatio(), 0.1, 1000);
     this.camera.position.copy(this.points.start);
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.minDistance = 10;
     this.controls.maxDistance = 150;
+
+    /**
+     * Render pass
+     */
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.effectComposer.addPass(renderPass);
   }
 
   addName() {
@@ -493,8 +514,8 @@ class NateHub {
     if (this.rainCount) {
       for (let i = 0; i < this.rainCount; i += 1) {
         const i3 = i * 3;
-        this.rainGeo.attributes.position.array[i3 + 1] -= 0.38;
-        this.rainGeo.attributes.position.array[i3 + 2] -= 0.38;
+        this.rainGeo.attributes.position.array[i3 + 1] -= 0.66;
+        this.rainGeo.attributes.position.array[i3 + 2] -= 0.33;
 
         const py = this.rainGeo.attributes.position.array[i3 + 1];
         if (py < -50) {
@@ -522,7 +543,22 @@ class NateHub {
     TWEEN.update(time);
 
     // Render
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
+    this.effectComposer.render();
+
+    if (!this.flashing && Math.round(elapsedTime) % this.lightningTimer === 0) {
+      this.flashing = true;
+      this.canvas.style.background = `radial-gradient(circle at ${(Math.random() - 0.5) * 600}% ${(Math.random() - 0.5) * 600}%, rgba(164,186,209,1) 22%, rgba(18,26,40,1) 100%)`;
+
+      setTimeout(() => {
+        this.canvas.style.background = '';
+      }, 100);
+
+      setTimeout(() => {
+        this.flashing = false;
+        this.lightningTimer = Math.round(Math.random() * 15);
+      }, Math.max(250, (Math.random() * 1200)));
+    }
 
     // Call tick again on the next frame
     window.requestAnimationFrame(this.tick.bind(this));
