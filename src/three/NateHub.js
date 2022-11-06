@@ -19,7 +19,6 @@ import Chair from './objects/Chair';
 import InstagramIcon from './objects/InstagramIcon';
 import PushinIcon from './objects/PushinIcon';
 import LinkedInIcon from './objects/LinkedInIcon';
-import Ghost from './objects/Ghost';
 
 class NateHub {
   constructor(canvas) {
@@ -43,8 +42,6 @@ class NateHub {
       width: window.innerWidth,
       height: window.innerHeight
     };
-
-    this.lightningTimer = 10;
   }
 
   setup() {
@@ -60,8 +57,6 @@ class NateHub {
     this.addPushinIcon();
     this.addLinkedIn();
     this.addName();
-
-    this.halloween();
 
     this.bindEvents();
     this.tick();
@@ -326,11 +321,7 @@ class NateHub {
 
   addName() {
     const greetings = [
-      "Hello,\nI'm Nate.",
-      'Happy\nHalloween!',
-      'BEWARE\nOF GHOST',
-      "Boo\ny'all!",
-      'Watch\nfor BUGS!'
+      "Hello,\nI'm Nate."
     ];
 
     const index = NateHub.getRandomIndex(greetings.length - 1);
@@ -399,8 +390,7 @@ class NateHub {
     nameLight.position.set(2.17, 3.16, -1.14);
     nameLight.width = 5;
     nameLight.height = 1.7;
-    // nameLight.color = new THREE.Color(0x009AFF);
-    nameLight.color = new THREE.Color(0x00FF4B);
+    nameLight.color = new THREE.Color(0x009AFF);
     this.scene.add(nameLight);
 
     nameLight.lookAt(-10, -9.5, -2.6);
@@ -438,43 +428,6 @@ class NateHub {
     this.igNateplusplus.add();
   }
 
-  halloween() {
-    this.ghost = new Ghost(this, 'ghost', {
-      position: new Vector3(-4.5, 0, 8)
-    });
-    this.ghost.add();
-
-    this.rainTexture = this.textureLoader.load('/rain.png');
-
-    this.rainCount = 2000;
-    this.rainGeo = new THREE.BufferGeometry();
-    const positions = [];
-    const velocities = [];
-    for (let i = 0; i < this.rainCount; i += 1) {
-      positions.push(Math.random() * 100 - 50);
-      positions.push(Math.random() * 200 - 100);
-      positions.push(Math.random() * 100 - 50);
-
-      velocities.push(0);
-      velocities.push(0);
-      velocities.push(0);
-    }
-    this.rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    this.rainGeo.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
-
-    const rainMaterial = new THREE.PointsMaterial({
-      transparent: true,
-      color: 0x99aaff,
-      alphaMap: this.rainTexture,
-      alphaTest: 0.001,
-      size: this.sizes.width < 700 ? 0.36 : 0.2,
-      blending: THREE.AdditiveBlending,
-      opacity: 0.5
-    });
-    this.rain = new THREE.Points(this.rainGeo, rainMaterial);
-    this.scene.add(this.rain);
-  }
-
   addPushinIcon() {
     this.pushinIcon = new PushinIcon(this, 'pushinIcon');
     this.pushinIcon.add();
@@ -500,35 +453,7 @@ class NateHub {
 
   tick(time) {
     const deltaTime = this.clock.getDelta();
-    const elapsedTime = this.clock.getElapsedTime();
-
-    const ghostAngle = (-elapsedTime * 0.3) + 450;
-    if (this.ghost.gltf) {
-      this.ghost.gltf.scene.position.x = Math.cos(ghostAngle) * 10;
-      this.ghost.gltf.scene.position.z = Math.sin(ghostAngle) * 10;
-      this.ghost.gltf.scene.position.y = Math.sin(elapsedTime * 2.5);
-
-      this.ghost.gltf.scene.rotation.y = -ghostAngle + (Math.PI * 0.5);
-    }
-
-    if (this.rainCount) {
-      for (let i = 0; i < this.rainCount; i += 1) {
-        const i3 = i * 3;
-        this.rainGeo.attributes.position.array[i3 + 1] -= 0.66;
-        this.rainGeo.attributes.position.array[i3 + 2] -= 0.33;
-
-        const py = this.rainGeo.attributes.position.array[i3 + 1];
-        if (py < -50) {
-          this.rainGeo.attributes.position.array[i3 + 1] = Math.random() * 100 - 50;
-        }
-
-        const pz = this.rainGeo.attributes.position.array[i3 + 2];
-        if (pz < -50) {
-          this.rainGeo.attributes.position.array[i3 + 2] = Math.random() * 100 - 50;
-        }
-      }
-    }
-    this.rainGeo.attributes.position.needsUpdate = true;
+    // const elapsedTime = this.clock.getElapsedTime();
 
     this.mouseRaycaster.setFromCamera(this.mouse, this.camera);
 
@@ -545,20 +470,6 @@ class NateHub {
     // Render
     // this.renderer.render(this.scene, this.camera);
     this.effectComposer.render();
-
-    if (!this.flashing && Math.round(elapsedTime) % this.lightningTimer === 0) {
-      this.flashing = true;
-      this.canvas.style.background = `radial-gradient(circle at ${(Math.random() - 0.5) * 600}% ${(Math.random() - 0.5) * 600}%, rgba(164,186,209,1) 22%, rgba(18,26,40,1) 100%)`;
-
-      setTimeout(() => {
-        this.canvas.style.background = '';
-      }, 100);
-
-      setTimeout(() => {
-        this.flashing = false;
-        this.lightningTimer = Math.round(Math.random() * 15);
-      }, Math.max(250, (Math.random() * 1200)));
-    }
 
     // Call tick again on the next frame
     window.requestAnimationFrame(this.tick.bind(this));
