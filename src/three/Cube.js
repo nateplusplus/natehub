@@ -76,8 +76,7 @@ export default class Cube {
     this.materials = {
       baked: new MeshBasicMaterial({ map: bakedTexture }),
       test: new MeshBasicMaterial({ color: 0xff0000 }),
-      // ledStrip: new MeshBasicMaterial({ color: 0x009AFF }),
-      ledStrip: new MeshBasicMaterial({ color: 0x00FF4B }),
+      ledStrip: new MeshBasicMaterial({ color: 0x009AFF }),
       textCode: new MeshBasicMaterial({ color: 0x050108 }),
       logoInstagram: new MeshBasicMaterial({
         color: 0xed1850,
