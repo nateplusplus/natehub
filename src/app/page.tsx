@@ -1,47 +1,25 @@
 'use client'
 
-import React, {useState} from 'react'; 
-import Tabs from '@/components/Tabs';
-import Tab from '@/components/Tab';
-import TabPanel from '@/components/TabPanel';
+import React from 'react';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
-export default function Home() {
-  const [ activeTabId, setActiveTabId ] = useState(0);
-  console.log(activeTabId);
+import TextIconButton from '@/components/TextIconButton';
+import MasonryGrid from '@/components/MasonryGrid';
 
-  function handleTabChange(tabId: number) {
-    console.log(tabId);
-  }
-
+export default function Code() {
   return (
-    <>
-      <header>
-        <div className='pt-8'>
-          <div className='px-8'>
-            <span className='text-2xl font-bold'>Hello, It's Me</span>
-            <h1 className="text-5xl font-black">Nathan Blair</h1>
-            <p className="text-base my-5">I'm a Web Developer & Artist<br /> based in Austin, TX</p>
-            <p>
-              <a href="#">My story →</a>
-            </p>
-          </div>
-          <div className='h-80 bg-slate-400 my-10' />
-        </div>
-      </header>
-      <main className='px-8'>
-        <Tabs onChange={handleTabChange}>
-          <Tab>Hello</Tab>
-          <Tab>World</Tab>
-        </Tabs>
-        <div>
-          <TabPanel tabId={0} activeId={activeTabId}>
-            <p>Hello Test</p>
-          </TabPanel>
-          <TabPanel tabId={1} activeId={activeTabId}>
-            <p>World Test</p>
-          </TabPanel>
-        </div>
-      </main>
-    </>
+    <div>
+      <p>Code</p>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptate culpa quo temporibus illum perferendis dolor, repudiandae ipsam, recusandae iste totam aperiam impedit adipisci accusantium quisquam! Quaerat minus quibusdam iure quisquam.</p>
+      <p>
+        <TextIconButton href="#">
+          <GitHubIcon className='mr-2' />
+          GitHub Profile
+        </TextIconButton>
+      </p>
+      <div className='flex md:block justify-center'>
+        <MasonryGrid />
+      </div>
+    </div>
   )
 }

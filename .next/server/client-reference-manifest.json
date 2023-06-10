@@ -230,6 +230,32 @@
         "async": false
       }
     },
+    "(app-client)/./node_modules/next/dist/client/link.js": {
+      "*": {
+        "id": "(sc_client)/./node_modules/next/dist/client/link.js",
+        "name": "*",
+        "chunks": [
+          "app/layout:static/chunks/app/layout.js"
+        ],
+        "async": false
+      },
+      "": {
+        "id": "(sc_client)/./node_modules/next/dist/client/link.js",
+        "name": "",
+        "chunks": [
+          "app/layout:static/chunks/app/layout.js"
+        ],
+        "async": false
+      },
+      "default": {
+        "id": "(sc_client)/./node_modules/next/dist/client/link.js",
+        "name": "default",
+        "chunks": [
+          "app/layout:static/chunks/app/layout.js"
+        ],
+        "async": false
+      }
+    },
     "(app-client)/./src/app/page.tsx": {
       "*": {
         "id": "(sc_client)/./src/app/page.tsx",
@@ -252,6 +278,58 @@
         "name": "default",
         "chunks": [
           "app/page:static/chunks/app/page.js"
+        ],
+        "async": false
+      }
+    },
+    "(app-client)/./src/components/TextIconButton.tsx": {
+      "*": {
+        "id": "(sc_client)/./src/components/TextIconButton.tsx",
+        "name": "*",
+        "chunks": [
+          "app/page:static/chunks/app/page.js"
+        ],
+        "async": false
+      },
+      "": {
+        "id": "(sc_client)/./src/components/TextIconButton.tsx",
+        "name": "",
+        "chunks": [
+          "app/page:static/chunks/app/page.js"
+        ],
+        "async": false
+      },
+      "default": {
+        "id": "(sc_client)/./src/components/TextIconButton.tsx",
+        "name": "default",
+        "chunks": [
+          "app/page:static/chunks/app/page.js"
+        ],
+        "async": false
+      }
+    },
+    "(app-client)/./src/app/artwork/page.tsx": {
+      "*": {
+        "id": "(sc_client)/./src/app/artwork/page.tsx",
+        "name": "*",
+        "chunks": [
+          "app/artwork/page:static/chunks/app/artwork/page.js"
+        ],
+        "async": false
+      },
+      "": {
+        "id": "(sc_client)/./src/app/artwork/page.tsx",
+        "name": "",
+        "chunks": [
+          "app/artwork/page:static/chunks/app/artwork/page.js"
+        ],
+        "async": false
+      },
+      "default": {
+        "id": "(sc_client)/./src/app/artwork/page.tsx",
+        "name": "default",
+        "chunks": [
+          "app/artwork/page:static/chunks/app/artwork/page.js"
         ],
         "async": false
       }
@@ -936,30 +1014,6 @@
       ],
       "async": false
     },
-    "/Users/nathanblair/Sites/natehub/src/app/page.tsx": {
-      "id": "(app-client)/./src/app/page.tsx",
-      "name": "*",
-      "chunks": [
-        "app/page:static/chunks/app/page.js"
-      ],
-      "async": false
-    },
-    "/Users/nathanblair/Sites/natehub/src/app/page.tsx#": {
-      "id": "(app-client)/./src/app/page.tsx",
-      "name": "",
-      "chunks": [
-        "app/page:static/chunks/app/page.js"
-      ],
-      "async": false
-    },
-    "/Users/nathanblair/Sites/natehub/src/app/page.tsx#default": {
-      "id": "(app-client)/./src/app/page.tsx",
-      "name": "default",
-      "chunks": [
-        "app/page:static/chunks/app/page.js"
-      ],
-      "async": false
-    },
     "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/300.css#": {
       "id": "null",
       "name": "default",
@@ -1001,6 +1055,126 @@
       "chunks": [
         "static/css/app/layout.css"
       ]
+    },
+    "/Users/nathanblair/Sites/natehub/node_modules/next/dist/client/link.js": {
+      "id": "(app-client)/./node_modules/next/dist/client/link.js",
+      "name": "*",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/node_modules/next/dist/esm/client/link.js": {
+      "id": "(app-client)/./node_modules/next/dist/client/link.js",
+      "name": "*",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/node_modules/next/dist/client/link.js#": {
+      "id": "(app-client)/./node_modules/next/dist/client/link.js",
+      "name": "",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/node_modules/next/dist/esm/client/link.js#": {
+      "id": "(app-client)/./node_modules/next/dist/client/link.js",
+      "name": "",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/node_modules/next/dist/client/link.js#default": {
+      "id": "(app-client)/./node_modules/next/dist/client/link.js",
+      "name": "default",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/node_modules/next/dist/esm/client/link.js#default": {
+      "id": "(app-client)/./node_modules/next/dist/client/link.js",
+      "name": "default",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/app/page.tsx": {
+      "id": "(app-client)/./src/app/page.tsx",
+      "name": "*",
+      "chunks": [
+        "app/page:static/chunks/app/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/app/page.tsx#": {
+      "id": "(app-client)/./src/app/page.tsx",
+      "name": "",
+      "chunks": [
+        "app/page:static/chunks/app/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/app/page.tsx#default": {
+      "id": "(app-client)/./src/app/page.tsx",
+      "name": "default",
+      "chunks": [
+        "app/page:static/chunks/app/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/components/TextIconButton.tsx": {
+      "id": "(app-client)/./src/components/TextIconButton.tsx",
+      "name": "*",
+      "chunks": [
+        "app/page:static/chunks/app/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/components/TextIconButton.tsx#": {
+      "id": "(app-client)/./src/components/TextIconButton.tsx",
+      "name": "",
+      "chunks": [
+        "app/page:static/chunks/app/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/components/TextIconButton.tsx#default": {
+      "id": "(app-client)/./src/components/TextIconButton.tsx",
+      "name": "default",
+      "chunks": [
+        "app/page:static/chunks/app/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/app/artwork/page.tsx": {
+      "id": "(app-client)/./src/app/artwork/page.tsx",
+      "name": "*",
+      "chunks": [
+        "app/artwork/page:static/chunks/app/artwork/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/app/artwork/page.tsx#": {
+      "id": "(app-client)/./src/app/artwork/page.tsx",
+      "name": "",
+      "chunks": [
+        "app/artwork/page:static/chunks/app/artwork/page.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/app/artwork/page.tsx#default": {
+      "id": "(app-client)/./src/app/artwork/page.tsx",
+      "name": "default",
+      "chunks": [
+        "app/artwork/page:static/chunks/app/artwork/page.js"
+      ],
+      "async": false
     }
   }
 }

@@ -556,17 +556,11 @@ video {
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
 }
-.mt-5 {
-  margin-top: 1.25rem;
-}
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-.mb-2\.5 {
-  margin-bottom: 0.625rem;
-}
 .mb-5 {
   margin-bottom: 1.25rem;
+}
+.mr-2 {
+  margin-right: 0.5rem;
 }
 .flex {
   display: flex;
@@ -574,8 +568,11 @@ video {
 .h-80 {
   height: 20rem;
 }
-.border-b {
-  border-bottom-width: 1px;
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
 }
 .border-b-2 {
   border-bottom-width: 2px;
@@ -598,17 +595,13 @@ video {
   font-size: 1.5rem;
   line-height: 2rem;
 }
-.text-6xl {
-  font-size: 3.75rem;
+.text-5xl {
+  font-size: 3rem;
   line-height: 1;
 }
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
-}
-.text-5xl {
-  font-size: 3rem;
-  line-height: 1;
 }
 .font-black {
   font-weight: 900;
@@ -642,6 +635,39 @@ body {
   min-height: 100vh;
   font: 100%/1.125 Helvetica, serif;
 }
+
+p {
+  margin-bottom: 1.25rem;
+}
+
+p a {
+  --tw-text-opacity: 1;
+  color: rgb(30 64 175 / var(--tw-text-opacity));
+  font-weight: 700;
+}
+
+p a:hover,
+p a:focus,
+p a:active {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+  text-decoration-line: underline;
+}
+
+@media (min-width: 640px) {
+
+  .sm\:flex {
+    display: flex;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .md\:block {
+    display: block;
+  }
+}
+
 /*!***********************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[2].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[2].oneOf[12].use[3]!./node_modules/@fontsource/roboto/300.css ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************/

@@ -17,6 +17,22 @@ self.__RSC_CSS_MANIFEST={
       "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/500.css",
       "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/700.css",
       "/Users/nathanblair/Sites/natehub/node_modules/next/font/google/target.css?{\"path\":\"src/app/layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"]}],\"variableName\":\"inter\"}"
+    ],
+    "/Users/nathanblair/Sites/natehub/src/app/home/page": [
+      "/Users/nathanblair/Sites/natehub/src/app/globals.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/300.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/400.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/500.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/700.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/next/font/google/target.css?{\"path\":\"src/app/layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"]}],\"variableName\":\"inter\"}"
+    ],
+    "/Users/nathanblair/Sites/natehub/src/app/artwork/page": [
+      "/Users/nathanblair/Sites/natehub/src/app/globals.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/300.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/400.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/500.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/@fontsource/roboto/700.css",
+      "/Users/nathanblair/Sites/natehub/node_modules/next/font/google/target.css?{\"path\":\"src/app/layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"]}],\"variableName\":\"inter\"}"
     ]
   }
 }
