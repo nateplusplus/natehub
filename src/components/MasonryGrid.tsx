@@ -28,27 +28,36 @@ const theme = createTheme({
   },
 });
 
-const MasonryItem = ({height, children}: {height: number, children: number}) => {
+interface MasonryItemData {
+  image: {
+    src: string;
+    size: {
+      height: number;
+    };
+  };
+  heading: string,
+  body: string,
+  href: string,
+};
+
+const MasonryItem = ({data}: {data: MasonryItemData}) => {
   return (
-    <Paper elevation={3} sx={{ height }}>
-      {children}
+    <Paper elevation={3}>
+      <div className="image w-100 mb-1 bg-slate-400" style={{ height: data.image.size.height}}></div>
+      <div className='p-2.5'>
+        <h2 className='text-lg mb-2'>{data.heading}</h2>
+        <p>{data.body}</p>
+      </div>
     </Paper>
   );
 }
 
-
-export default function MasonryGrid() {
-  const heights = [150, 30, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 30, 50, 80];
-
+export default function MasonryGrid({ data }: { data: MasonryItemData[] }) {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ width: {xs: '370px', sm: '525px', md: '720px', lg: '970px', xl: '1220px', xxl: '1500px'} }}>
-        <Masonry columns={{xs: 2, sm: 3, lg: 4}} spacing={2}>
-          {heights.map((height, index) => (
-            <MasonryItem key={index} height={height}>
-              {index + 1}
-            </MasonryItem>
-          ))}
+        <Masonry columns={{xs: 2, sm: 3, lg: 4}} spacing={3}>
+          {data.map((item, index) => <MasonryItem key={index} data={item} />)}
         </Masonry>
       </Box>
     </ThemeProvider>

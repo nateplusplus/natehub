@@ -256,6 +256,32 @@ self.__RSC_MANIFEST={
         "async": false
       }
     },
+    "(app-client)/./src/components/Tabs.tsx": {
+      "*": {
+        "id": "(sc_client)/./src/components/Tabs.tsx",
+        "name": "*",
+        "chunks": [
+          "app/layout:static/chunks/app/layout.js"
+        ],
+        "async": false
+      },
+      "": {
+        "id": "(sc_client)/./src/components/Tabs.tsx",
+        "name": "",
+        "chunks": [
+          "app/layout:static/chunks/app/layout.js"
+        ],
+        "async": false
+      },
+      "default": {
+        "id": "(sc_client)/./src/components/Tabs.tsx",
+        "name": "default",
+        "chunks": [
+          "app/layout:static/chunks/app/layout.js"
+        ],
+        "async": false
+      }
+    },
     "(app-client)/./src/app/page.tsx": {
       "*": {
         "id": "(sc_client)/./src/app/page.tsx",
@@ -1098,6 +1124,30 @@ self.__RSC_MANIFEST={
     },
     "/Users/nathanblair/Sites/natehub/node_modules/next/dist/esm/client/link.js#default": {
       "id": "(app-client)/./node_modules/next/dist/client/link.js",
+      "name": "default",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/components/Tabs.tsx": {
+      "id": "(app-client)/./src/components/Tabs.tsx",
+      "name": "*",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/components/Tabs.tsx#": {
+      "id": "(app-client)/./src/components/Tabs.tsx",
+      "name": "",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
+    },
+    "/Users/nathanblair/Sites/natehub/src/components/Tabs.tsx#default": {
+      "id": "(app-client)/./src/components/Tabs.tsx",
       "name": "default",
       "chunks": [
         "app/layout:static/chunks/app/layout.js"
