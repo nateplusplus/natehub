@@ -7,6 +7,8 @@ import '@fontsource/roboto/700.css';
 
 import { Inter } from 'next/font/google';
 
+import Three from '@/components/Three';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -22,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} max-w-xl mx-auto`}>
+        <Three />
         <header>
           <div className='mt-8 pt-8 flex flex-col md:flex-row'>
             <div className='px-8'>

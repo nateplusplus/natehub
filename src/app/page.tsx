@@ -31,7 +31,7 @@ export default function Links() {
       <Box>
         <p className='my-6 text-center text-sm'>
           Thanks for stopping by
-          <FontAwesomeIcon icon={faHeart} className='ml-2' />
+          <FontAwesomeIcon icon={faHeart} className='ml-2 max-h-4' />
         </p>
       </Box>
     </Box>

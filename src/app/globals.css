@@ -37,3 +37,12 @@ p a:active {
 h2 {
   @apply font-bold text-stone-400 text-sm;
 }
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
