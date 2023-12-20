@@ -94,7 +94,7 @@ export default function Three() {
         scene.add(starsT1);
         scene.add(starsT2);
 
-        const render = (time) => {
+        const render = (time: number) => {
             // time *= 0.001; //in seconds
 
             if (resizeRendererToDisplaySize(renderer)) {
