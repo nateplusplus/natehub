@@ -3,17 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 38, 38, 38;
-  --background-start-rgb: 235, 241, 242;
-  --background-end-rgb: 246, 246, 246;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 242, 242, 242;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --foreground-rgb: 242, 242, 242;
+  --background-start-rgb: 5, 10, 15;
+  --background-end-rgb: 25, 35, 50;
 }
 
 body {
@@ -29,19 +21,19 @@ body {
 }
 
 p {
-  @apply text-base mb-5 text-neutral-700 font-light tracking-wide;
+  @apply text-base mb-5 text-neutral-400 font-light tracking-wide;
 }
 
 p a {
-  @apply text-blue-800 font-bold
+  @apply text-blue-500 font-bold
 }
 
 p a:hover,
 p a:focus,
 p a:active {
-  @apply text-blue-900 underline;
+  @apply text-blue-400 underline;
 }
 
 h2 {
-  @apply font-bold;
+  @apply font-bold text-stone-400 text-sm;
 }
