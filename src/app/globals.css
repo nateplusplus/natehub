@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 242, 242, 242;
+  --background-start-rgb: 5, 10, 15;
+  --background-end-rgb: 25, 35, 50;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  font: 100%/1.125 Helvetica, serif;
+}
+
+p {
+  @apply text-base mb-5 text-neutral-400 font-light tracking-wide;
+}
+
+p a {
+  @apply text-blue-500 font-bold
+}
+
+p a:hover,
+p a:focus,
+p a:active {
+  @apply text-blue-400 underline;
+}
+
+h2 {
+  @apply font-bold text-stone-400 text-sm;
+}
