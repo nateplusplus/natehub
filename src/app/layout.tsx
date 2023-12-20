@@ -29,9 +29,9 @@ export default function RootLayout({
               <h1 className="text-5xl font-black">Nathan Blair</h1>
               <p className="text-sm mt-1 mb-6">(but you can call me Nate)</p>
               <p className="text-base my-5">I'm a Web Developer & Artist<br /> based in Austin, TX</p>
-              <p>
+              {/* <p>
                 <a href="#">More about me →</a>
-              </p>
+              </p> */}
             </div>
           </div>
         </header>
