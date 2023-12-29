@@ -28,10 +28,10 @@ export default function Links() {
         <IconButton site='instagram'/>
         <IconButton site='behance'/>
       </ButtonGroup>
-      <Box>
+      <Box className="mb-12 md:mb-32 lg:mb-60">
         <p className='my-6 text-center text-sm'>
-          Thanks for stopping by
-          <FontAwesomeIcon icon={faHeart} className='ml-2 max-h-4' />
+          <span>Thanks for stopping by</span>
+          <FontAwesomeIcon icon={faHeart} className='ml-2 max-h-4 inline' />
         </p>
       </Box>
     </Box>

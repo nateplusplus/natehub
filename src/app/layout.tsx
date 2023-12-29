@@ -23,24 +23,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} max-w-xl mx-auto`}>
+      <body className={`${inter.className}`}>
         <Three />
-        <header>
-          <div className='mt-8 pt-8 flex flex-col md:flex-row'>
-            <div className='px-8'>
-              <span className='text-2xl font-bold'>Hello, It's Me</span>
-              <h1 className="text-5xl font-black">Nathan Blair</h1>
-              <p className="text-sm mt-1 mb-6">(but you can call me Nate)</p>
-              <p className="text-base my-5">I'm a Web Developer & Artist<br /> based in Austin, TX</p>
-              {/* <p>
-                <a href="#">More about me →</a>
-              </p> */}
+        <div className="content flex flex-col justify-center align-items-center w-full min-h-full max-w-xl mx-auto">
+          <header>
+            <div className='mt-8 pt-8 flex flex-col md:flex-row'>
+              <div className='px-8'>
+                <span className='text-2xl font-bold'>Hello, It's Me</span>
+                <h1 className="text-5xl font-black">Nathan Blair</h1>
+                <p className="text-sm mt-1 mb-6">(but you can call me Nate)</p>
+                <p className="text-base my-5">I'm a Web Developer & Artist<br /> based in Austin, TX</p>
+                {/* <p>
+                  <a href="#">More about me →</a>
+                </p> */}
+              </div>
             </div>
-          </div>
-        </header>
-        <main className='px-8 w-100'>
-          {children}
-        </main>
+          </header>
+          <main className='px-8 w-100'>
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   )

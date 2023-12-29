@@ -8,7 +8,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEtsy, faBehance } from '@fortawesome/free-brands-svg-icons';
 
-const stdClass = 'mr-2 max-h-8';
+const stdClass = 'mr-2 max-h-6';
 
 const data = {
     'github': {

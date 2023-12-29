@@ -8,6 +8,7 @@ export default function Three() {
     // HACK: Grabbing this as a quick bootstrap from example code. Refactor to use react three fiber instead.
 
     useLayoutEffect(() => {
+        console.log('hello??');
         const canvas = document.getElementById("stars");
 
         const getRandomParticelPos = (particleCount: number) => {
